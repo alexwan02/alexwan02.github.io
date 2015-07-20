@@ -41,7 +41,7 @@
 <meta property="og:url" content="http://alexwan1989.com/2015/07/21/高效显示Bitmap/index.html">
 <meta property="og:site_name" content="Alexwan’Blog">
 <meta property="og:description" content="一、高效加载大图图形有不同的形状与大小。在大多数情况下它们的实际大小都比需要呈现的尺寸大很多。系统的图库应用显示那些我们使用相机拍摄的照片，但是那些图片的分辨率通常都比设备屏幕的分辨率要高很多。考虑到应用是在有限的内存下工作，我们只需要在内存中加载一个低分辨率的照片即可。为了更便于显示，这个分辨率的照片应该是与其对应的UI控件大小相适配。加载超过屏幕分辨率的高分辨率照片不仅对显示没有任何的提升，还">
-<meta property="og:updated_time" content="2015-07-20T23:28:23.000Z">
+<meta property="og:updated_time" content="2015-07-20T23:40:09.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="高效显示Bitmap">
 <meta name="twitter:description" content="一、高效加载大图图形有不同的形状与大小。在大多数情况下它们的实际大小都比需要呈现的尺寸大很多。系统的图库应用显示那些我们使用相机拍摄的照片，但是那些图片的分辨率通常都比设备屏幕的分辨率要高很多。考虑到应用是在有限的内存下工作，我们只需要在内存中加载一个低分辨率的照片即可。为了更便于显示，这个分辨率的照片应该是与其对应的UI控件大小相适配。加载超过屏幕分辨率的高分辨率照片不仅对显示没有任何的提升，还">
@@ -209,11 +209,20 @@
 
       
         <span itemprop="articleBody"><h2 id="一、高效加载大图">一、高效加载大图</h2><p>图形有不同的形状与大小。在大多数情况下它们的实际大小都比需要呈现的尺寸大很多。系统的图库应用显示那些我们使用相机拍摄的照片，但是那些图片的分辨率通常都比设备屏幕的分辨率要高很多。<br>考虑到应用是在有限的内存下工作，我们只需要在内存中加载一个低分辨率的照片即可。为了更便于显示，这个分辨率的照片应该是与其对应的UI控件大小相适配。加载超过屏幕分辨率的高分辨率照片不仅对显示没有任何的提升，还会占用内存资源，此外在快速滑动图片时容易产生额外的效率问题。<br>那么，如何加载缩小版本的图片来避免超出程序的内存限制</p>
-<h3 id="（1）读取位图的尺寸和类型">（1）读取位图的尺寸和类型</h3><p>BitmapFactory提供了一些解码（decode）的方法(decodeByteArray(),decodeFile(),decodeResource())等，用来从不同的资源中创建一个Bitmap。我们应该根据图片的数据源来选择合适的解码方法。这些方法在构造位图的时候会尝试分配内存，因此容易导致OOM。每一种解码方法会同辉BimapFactory.Options设置一些附加的标记，以此来指定解码选项。设置inJustDecodeBounds属性为ture可以在解码的时候避免内存的分配，它会返回一个null的Bitmap，但是可以获取到outWidth，outHeight与outMimeType属性。你可以在构造Bitmap之前优先读取图片的尺寸和类型。</p>
+<h3 id="（1）读取位图的尺寸和类型">（1）读取位图的尺寸和类型</h3><p>为了避免java.lang.OutOfMemory的异常，我们需要在真正解析图片的之前获取图片的尺寸<br>BitmapFactory提供了一些解码（decode）的方法（decodeByteArray(),decodeFile(),decodeResource()）等，用来从不同的资源中创建一个Bitmap。我们应该根据图片的数据源来选择合适的解码方法。这些方法在构造位图的时候会尝试分配内存，因此容易导致OOM。每一种解码方法会同辉BimapFactory.Options设置一些附加的标记，以此来指定解码选项。设置inJustDecodeBounds属性为ture可以在解码的时候避免内存的分配，它会返回一个null的Bitmap，但是可以获取到outWidth，outHeight与outMimeType属性。你可以在构造Bitmap之前优先读取图片的尺寸和类型。</p>
 <pre><code>BitmapFactory.<span class="keyword">Options</span> <span class="keyword">options</span> = <span class="keyword">new</span> BitmapFactory.<span class="keyword">Options</span>();
- <span class="keyword">options</span>.inJustDecodeBounds = <span class="keyword">true</span>;
- BitmapFactory.decodeResource(getResource(),R.id.myimage,<span class="keyword">options</span>);    
-</code></pre></span>
+<span class="keyword">options</span>.inJustDecodeBounds = <span class="keyword">true</span>;
+BitmapFactory.decodeResource(getResource(),R.id.myimage,<span class="keyword">options</span>);
+<span class="keyword">int</span> imageWidth = <span class="keyword">options</span>.outWidth;
+<span class="keyword">int</span> imageHeight = <span class="keyword">options</span>.outHeight;
+String imageType = <span class="keyword">options</span>.outMimeType;
+</code></pre><h3 id="加载一个按比例缩小的版本到内存中">加载一个按比例缩小的版本到内存中</h3><p>通过以上的步骤我们获取到了图片的尺寸和类型等参数，这些数据决定了我们是完整地将图片加载到内存中还是加载按比例缩小后的图片。在加载图片的时候我们要考虑到以下几点:</p>
+<pre><code>1.评估加载完整图片所消耗的内存。
+2.程序在加载图片的时候可能涉及到其他的内存需求。
+3.加载图片的控件的大小。
+4.屏幕大小与当前设备的屏幕密度。
+</code></pre><p>比如在使用128x96像素的ImageView加载像素1024x768的图片的时候，就没有必要加载完整的图片到内存中。</p>
+</span>
       
     </div>
 
@@ -337,7 +346,7 @@
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、高效加载大图"><span class="nav-number">1.</span> <span class="nav-text">一、高效加载大图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#（1）读取位图的尺寸和类型"><span class="nav-number">1.1.</span> <span class="nav-text">（1）读取位图的尺寸和类型</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、高效加载大图"><span class="nav-number">1.</span> <span class="nav-text">一、高效加载大图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#（1）读取位图的尺寸和类型"><span class="nav-number">1.1.</span> <span class="nav-text">（1）读取位图的尺寸和类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#加载一个按比例缩小的版本到内存中"><span class="nav-number">1.2.</span> <span class="nav-text">加载一个按比例缩小的版本到内存中</span></a></li></ol></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
