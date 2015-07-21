@@ -175,7 +175,7 @@
           
             
               <a class="post-title-link" href="/2015/07/21/高效显示Bitmap/" itemprop="url">
-                高效显示Bitmap
+                Android-Bitmap的高效加载与处理
               </a>
             
           
@@ -251,7 +251,7 @@ String imageType = <span class="keyword">options</span>.outMimeType;
     <span class="keyword">options</span>.inJustDecodeBounds = <span class="keyword">true</span>;
     BitmapFactory.decodeResource(res , resId , <span class="keyword">options</span>);
     <span class="comment">// 计算缩放比例</span>
-    <span class="keyword">options</span>.inSampleSize = calculateInSampleSize(<span class="keyword">options</span> , reqWidth ,                 reqHeight);
+    <span class="keyword">options</span>.inSampleSize = calculateInSampleSize(<span class="keyword">options</span> , reqWidth , reqHeight);
     <span class="comment">//</span>
     <span class="keyword">options</span>.inJustDecodeBounds = <span class="keyword">false</span>;
     <span class="keyword">return</span> BitmapFactory.decodeResource(res , resId , <span class="keyword">options</span>);

@@ -37,13 +37,13 @@
 
 <meta name="description" content="一、高效加载大图图形有不同的形状与大小。在大多数情况下它们的实际大小都比需要呈现的尺寸大很多。系统的图库应用显示那些我们使用相机拍摄的照片，但是那些图片的分辨率通常都比设备屏幕的分辨率要高很多。考虑到应用是在有限的内存下工作，我们只需要在内存中加载一个低分辨率的照片即可。为了更便于显示，这个分辨率的照片应该是与其对应的UI控件大小相适配。加载超过屏幕分辨率的高分辨率照片不仅对显示没有任何的提升，还">
 <meta property="og:type" content="article">
-<meta property="og:title" content="高效显示Bitmap">
+<meta property="og:title" content="Android-Bitmap的高效加载与处理">
 <meta property="og:url" content="http://alexwan1989.com/2015/07/21/高效显示Bitmap/index.html">
 <meta property="og:site_name" content="Alexwan’Blog">
 <meta property="og:description" content="一、高效加载大图图形有不同的形状与大小。在大多数情况下它们的实际大小都比需要呈现的尺寸大很多。系统的图库应用显示那些我们使用相机拍摄的照片，但是那些图片的分辨率通常都比设备屏幕的分辨率要高很多。考虑到应用是在有限的内存下工作，我们只需要在内存中加载一个低分辨率的照片即可。为了更便于显示，这个分辨率的照片应该是与其对应的UI控件大小相适配。加载超过屏幕分辨率的高分辨率照片不仅对显示没有任何的提升，还">
-<meta property="og:updated_time" content="2015-07-21T13:56:34.000Z">
+<meta property="og:updated_time" content="2015-07-21T14:19:35.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="高效显示Bitmap">
+<meta name="twitter:title" content="Android-Bitmap的高效加载与处理">
 <meta name="twitter:description" content="一、高效加载大图图形有不同的形状与大小。在大多数情况下它们的实际大小都比需要呈现的尺寸大很多。系统的图库应用显示那些我们使用相机拍摄的照片，但是那些图片的分辨率通常都比设备屏幕的分辨率要高很多。考虑到应用是在有限的内存下工作，我们只需要在内存中加载一个低分辨率的照片即可。为了更便于显示，这个分辨率的照片应该是与其对应的UI控件大小相适配。加载超过屏幕分辨率的高分辨率照片不仅对显示没有任何的提升，还">
 
 
@@ -54,7 +54,7 @@
   };
 </script>
 
-    <title> 高效显示Bitmap // Alexwan’Blog </title>
+    <title> Android-Bitmap的高效加载与处理 // Alexwan’Blog </title>
 </head>
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 <!--[if lte IE 8]>
@@ -173,7 +173,7 @@
           
           
             
-              高效显示Bitmap
+              Android-Bitmap的高效加载与处理
             
           
         </h1>
@@ -247,7 +247,7 @@ String imageType = <span class="keyword">options</span>.outMimeType;
     <span class="keyword">options</span>.inJustDecodeBounds = <span class="keyword">true</span>;
     BitmapFactory.decodeResource(res , resId , <span class="keyword">options</span>);
     <span class="comment">// 计算缩放比例</span>
-    <span class="keyword">options</span>.inSampleSize = calculateInSampleSize(<span class="keyword">options</span> , reqWidth ,                 reqHeight);
+    <span class="keyword">options</span>.inSampleSize = calculateInSampleSize(<span class="keyword">options</span> , reqWidth , reqHeight);
     <span class="comment">//</span>
     <span class="keyword">options</span>.inJustDecodeBounds = <span class="keyword">false</span>;
     <span class="keyword">return</span> BitmapFactory.decodeResource(res , resId , <span class="keyword">options</span>);
@@ -294,7 +294,7 @@ String imageType = <span class="keyword">options</span>.outMimeType;
               <div class="comments" id="comments">
                 
                   <div class="ds-thread" data-thread-key="2015/07/21/高效显示Bitmap/"
-                       data-title="高效显示Bitmap" data-url="http://alexwan1989.com/2015/07/21/高效显示Bitmap/">
+                       data-title="Android-Bitmap的高效加载与处理" data-url="http://alexwan1989.com/2015/07/21/高效显示Bitmap/">
                   </div>
                 
               </div>
