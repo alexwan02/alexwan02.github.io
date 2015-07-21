@@ -41,7 +41,7 @@
 <meta property="og:url" content="http://alexwan1989.com/2015/07/21/高效显示Bitmap/index.html">
 <meta property="og:site_name" content="Alexwan’Blog">
 <meta property="og:description" content="一、高效加载大图图形有不同的形状与大小。在大多数情况下它们的实际大小都比需要呈现的尺寸大很多。系统的图库应用显示那些我们使用相机拍摄的照片，但是那些图片的分辨率通常都比设备屏幕的分辨率要高很多。考虑到应用是在有限的内存下工作，我们只需要在内存中加载一个低分辨率的照片即可。为了更便于显示，这个分辨率的照片应该是与其对应的UI控件大小相适配。加载超过屏幕分辨率的高分辨率照片不仅对显示没有任何的提升，还">
-<meta property="og:updated_time" content="2015-07-21T15:29:07.000Z">
+<meta property="og:updated_time" content="2015-07-21T15:30:17.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android-Bitmap的高效加载与处理">
 <meta name="twitter:description" content="一、高效加载大图图形有不同的形状与大小。在大多数情况下它们的实际大小都比需要呈现的尺寸大很多。系统的图库应用显示那些我们使用相机拍摄的照片，但是那些图片的分辨率通常都比设备屏幕的分辨率要高很多。考虑到应用是在有限的内存下工作，我们只需要在内存中加载一个低分辨率的照片即可。为了更便于显示，这个分辨率的照片应该是与其对应的UI控件大小相适配。加载超过屏幕分辨率的高分辨率照片不仅对显示没有任何的提升，还">
@@ -256,8 +256,8 @@ String imageType = <span class="keyword">options</span>.outMimeType;
 <pre><code><span class="comment">//  显示100x100像素的缩略图</span>
 mImageView.setImageBitmap<span class="params">(decodeSampleBitmapFromResource<span class="params">(getResource<span class="params">()</span>, R.id.myImage , <span class="number">100</span>, <span class="number">100</span>)</span>)</span>;
 </code></pre><p>同样可以通过BitmapFactory.decode*方法来解析其他数据源的Bitmap</p>
-<h2 id="非UI线程处理Bitmap">非UI线程处理Bitmap</h2><p>加载网络或者存储卡时（或者是任何不在内存中的形式）都不应该在UI线程中执行。因为在上面种情况去加载数据时候，执行时间是不可估计的，依赖于许多因素（从网络或存储卡读取数据的速度，图片的大小，CPU的速度等）。如果其中任何一个子线程阻塞了UI线程，系统都会容易出现应用无响应的错误。下面介绍如果使用AsyncTask在后台线程中处理Bitmap并且演示如何处理并发的问题。</p>
-<h3 id="使用AysncTask(Use_a_AsyncTask)">使用AysncTask(Use a AsyncTask)</h3><p>AysncTask类提供了一个在后台线程执行一些操作的简单方法，可以把后台的执行结果呈现到UI线程中。参考下面的例子来学习使用AysncTask</p>
+<h2 id="二、非UI线程处理Bitmap">二、非UI线程处理Bitmap</h2><p>加载网络或者存储卡时（或者是任何不在内存中的形式）都不应该在UI线程中执行。因为在上面种情况去加载数据时候，执行时间是不可估计的，依赖于许多因素（从网络或存储卡读取数据的速度，图片的大小，CPU的速度等）。如果其中任何一个子线程阻塞了UI线程，系统都会容易出现应用无响应的错误。下面介绍如果使用AsyncTask在后台线程中处理Bitmap并且演示如何处理并发的问题。</p>
+<h3 id="（1）使用AysncTask(Use_a_AsyncTask)">（1）使用AysncTask(Use a AsyncTask)</h3><p>AysncTask类提供了一个在后台线程执行一些操作的简单方法，可以把后台的执行结果呈现到UI线程中。参考下面的例子来学习使用AysncTask</p>
 <pre><code><span class="class"><span class="keyword">class</span> <span class="title">BitmapWorkerTask</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">AsyncTask</span>{</span>
     <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">WeakReference</span> imageViewReference;
     <span class="keyword">private</span> int data = <span class="number">0</span> ;
@@ -405,7 +405,7 @@ mImageView.setImageBitmap<span class="params">(decodeSampleBitmapFromResource<sp
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、高效加载大图"><span class="nav-number">1.</span> <span class="nav-text">一、高效加载大图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#（1）读取位图的尺寸和类型"><span class="nav-number">1.1.</span> <span class="nav-text">（1）读取位图的尺寸和类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（2）加载一个按比例缩小的版本到内存中"><span class="nav-number">1.2.</span> <span class="nav-text">（2）加载一个按比例缩小的版本到内存中</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#非UI线程处理Bitmap"><span class="nav-number">2.</span> <span class="nav-text">非UI线程处理Bitmap</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用AysncTask(Use_a_AsyncTask)"><span class="nav-number">2.1.</span> <span class="nav-text">使用AysncTask(Use a AsyncTask)</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、高效加载大图"><span class="nav-number">1.</span> <span class="nav-text">一、高效加载大图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#（1）读取位图的尺寸和类型"><span class="nav-number">1.1.</span> <span class="nav-text">（1）读取位图的尺寸和类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（2）加载一个按比例缩小的版本到内存中"><span class="nav-number">1.2.</span> <span class="nav-text">（2）加载一个按比例缩小的版本到内存中</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、非UI线程处理Bitmap"><span class="nav-number">2.</span> <span class="nav-text">二、非UI线程处理Bitmap</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#（1）使用AysncTask(Use_a_AsyncTask)"><span class="nav-number">2.1.</span> <span class="nav-text">（1）使用AysncTask(Use a AsyncTask)</span></a></li></ol></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
