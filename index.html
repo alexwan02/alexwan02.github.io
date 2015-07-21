@@ -220,13 +220,43 @@ BitmapFactory.decodeResource(getResource(),R.id.myimage,<span class="keyword">op
 <span class="keyword">int</span> imageWidth = <span class="keyword">options</span>.outWidth;
 <span class="keyword">int</span> imageHeight = <span class="keyword">options</span>.outHeight;
 String imageType = <span class="keyword">options</span>.outMimeType;
-</code></pre><h3 id="加载一个按比例缩小的版本到内存中">加载一个按比例缩小的版本到内存中</h3><p>通过以上的步骤我们获取到了图片的尺寸和类型等参数，这些数据决定了我们是完整地将图片加载到内存中还是加载按比例缩小后的图片。在加载图片的时候我们要考虑到以下几点:</p>
+</code></pre><h3 id="（2）加载一个按比例缩小的版本到内存中">（2）加载一个按比例缩小的版本到内存中</h3><p>通过以上的步骤我们获取到了图片的尺寸和类型等参数，这些数据决定了我们是完整地将图片加载到内存中还是加载按比例缩小后的图片。在加载图片的时候我们要考虑到以下几点:</p>
 <pre><code>1.评估加载完整图片所消耗的内存。
 2.程序在加载图片的时候可能涉及到其他的内存需求。
 3.加载图片的控件的大小。
 4.屏幕大小与当前设备的屏幕密度。
-</code></pre><p>比如在使用128x96像素的ImageView加载像素1024x768的图片的时候，就没有必要加载完整的图片到内存中。</p>
-</span>
+</code></pre><p>比如在使用128x96像素的ImageView加载像素1024x768的图片的时候，就没有必要加载完整的图片到内存中。<br>为了告诉解码器去加载一个缩小版本的图片到内存中，需要在BitmapFactory.Options中设置inSampleSize的值。例如，一个分辨率为2048x1536的图片，如果设置inSampleSize为4，那么会生成一个大约512x384大小的Bitmap。加载缩小后的图片消耗0.75MB的内存。如果加载原有的图片，则会消耗12MB左右的内存（假设Bitmap的配置为ARGB_8888)。</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">int</span> calculateInSampleSize(
+            BitmapFactory.Options options , <span class="built_in">int</span> reqWidth, <span class="built_in">int</span> reqHeight){
+    <span class="comment">// 获取到的图片的宽度和高度</span>
+    <span class="keyword">final</span> <span class="built_in">int</span> <span class="variable">height</span> = options.outHeight;
+    <span class="keyword">final</span> <span class="built_in">int</span> <span class="variable">width</span> = options.outWidth;
+    <span class="comment">// 缩放比例</span>
+    <span class="built_in">int</span> inSampleSize = <span class="number">1</span>;
+    <span class="comment">// 和加载图片的控件大小比较</span>
+    <span class="keyword">if</span>(<span class="variable">height</span> &gt; reqHeight || <span class="variable">width</span> &gt; reqWidth){
+        <span class="keyword">final</span> <span class="built_in">int</span> halfHeight = <span class="variable">height</span> / <span class="number">2</span>;
+        <span class="keyword">final</span> <span class="built_in">int</span> halfWidth = <span class="variable">width</span> / <span class="number">2</span>;
+        <span class="keyword">while</span>((<span class="variable">height</span> / inSampleSize ) &gt; reqHeight
+                &amp;&amp; (<span class="variable">width</span> / inSampleSize) &gt; reqWidth){
+            inSampleSize *= <span class="number">2</span>;
+        }
+    }
+    <span class="keyword">return</span> inSampleSize;
+}
+</code></pre><p>为了使用该方法，首先需要设置inJustDecodeBounds为true，获取Options的值。然后计算inSampleSize的值并设置inJustDecodeBounds为false。最后调用相关的解码方法。</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">static</span> Bitmap decodeSampledBitmapFromResource(Resource res , 
+        <span class="keyword">int</span> resId , <span class="keyword">int</span> reqWidth , <span class="keyword">int</span> reqHeight){
+    <span class="keyword">final</span> BitmapFactory.<span class="keyword">Options</span> <span class="keyword">options</span> = <span class="keyword">new</span> BitmapFactory.<span class="keyword">Options</span>();
+    <span class="keyword">options</span>.inJustDecodeBounds = <span class="keyword">true</span>;
+    BitmapFactory.decodeResource(res , resId , <span class="keyword">options</span>);
+    <span class="comment">// 计算缩放比例</span>
+    <span class="keyword">options</span>.inSampleSize = calculateInSampleSize(<span class="keyword">options</span> , reqWidth ,                 reqHeight);
+    <span class="comment">//</span>
+    <span class="keyword">options</span>.inJustDecodeBounds = <span class="keyword">false</span>;
+    <span class="keyword">return</span> BitmapFactory.decodeResource(res , resId , <span class="keyword">options</span>);
+}
+</code></pre></span>
         
       
     </div>
