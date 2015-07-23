@@ -261,7 +261,7 @@ String imageType = <span class="keyword">options</span>.outMimeType;
 mImageView.setImageBitmap<span class="params">(decodeSampleBitmapFromResource<span class="params">(getResource<span class="params">()</span>, R.id.myImage , <span class="number">100</span>, <span class="number">100</span>)</span>)</span>;
 </code></pre><p>同样可以通过BitmapFactory.decode*方法来解析其他数据源的Bitmap</p>
 <h2 id="二、非UI线程处理Bitmap">二、非UI线程处理Bitmap</h2><p>加载网络或者存储卡时（或者是任何不在内存中的形式）都不应该在UI线程中执行。因为在上面种情况去加载数据时候，执行时间是不可估计的，依赖于许多因素（从网络或存储卡读取数据的速度，图片的大小，CPU的速度等）。如果其中任何一个子线程阻塞了UI线程，系统都会容易出现应用无响应的错误。下面介绍如果使用AsyncTask在后台线程中处理Bitmap并且演示如何处理并发的问题。</p>
-<h3 id="（1）使用AysncTask(Use_a_AsyncTask)">（1）使用AysncTask(Use a AsyncTask)</h3><p>AysncTask类提供了一个在后台线程执行一些操作的简单方法，可以把后台的执行结果呈现到UI线程中。参考下面的例子来学习使用AysncTask</p>
+<h3 id="(1)_使用AysncTask(Use_a_AsyncTask)">(1) 使用AysncTask(Use a AsyncTask)</h3><p>AsyncTask类提供了一个在后台线程执行一些操作的简单方法，可以把后台的执行结果呈现到UI线程中。参考下面的例子来学习使用AsyncTask</p>
 <pre><code><span class="class"><span class="keyword">class</span> <span class="title">BitmapWorkerTask</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">AsyncTask</span>{</span>
     <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">WeakReference</span> imageViewReference;
     <span class="keyword">private</span> int data = <span class="number">0</span> ;
@@ -285,7 +285,83 @@ mImageView.setImageBitmap<span class="params">(decodeSampleBitmapFromResource<sp
         }
     }
 }
-</code></pre></span>
+</code></pre><p>为ImageView使用WeakReference确保了AsyncTask所引用的资源可以被GC回收。因为任务结束时不能确保ImageView仍然存在，需要在onPostExecute()离检查引用是否存在。<br>异步加载Bitmap，只需要创建一个新的任务执行</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">void</span> loadBitmap(<span class="keyword">int</span> resId,ImageView imageView){
+    BitmapWorkerTask <span class="keyword">task</span> = <span class="keyword">new</span> BitmapWorkerTask(imageView);
+    <span class="keyword">task</span>.execute(resId);
+}
+</code></pre><h3 id="(2)_处理并发问题">(2) 处理并发问题</h3><p>像类似ListView与GridView等视图控件在使用AsyncTask方法时，会带来并发的问题。在使用ListView和GridView时候item需要在滑动屏幕的时候重用。<br>解决并发问题的一种解决方法：ImageView保存最近使用的AsyncTask的引用。<br>创建一个专用的Drawable的子类来存储任务的引用。如下：使用BitmapDrawable,在任务执行的过程中，一个占位图会显示在ImageView中：</p>
+<pre><code>static <span class="class"><span class="keyword">class</span> <span class="title">AsyncDrawable</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">BitmapDrawable</span>{</span>
+    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">WeakReference</span> bitmapWorkerTaskReference;
+
+    public <span class="type">AsyncDrawable</span>(<span class="type">Resources</span> res , <span class="type">Bitmap</span> bitmap
+            <span class="type">BitmapWorkerTask</span> bitmapWorkerTask){
+        <span class="keyword">super</span>(res , bitmap);
+        bitmapWorkerTaskReference = <span class="keyword">new</span> <span class="type">WeakReference</span>(bitmapWorkerTask);
+    }
+
+    public <span class="type">BitmapWorkerTask</span> getBitmapWorkerTask(){
+        <span class="keyword">return</span> bitmapWorkerTaskReference.get();
+    }
+}
+</code></pre><p>在执行BitmapWorkerTask之前，你需要创建一个AsyncDrawable并且将它绑定到目标控件ImageView中：</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">void</span> loadBitmap(<span class="keyword">int</span> resId, ImageView imageView){
+    <span class="keyword">if</span>(cancelPotentialWork(resId, imageView)){
+        <span class="keyword">final</span> BitmapWorkerTask <span class="keyword">task</span> = <span class="keyword">new</span> BitmapWorkerTask(imageView);
+        <span class="keyword">final</span> AsyncDrawable asyncDrawble = <span class="keyword">new</span> AsyncDrawable(
+            getResources(), mPlaceHolderBitmap, <span class="keyword">task</span>);
+        imageView.setImageDrawable(asyncDrawable);
+        <span class="keyword">task</span>.execute(resId);
+    }
+}
+</code></pre><p>在上面的代码示例中，cancelPotentialWork方法检查是否有另一个正在执行的任务与该ImageView关联了起来，如果已经关联，通过执行cancel()方法来取消另一个任务。在少数情况下，新创建的任务数据可能会与已经存在的任务相吻合，这样就不需要进行下一步动作了。下面是cancelPotentialWork方法的实现</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">boolean</span> <span class="title">cancelPotentialWork</span><span class="params">(<span class="keyword">int</span> data , ImageView imageView)</span></span>{
+    <span class="keyword">final</span> BitmapWorkerTask bitmapWorkerTask = getBitmapWorkerTask(imageView);
+    <span class="keyword">if</span>(bitmapWorkerTask != <span class="keyword">null</span>){
+        <span class="keyword">final</span> <span class="keyword">int</span> bitmapData = bitmapWorkerTask.data;
+        <span class="keyword">if</span>(bitmapData == <span class="number">0</span> || bitmapData != data){
+            <span class="comment">// cancel previous task</span>
+            bitmapWorkerTask.cancel(<span class="keyword">true</span>);
+        }<span class="keyword">else</span>{
+            <span class="comment">// the same work is already in progress</span>
+            <span class="keyword">return</span> <span class="keyword">false</span>;
+        }
+    }
+    <span class="comment">// No task associated with the ImageView , or an existing task was cancelled</span>
+    <span class="keyword">return</span> <span class="keyword">true</span>;
+}
+</code></pre><p>在上面的代码中有一个辅助方法：getBitmapWorkerTask(),它被用作检索AsyncTask是否已经被分配到指定的ImageView：</p>
+<pre><code><span class="keyword">private</span> <span class="keyword">static</span> <span class="function">BitmapWorkerTask <span class="title">getBitmapWorkerTask</span><span class="params">(ImageView imageView)</span></span>{
+    <span class="keyword">if</span>(imageView != <span class="keyword">null</span>){
+        <span class="keyword">final</span> Drawable drawable = imageView.getDrawable();
+        <span class="keyword">if</span>(drawable <span class="keyword">instanceof</span> AsyncDrawable){
+            <span class="keyword">final</span> AsyncDrawable asyncDrawable = (AsyncDrawable) drawable;
+            <span class="function"><span class="keyword">return</span> asyncDrawable.<span class="title">getBitmapWorkerTask</span><span class="params">()</span></span>;
+        }
+    }
+    <span class="keyword">return</span> <span class="keyword">null</span>;
+}
+</code></pre><p>最后一步是在BitmapWorkerTask的onPostExecute()方法中做更新操作：</p>
+<pre><code><span class="class"><span class="keyword">class</span> <span class="title">BitmapWorkerTask</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">AsyncTask</span>{</span>
+    ...
+    <span class="annotation">@Override</span>
+    <span class="keyword">protected</span> void onPostExecute(<span class="type">Bitmap</span> bitmap){
+        <span class="keyword">if</span>(isCancelled()){
+            bitmap = <span class="literal">null</span>;
+        }
+        <span class="keyword">if</span>(imageViewReference != <span class="literal">null</span> &amp;&amp; bitmap != <span class="literal">null</span>){
+            <span class="keyword">final</span> <span class="type">ImageView</span> imageView = imageViewReference.get();
+            <span class="keyword">final</span> <span class="type">BitmapWorkerTask</span> bitmapWorkerTask = 
+                getBitmapWorkerTask(imageView);
+            <span class="keyword">if</span>(<span class="keyword">this</span> == bitmapWorkerTask &amp;&amp; imageView != <span class="literal">null</span>){
+                imageView.setImageBitmap(bitmap);
+            }
+        }
+    }
+}
+</code></pre><p>这个方法不仅适用于ListView和GridView控件，在那些需要循环利用子视图的控件中同样适用：只要设置图片到ImageView的地方调用loadBitmap方法。</p>
+<h2 id="缓存Bitmap">缓存Bitmap</h2><p>为了保证用户体验，使用缓存处理重复使用的图片。</p>
+</span>
         
       
     </div>
