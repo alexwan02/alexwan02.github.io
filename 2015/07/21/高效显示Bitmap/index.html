@@ -41,7 +41,7 @@
 <meta property="og:url" content="http://alexwan1989.com/2015/07/21/高效显示Bitmap/index.html">
 <meta property="og:site_name" content="Alexwan’Blog">
 <meta property="og:description" content="一、高效加载大图图形有不同的形状与大小。在大多数情况下它们的实际大小都比需要呈现的尺寸大很多。系统的图库应用显示那些我们使用相机拍摄的照片，但是那些图片的分辨率通常都比设备屏幕的分辨率要高很多。考虑到应用是在有限的内存下工作，我们只需要在内存中加载一个低分辨率的照片即可。为了更便于显示，这个分辨率的照片应该是与其对应的UI控件大小相适配。加载超过屏幕分辨率的高分辨率照片不仅对显示没有任何的提升，还">
-<meta property="og:updated_time" content="2015-07-26T14:34:24.000Z">
+<meta property="og:updated_time" content="2015-07-26T15:40:29.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android-Bitmap的高效加载与处理">
 <meta name="twitter:description" content="一、高效加载大图图形有不同的形状与大小。在大多数情况下它们的实际大小都比需要呈现的尺寸大很多。系统的图库应用显示那些我们使用相机拍摄的照片，但是那些图片的分辨率通常都比设备屏幕的分辨率要高很多。考虑到应用是在有限的内存下工作，我们只需要在内存中加载一个低分辨率的照片即可。为了更便于显示，这个分辨率的照片应该是与其对应的UI控件大小相适配。加载超过屏幕分辨率的高分辨率照片不仅对显示没有任何的提升，还">
@@ -356,7 +356,8 @@ mImageView.setImageBitmap<span class="params">(decodeSampleBitmapFromResource<sp
     }
 }
 </code></pre><p>这个方法不仅适用于ListView和GridView控件，在那些需要循环利用子视图的控件中同样适用：只要设置图片到ImageView的地方调用loadBitmap方法。</p>
-<h2 id="三、缓存Bitmap">三、缓存Bitmap</h2><p>在大多数情况下（如：在使用ListView，GridView或ViewPager时），屏幕上的图片和因滑动将要显示的图片的数量通常是没有限制的。通过循环使用子视图可以缓存内存的使用，垃圾回收器也会释放那些不在需要使用的Bitmap。稳了保证流畅的用户体验，我们希望避免在每次屏幕滑动回来时，重复调用处理图片。我们采用内存与磁盘缓存来快速地重新加载那些处理过的图片。<br>下面讲解如何使用内存缓存和磁盘缓存来提高响应速度和UI流畅度。<br>(1) 使用内存缓存<br>内存缓存使用程序的内存保存图片以达到快速访问图片的目的。LruCache特别适合用来缓存Bitmaps，它使用一个强引用的LinkedHashMap保存最近引用的对象，并且在缓存超出设置的大小的时候删除最近最少使用的对象。</p>
+<h2 id="三、缓存Bitmap">三、缓存Bitmap</h2><p>在大多数情况下（如：在使用ListView，GridView或ViewPager时），屏幕上的图片和因滑动将要显示的图片的数量通常是没有限制的。通过循环使用子视图可以缓存内存的使用，垃圾回收器也会释放那些不在需要使用的Bitmap。稳了保证流畅的用户体验，我们希望避免在每次屏幕滑动回来时，重复调用处理图片。我们采用内存与磁盘缓存来快速地重新加载那些处理过的图片。<br>下面讲解如何使用内存缓存和磁盘缓存来提高响应速度和UI流畅度。</p>
+<h3 id="(1)_使用内存缓存">(1) 使用内存缓存</h3><p>内存缓存使用程序的内存保存图片以达到快速访问图片的目的。LruCache特别适合用来缓存Bitmaps，它使用一个强引用的LinkedHashMap保存最近引用的对象，并且在缓存超出设置的大小的时候删除最近最少使用的对象。</p>
 <blockquote>
 <p>Note：过去一种比较流行的内存缓存实现方法是使用软引用或弱引用对Bitmap进行缓存，但是不推荐这样的做法。从Android 2.3（API LEVEL 9）开始，垃圾回收机制变得更加频繁，软（弱）引用释放的频率也随之增高，导致使用引用的效率降低很多。而且在Android3.0（API Level 11）之前，备份的Bitmap会存放在Native Memory中，不是以可预知的方式被释放的，可能会导致程序超出它的内存限制而崩溃</p>
 </blockquote>
@@ -434,49 +435,49 @@ mImageView.setImageBitmap<span class="params">(decodeSampleBitmapFromResource<sp
 <p>Note:如果图片会被更频繁的访问，使用ContentProvider或许会更加合适，比如在图库应用中。</p>
 </blockquote>
 <p>范例代码中使用了一个从<a href="https://android.googlesource.com/platform/libcore/+/jb-mr2-release/luni/src/main/java/libcore/io/DiskLruCache.java" target="_blank" rel="external">Android源码</a>中剥离出来的DiskLruCache。改进过的范例代码在已有内存缓存的基础上增加磁盘缓存的功能。</p>
-<pre><code><span class="keyword">private</span> <span class="type">DiskLruCache</span> mDiskLruCache;
-<span class="keyword">private</span> <span class="keyword">final</span> <span class="type">Object</span> mDiskCacheLock = <span class="keyword">new</span> <span class="type">Object</span>();
-<span class="keyword">private</span> boolean mDiskcCacheStarting = <span class="literal">true</span>;
-<span class="keyword">private</span> static <span class="keyword">final</span> int <span class="type">DISK_CACHE_SIZE</span> = <span class="number">1024</span> * <span class="number">1024</span> * <span class="number">10</span>; <span class="comment">// 10MB</span>
-<span class="keyword">private</span> static <span class="keyword">final</span> <span class="type">String</span> <span class="type">DISK_CACHE_SUBDIR</span> = <span class="string">"thumbnails"</span>;
+<pre><code><span class="keyword">private</span> DiskLruCache mDiskLruCache;
+<span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">Object</span> mDiskCacheLock = <span class="keyword">new</span> <span class="keyword">Object</span>();
+<span class="keyword">private</span> <span class="built_in">boolean</span> mDiskcCacheStarting = <span class="keyword">true</span>;
+<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="built_in">int</span> DISK_CACHE_SIZE = <span class="number">1024</span> * <span class="number">1024</span> * <span class="number">10</span>; <span class="comment">// 10MB</span>
+<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">String</span> DISK_CACHE_SUBDIR = <span class="string">"thumbnails"</span>;
 
-<span class="annotation">@Override</span>
-<span class="keyword">protected</span> void onCreate(<span class="type">Bundle</span> saveInstanceState){
+@Override
+<span class="keyword">protected</span> <span class="keyword">void</span> onCreate(Bundle saveInstanceState){
     ...
-    <span class="comment">// Initialize momery cache</span>
+    <span class="comment">// 初始化磁盘缓存</span>
     ...
-    <span class="type">File</span> cacheDir = getDiskCacheDir(<span class="keyword">this</span>, <span class="type">DISK_CACHE_SUBDIR</span>);
-    <span class="keyword">new</span> <span class="type">InitDiskCacheTask</span>().execute(cacheDir);
+    File cacheDir = getDiskCacheDir(<span class="keyword">this</span>, DISK_CACHE_SUBDIR);
+    <span class="keyword">new</span> InitDiskCacheTask().execute(cacheDir);
     ...
 }
 
-<span class="class"><span class="keyword">class</span> <span class="title">InitDiskCacheTask</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">AsyncTask&lt;File</span> , <span class="title">Void</span>, <span class="title">Void&gt;</span>{</span>
-    <span class="annotation">@Override</span>
-    <span class="keyword">protected</span> <span class="type">Void</span> doInBackgroud(<span class="type">File</span>...params){
-        synchronized(mDiskCacheLock){
-            <span class="type">File</span> cacheDir = params[<span class="number">0</span>];
-            mDiskLruCache = <span class="type">DiskLruCache</span>.open(cacheDir, <span class="type">DISK_CACHE_SIZE</span>);
-            mDiskCacheStarting = <span class="literal">false</span>; <span class="comment">// Finished initialization</span>
-            mDiskCacheLock.notifyAll(); <span class="comment">// Wake any waiting threads</span>
+class InitDiskCacheTask extends AsyncTask&lt;File , Void, Void&gt;{
+    @Override
+    <span class="keyword">protected</span> Void doInBackgroud(File...params){
+        <span class="keyword">synchronized</span>(mDiskCacheLock){
+            File cacheDir = params[<span class="number">0</span>];
+            mDiskLruCache = DiskLruCache.<span class="built_in">open</span>(cacheDir, DISK_CACHE_SIZE);
+            mDiskCacheStarting = <span class="keyword">false</span>; <span class="comment">// 初始化完毕</span>
+            mDiskCacheLock.notifyAll(); <span class="comment">// 唤醒其他的线程</span>
         }
-        <span class="keyword">return</span> <span class="literal">null</span>;
+        <span class="keyword">return</span> <span class="keyword">null</span>;
     }
 }
 
-<span class="class"><span class="keyword">class</span> <span class="title">BitmapWorkerTask</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">AsyncTask&lt;Integer</span>, <span class="title">Void</span>, <span class="title">Bitmap&gt;</span>{</span>
+class BitmapWorkerTask extends AsyncTask&lt;Integer, Void, Bitmap&gt;{
     ...
-    <span class="comment">// Decode image in backgroud</span>
-    <span class="annotation">@Overrid</span>
-    <span class="keyword">protected</span> <span class="type">Bitmap</span> doInBackground(<span class="type">Integer</span>...params){
-        <span class="keyword">final</span> <span class="type">String</span> imageKey = <span class="type">String</span>.valueOf(params[<span class="number">0</span>]);
-        <span class="comment">// Check disk cache in background thread</span>
-        <span class="type">Bitmap</span> bitmap = getBitmapFromDiskCache(imageKey);
-        <span class="keyword">if</span>(bitmap == <span class="literal">null</span>){ <span class="comment">// Not found in disk cache</span>
-            <span class="comment">// Process as normal</span>
-            <span class="keyword">final</span> <span class="type">Bitmap</span> bitmap = decodeSampleBitmapFromResource(
+    <span class="comment">// 后台加载Bitmap</span>
+    @Overrid
+    <span class="keyword">protected</span> Bitmap doInBackground(Integer...params){
+        <span class="keyword">final</span> <span class="keyword">String</span> imageKey = <span class="keyword">String</span>.valueOf(params[<span class="number">0</span>]);
+        <span class="comment">// 后台检查磁盘缓存</span>
+        Bitmap bitmap = getBitmapFromDiskCache(imageKey);
+        <span class="keyword">if</span>(bitmap == <span class="keyword">null</span>){ <span class="comment">// 如果没有缓存</span>
+            <span class="comment">// Decode bitmap</span>
+            <span class="keyword">final</span> Bitmap bitmap = decodeSampleBitmapFromResource(
                     getResource(), params[<span class="number">0</span>] , <span class="number">100</span> , <span class="number">100</span>);
         }
-        <span class="comment">// add final bitmap to caches</span>
+        <span class="comment">// 添加bitmap到磁盘缓存中</span>
         addBitmapToCache(imageKey , bitmap);
 
         <span class="keyword">return</span> bitmap;
@@ -484,25 +485,90 @@ mImageView.setImageBitmap<span class="params">(decodeSampleBitmapFromResource<sp
     ...
 }
 
-public void addBitmapToCache(<span class="type">String</span> key ,<span class="type">Bitmap</span> bitmap){
-    <span class="comment">// Add to memory cache as before</span>
-    <span class="keyword">if</span>(getBitmapFromMemCache(key) == <span class="literal">null</span>){
-        mMemoryCache.put(key , bitmap);
+<span class="keyword">public</span> <span class="keyword">void</span> addBitmapToCache(<span class="keyword">String</span> <span class="variable">key</span> ,Bitmap bitmap){
+    <span class="comment">// 如果内存缓存为空，添加到内存缓存中</span>
+    <span class="keyword">if</span>(getBitmapFromMemCache(<span class="variable">key</span>) == <span class="keyword">null</span>){
+        mMemoryCache.put(<span class="variable">key</span> , bitmap);
     }
 
-    <span class="comment">// Also add to disk cache</span>
-    synchronized (mDiskCacheLock){
-        <span class="keyword">if</span>(mDiskLruCache != <span class="literal">null</span> &amp;&amp; mDiskLruCache.get(key) == <span class="literal">null</span>){
-            mDiskLruCache.put(key , bitmap);
+    <span class="comment">// 同时也添加到磁盘缓存中</span>
+    <span class="keyword">synchronized</span> (mDiskCacheLock){
+        <span class="keyword">if</span>(mDiskLruCache != <span class="keyword">null</span> &amp;&amp; mDiskLruCache.<span class="built_in">get</span>(<span class="variable">key</span>) == <span class="keyword">null</span>){
+            mDiskLruCache.put(<span class="variable">key</span> , bitmap);
         }
     }
 }
 
-public <span class="type">Bitmap</span> getBitmapFromDiskCache(<span class="type">String</span> key){
-
+<span class="keyword">public</span> Bitmap getBitmapFromDiskCache(<span class="keyword">String</span> <span class="variable">key</span>){
+    <span class="keyword">synchronized</span>(mDiskCacheLock){
+        <span class="comment">// 当磁盘缓存线程后台启动的时，等待</span>
+        <span class="keyword">while</span>(mDiskCacheStarting){
+            <span class="keyword">try</span>{
+                mDiskCacheLock.wait();
+            }<span class="keyword">catch</span>(InterruptedExceprion e){}
+        }
+        <span class="keyword">if</span>(mDiskLruCache != <span class="keyword">null</span>){
+            <span class="keyword">return</span> mDiskLruCache.<span class="built_in">get</span>(<span class="variable">key</span>);
+        }
+    }
+    <span class="keyword">return</span> <span class="keyword">null</span>;
 
 }
-</code></pre></span>
+<span class="comment">// 创建唯一的app 缓存子目录。使用外部存储，如果没有则使用手机内部存储</span>
+<span class="keyword">public</span> <span class="keyword">static</span> File getDiskCacheDir(Context context , <span class="keyword">String</span> uniqueName){
+    <span class="comment">// 检查外部存储是否存在，存在使用外部存储否则使用内存存储</span>
+    <span class="keyword">final</span> <span class="keyword">String</span> cachePath = Environment.MEDIA_MOUNTED.equals(        Environment.getExternalStorageState()) || !isExternalStorageRemovale() ? getExternalCacheDir(context).getPath() : context.getCacheDir().getPath();
+    <span class="keyword">return</span> <span class="keyword">new</span> File(cachePath + File.separator + uniqueName);
+
+}
+</code></pre><blockquote>
+<p>因为初始化磁盘缓存设计到I/O操作，所以不应该在主线程中进行。但是这也意味着在初始化完成之前缓存可以被访问。为了解决这个问题，在上面的实现中，有一个锁对象（lock object）来确保在磁盘缓存完成初始化之前，应用无法对它进行读取。</p>
+</blockquote>
+<p>内存缓存的检查是可以在UI线程中进行的，磁盘缓存的检查需要在后台线程中处理。磁盘操作永远都不应该在UI线程中发生。当图片处理完成后，Bitmap需要添加到内存缓存和磁盘缓存中，方便之后的使用。</p>
+<h3 id="（3）处理配置改变">（3）处理配置改变</h3><p>如果运行设备配置信息发生改变，例如屏幕方向的改变会导致Android中当前显示的Activity先被销毁然后重启。（关于这一方面的更多信息，请参考<a href="http://developer.android.com/guide/topics/resources/runtime-changes.html" target="_blank" rel="external">Handling Runtime Changes</a>）。我们需要在配置改变时避免重新处理所有的图片，这样才能提供给用户一个良好的平滑过渡的体验。<br>幸运的是，在前面介绍使用内存缓存的部分，我们已经知道了如何建立内存缓存。这个缓存可以通过调用<a href="http://developer.android.com/reference/android/app/Fragment.html#setRetainInstance(boolean" target="_blank" rel="external">setRetainInstance(ture)</a> 保留一个<a href="http://developer.android.com/reference/android/app/Fragment.html" target="_blank" rel="external">Fragment</a>会被重新附着上。这样你就可以访问缓存对象了，从缓存中获取到图片信息并快速的重新显示到ImageView上。<br>下面是配置改变时使用Fragment来保留LruCache的代码示例：</p>
+<pre><code><span class="keyword">private</span> LruCache&lt;String,Bitmap&gt; mMemoryCache;
+
+<span class="annotation">@Override</span>
+<span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span></span>{
+    ...
+    RetaunFrgament retainFragment = RetainFragment.findOrCreateRetainFragment(
+        getFragmentManager());
+    mMemeoryCache = retainFragment.mRetainedCache;
+    <span class="keyword">if</span>(mMemoryCache == <span class="keyword">null</span>){
+        mMemoryCache = <span class="keyword">new</span> LruCache&lt;String , Bitmap&gt;(cacheSize){
+            ...
+            <span class="comment">// 初始化缓存</span>
+            ...
+        }
+        retaunFragment.mRetainedCache = mMemoryCache;
+    }
+    ...
+}
+
+<span class="class"><span class="keyword">class</span> <span class="title">RetainFragment</span> <span class="keyword">extends</span> <span class="title">Fragment</span></span>{
+    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"RetainFragment"</span>;
+    <span class="keyword">public</span> LruCache&lt;String , Bitmap&gt; mRetainedCache;
+
+    <span class="function"><span class="keyword">public</span> <span class="title">RetainFragment</span><span class="params">()</span></span>{}
+    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> RetainFragment <span class="title">findOrCreateRetainFragment</span><span class="params">(
+            FragmentManager fm)</span></span>{
+        RetainFragment fragment = 
+            (RetainFragment) fm.findFragmentByTag(TAG);
+        <span class="keyword">if</span>(fragment == <span class="keyword">null</span> ){
+            fragment = <span class="keyword">new</span> RatainFragment();
+            fm.beginTransaction().add(fragment ,TAG).commit();
+        }
+        <span class="keyword">return</span> fragment;
+    }
+
+    <span class="annotation">@Overrid</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle saveInstanceState)</span></span>{
+        <span class="keyword">super</span>.onCreate(saveInstanceState);
+        setRetainInstance(<span class="keyword">true</span>);
+    }
+}
+</code></pre><p>为了测试上面的效果，可以尝试在保留Fragment与没有这样做的情况下旋转屏幕。我们会发现当保留缓存时，从内存缓存中重新绘制几乎没有延迟的现象。内存缓存中没有的图片可能存储在磁盘缓存中。如果两个缓存中都没有，则图像会像平时正常流畅一样被处理。</p>
+<h2 id="四_管理Bitmap的内存">四 管理Bitmap的内存</h2></span>
       
     </div>
 
@@ -626,7 +692,7 @@ public <span class="type">Bitmap</span> getBitmapFromDiskCache(<span class="type
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、高效加载大图"><span class="nav-number">1.</span> <span class="nav-text">一、高效加载大图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#（1）读取位图的尺寸和类型"><span class="nav-number">1.1.</span> <span class="nav-text">（1）读取位图的尺寸和类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（2）加载一个按比例缩小的版本到内存中"><span class="nav-number">1.2.</span> <span class="nav-text">（2）加载一个按比例缩小的版本到内存中</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、非UI线程处理Bitmap"><span class="nav-number">2.</span> <span class="nav-text">二、非UI线程处理Bitmap</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#(1)_使用AysncTask(Use_a_AsyncTask)"><span class="nav-number">2.1.</span> <span class="nav-text">(1) 使用AysncTask(Use a AsyncTask)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#(2)_处理并发问题"><span class="nav-number">2.2.</span> <span class="nav-text">(2) 处理并发问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、缓存Bitmap"><span class="nav-number">3.</span> <span class="nav-text">三、缓存Bitmap</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#(2)_使用磁盘缓存"><span class="nav-number">3.1.</span> <span class="nav-text">(2) 使用磁盘缓存</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、高效加载大图"><span class="nav-number">1.</span> <span class="nav-text">一、高效加载大图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#（1）读取位图的尺寸和类型"><span class="nav-number">1.1.</span> <span class="nav-text">（1）读取位图的尺寸和类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（2）加载一个按比例缩小的版本到内存中"><span class="nav-number">1.2.</span> <span class="nav-text">（2）加载一个按比例缩小的版本到内存中</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、非UI线程处理Bitmap"><span class="nav-number">2.</span> <span class="nav-text">二、非UI线程处理Bitmap</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#(1)_使用AysncTask(Use_a_AsyncTask)"><span class="nav-number">2.1.</span> <span class="nav-text">(1) 使用AysncTask(Use a AsyncTask)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#(2)_处理并发问题"><span class="nav-number">2.2.</span> <span class="nav-text">(2) 处理并发问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、缓存Bitmap"><span class="nav-number">3.</span> <span class="nav-text">三、缓存Bitmap</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#(1)_使用内存缓存"><span class="nav-number">3.1.</span> <span class="nav-text">(1) 使用内存缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#(2)_使用磁盘缓存"><span class="nav-number">3.2.</span> <span class="nav-text">(2) 使用磁盘缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（3）处理配置改变"><span class="nav-number">3.3.</span> <span class="nav-text">（3）处理配置改变</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四_管理Bitmap的内存"><span class="nav-number">4.</span> <span class="nav-text">四 管理Bitmap的内存</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
