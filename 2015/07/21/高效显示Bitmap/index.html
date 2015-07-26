@@ -41,7 +41,7 @@
 <meta property="og:url" content="http://alexwan1989.com/2015/07/21/高效显示Bitmap/index.html">
 <meta property="og:site_name" content="Alexwan’Blog">
 <meta property="og:description" content="一、高效加载大图图形有不同的形状与大小。在大多数情况下它们的实际大小都比需要呈现的尺寸大很多。系统的图库应用显示那些我们使用相机拍摄的照片，但是那些图片的分辨率通常都比设备屏幕的分辨率要高很多。考虑到应用是在有限的内存下工作，我们只需要在内存中加载一个低分辨率的照片即可。为了更便于显示，这个分辨率的照片应该是与其对应的UI控件大小相适配。加载超过屏幕分辨率的高分辨率照片不仅对显示没有任何的提升，还">
-<meta property="og:updated_time" content="2015-07-25T03:49:29.000Z">
+<meta property="og:updated_time" content="2015-07-26T09:22:39.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android-Bitmap的高效加载与处理">
 <meta name="twitter:description" content="一、高效加载大图图形有不同的形状与大小。在大多数情况下它们的实际大小都比需要呈现的尺寸大很多。系统的图库应用显示那些我们使用相机拍摄的照片，但是那些图片的分辨率通常都比设备屏幕的分辨率要高很多。考虑到应用是在有限的内存下工作，我们只需要在内存中加载一个低分辨率的照片即可。为了更便于显示，这个分辨率的照片应该是与其对应的UI控件大小相适配。加载超过屏幕分辨率的高分辨率照片不仅对显示没有任何的提升，还">
@@ -356,9 +356,11 @@ mImageView.setImageBitmap<span class="params">(decodeSampleBitmapFromResource<sp
     }
 }
 </code></pre><p>这个方法不仅适用于ListView和GridView控件，在那些需要循环利用子视图的控件中同样适用：只要设置图片到ImageView的地方调用loadBitmap方法。</p>
-<h2 id="缓存Bitmap">缓存Bitmap</h2><p>在大多数情况下（如：在使用ListView，GridView或ViewPager时），屏幕上的图片和因滑动将要显示的图片的数量通常是没有限制的。通过循环使用子视图可以缓存内存的使用，垃圾回收器也会释放那些不在需要使用的Bitmap。稳了保证流畅的用户体验，我们希望避免在每次屏幕滑动回来时，重复调用处理图片。我们采用内存与磁盘缓存来快速地重新加载那些处理过的图片。<br>下面讲解如何使用内存缓存和磁盘缓存来提高响应速度和UI流畅度。<br>(1) 使用内存缓存<br>内存缓存使用程序的内存保存图片以达到快速访问图片的目的。LruCache特别适合用来缓存Bitmaps，它使用一个强引用的LinkedHashMap保存最近引用的对象，并且在缓存超出设置的大小的时候删除最近最少使用的对象。</p>
-<pre><code><span class="label">Note</span>：过去一种比较流行的内存缓存实现方法是使用软引用或弱引用对<span class="keyword">Bitmap进行缓存，但是不推荐这样的做法。从Android </span><span class="number">2</span>.<span class="number">3</span>（API LEVEL <span class="number">9</span>）开始，垃圾回收机制变得更加频繁，软（弱）引用释放的频率也随之增高，导致使用引用的效率降低很多。而且在<span class="keyword">Android3.0（API </span>Level <span class="number">11</span>）之前，备份的<span class="keyword">Bitmap会存放在Native </span>Memory中，不是以可预知的方式被释放的，可能会导致程序超出它的内存限制而崩溃
-</code></pre><p>为了给LruCache选择一个合适的大小，需要考虑到以下的一些因素：</p>
+<h2 id="三、缓存Bitmap">三、缓存Bitmap</h2><p>在大多数情况下（如：在使用ListView，GridView或ViewPager时），屏幕上的图片和因滑动将要显示的图片的数量通常是没有限制的。通过循环使用子视图可以缓存内存的使用，垃圾回收器也会释放那些不在需要使用的Bitmap。稳了保证流畅的用户体验，我们希望避免在每次屏幕滑动回来时，重复调用处理图片。我们采用内存与磁盘缓存来快速地重新加载那些处理过的图片。<br>下面讲解如何使用内存缓存和磁盘缓存来提高响应速度和UI流畅度。<br>(1) 使用内存缓存<br>内存缓存使用程序的内存保存图片以达到快速访问图片的目的。LruCache特别适合用来缓存Bitmaps，它使用一个强引用的LinkedHashMap保存最近引用的对象，并且在缓存超出设置的大小的时候删除最近最少使用的对象。</p>
+<blockquote>
+<p>Note：过去一种比较流行的内存缓存实现方法是使用软引用或弱引用对Bitmap进行缓存，但是不推荐这样的做法。从Android 2.3（API LEVEL 9）开始，垃圾回收机制变得更加频繁，软（弱）引用释放的频率也随之增高，导致使用引用的效率降低很多。而且在Android3.0（API Level 11）之前，备份的Bitmap会存放在Native Memory中，不是以可预知的方式被释放的，可能会导致程序超出它的内存限制而崩溃</p>
+</blockquote>
+<p>为了给LruCache选择一个合适的大小，需要考虑到以下的一些因素：</p>
 <ul>
 <li>应用剩下了多少可用的内存</li>
 <li>屏幕上可以显示多少张图片？有多少图片需要准备好以便马上显示到屏幕上</li>
@@ -399,8 +401,9 @@ mImageView.setImageBitmap<span class="params">(decodeSampleBitmapFromResource<sp
 <span class="keyword">public</span> Bitmap getBitmapFromMemCache(<span class="keyword">String</span> <span class="variable">key</span>){
     <span class="keyword">return</span> mMemoryCache.<span class="built_in">get</span>(<span class="variable">key</span>);
 }
-</code></pre><figure class="highlight dns"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Note:在上面的例子中，有1/8的内存空间被用作缓存。意味着hdpi的设备上最少大概有4MB的缓存控件（32/8）。如果一个填满图片的GridView控件放置在<span class="number">800x480</span>像素的手机屏幕上，大概会花费1.5MB的缓存空间（<span class="number">800x480</span>x4 bytes）， 因此缓存的容量大概可以缓存2.5页的图片内容</span><br></pre></td></tr></table></figure>
-<p>当加载Bitmap显示到ImageView之前，会先从LruCache中检查是否存在这个Bitmap。如果确实存在，它会立即被用来显示到ImageView上，如果没有找到，会触发一个后台线程去处理显示Bitmao任务。</p>
+
+Note:在上面的例子中，有<span class="number">1</span>/<span class="number">8</span>的内存空间被用作缓存。意味着hdpi的设备上最少大概有<span class="number">4</span>MB的缓存控件（<span class="number">32</span>/<span class="number">8</span>）。如果一    个填满图片的GridView控件放置在<span class="number">800</span>x480像素的手机屏幕上，大概会花费<span class="number">1.5</span>MB的缓存空间（<span class="number">800</span>x480x4 bytes），     因此缓存的容量大概可以缓存<span class="number">2.5</span>页的图片内容
+</code></pre><p>当加载Bitmap显示到ImageView之前，会先从LruCache中检查是否存在这个Bitmap。如果确实存在，它会立即被用来显示到ImageView上，如果没有找到，会触发一个后台线程去处理显示Bitmao任务。</p>
 <pre><code><span class="keyword">public</span> <span class="keyword">void</span> loadBitmap(<span class="keyword">int</span> resId, ImageView imageView){
     <span class="keyword">final</span> String imageKey = String.valueOf(resId);
     <span class="keyword">final</span> Bitmap bitmap = getBitmapFromMemCache(imagekey);
@@ -426,8 +429,10 @@ mImageView.setImageBitmap<span class="params">(decodeSampleBitmapFromResource<sp
     ...
 }
 </code></pre><h3 id="(2)_使用磁盘缓存">(2) 使用磁盘缓存</h3><p>内存缓存能够提高访问最近使用过的Bitmap的速度，但是无法保证最近访问过的Bitmap能够保存在缓存中。像类似GridView等需要大量数据填充的控件很容易就会用尽整个内存缓存。另外，我们的应用可能会被类似打电话等行为而暂停并退到后台，因为后台应用可能会被杀死，那么内存缓存就会被销毁，里面的Bitmap也就不存在了。一旦用户恢复应用的转台，那么应用就需要重新处理那些图片。<br>磁盘缓存可以保存那些已经处理过的Bitmap，它还可以减少那些不在内存缓存中Bitmap的加载次数。当然从磁盘读取图片会比内存要慢，而且由于磁盘读取操作时间是不可预期的，读取操作需要在后台线程中处理。</p>
-<pre><code><span class="label">Note:</span>如果图片会被更频繁的访问，使用ContentProvider或许会更加合适，比如在图库应用中。
-</code></pre><p>范例代码中使用了一个从<a href="https://android.googlesource.com/platform/libcore/+/jb-mr2-release/luni/src/main/java/libcore/io/DiskLruCache.java" target="_blank" rel="external">Android源码</a>中剥离出来的DiskLruCache。改进过的范例代码在已有内存缓存的基础上增加磁盘缓存的功能。</p>
+<blockquote>
+<p>Note:如果图片会被更频繁的访问，使用ContentProvider或许会更加合适，比如在图库应用中。</p>
+</blockquote>
+<p>范例代码中使用了一个从<a href="https://android.googlesource.com/platform/libcore/+/jb-mr2-release/luni/src/main/java/libcore/io/DiskLruCache.java" target="_blank" rel="external">Android源码</a>中剥离出来的DiskLruCache。改进过的范例代码在已有内存缓存的基础上增加磁盘缓存的功能。</p>
 <pre><code><span class="keyword">private</span> DiskLruCache mDiskLruCache;
 <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">Object</span> mDiskCacheLock = <span class="keyword">new</span> <span class="keyword">Object</span>();
 <span class="keyword">private</span> <span class="built_in">boolean</span> mDiskcCacheStarting = <span class="keyword">true</span>;
@@ -564,7 +569,7 @@ mImageView.setImageBitmap<span class="params">(decodeSampleBitmapFromResource<sp
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、高效加载大图"><span class="nav-number">1.</span> <span class="nav-text">一、高效加载大图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#（1）读取位图的尺寸和类型"><span class="nav-number">1.1.</span> <span class="nav-text">（1）读取位图的尺寸和类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（2）加载一个按比例缩小的版本到内存中"><span class="nav-number">1.2.</span> <span class="nav-text">（2）加载一个按比例缩小的版本到内存中</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、非UI线程处理Bitmap"><span class="nav-number">2.</span> <span class="nav-text">二、非UI线程处理Bitmap</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#(1)_使用AysncTask(Use_a_AsyncTask)"><span class="nav-number">2.1.</span> <span class="nav-text">(1) 使用AysncTask(Use a AsyncTask)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#(2)_处理并发问题"><span class="nav-number">2.2.</span> <span class="nav-text">(2) 处理并发问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#缓存Bitmap"><span class="nav-number">3.</span> <span class="nav-text">缓存Bitmap</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#(2)_使用磁盘缓存"><span class="nav-number">3.1.</span> <span class="nav-text">(2) 使用磁盘缓存</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、高效加载大图"><span class="nav-number">1.</span> <span class="nav-text">一、高效加载大图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#（1）读取位图的尺寸和类型"><span class="nav-number">1.1.</span> <span class="nav-text">（1）读取位图的尺寸和类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（2）加载一个按比例缩小的版本到内存中"><span class="nav-number">1.2.</span> <span class="nav-text">（2）加载一个按比例缩小的版本到内存中</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、非UI线程处理Bitmap"><span class="nav-number">2.</span> <span class="nav-text">二、非UI线程处理Bitmap</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#(1)_使用AysncTask(Use_a_AsyncTask)"><span class="nav-number">2.1.</span> <span class="nav-text">(1) 使用AysncTask(Use a AsyncTask)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#(2)_处理并发问题"><span class="nav-number">2.2.</span> <span class="nav-text">(2) 处理并发问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、缓存Bitmap"><span class="nav-number">3.</span> <span class="nav-text">三、缓存Bitmap</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#(2)_使用磁盘缓存"><span class="nav-number">3.1.</span> <span class="nav-text">(2) 使用磁盘缓存</span></a></li></ol></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
