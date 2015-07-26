@@ -438,17 +438,73 @@ mImageView.setImageBitmap<span class="params">(decodeSampleBitmapFromResource<sp
 <p>Note:如果图片会被更频繁的访问，使用ContentProvider或许会更加合适，比如在图库应用中。</p>
 </blockquote>
 <p>范例代码中使用了一个从<a href="https://android.googlesource.com/platform/libcore/+/jb-mr2-release/luni/src/main/java/libcore/io/DiskLruCache.java" target="_blank" rel="external">Android源码</a>中剥离出来的DiskLruCache。改进过的范例代码在已有内存缓存的基础上增加磁盘缓存的功能。</p>
-<pre><code><span class="keyword">private</span> DiskLruCache mDiskLruCache;
-<span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">Object</span> mDiskCacheLock = <span class="keyword">new</span> <span class="keyword">Object</span>();
-<span class="keyword">private</span> <span class="built_in">boolean</span> mDiskcCacheStarting = <span class="keyword">true</span>;
-<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="built_in">int</span> DISK_CACHE_SIZE = <span class="number">1024</span> * <span class="number">1024</span> * <span class="number">10</span>; <span class="comment">// 10MB</span>
-<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">String</span> DISK_CACHE_SUBDIR = <span class="string">"thumbnails"</span>;
+<pre><code><span class="keyword">private</span> <span class="type">DiskLruCache</span> mDiskLruCache;
+<span class="keyword">private</span> <span class="keyword">final</span> <span class="type">Object</span> mDiskCacheLock = <span class="keyword">new</span> <span class="type">Object</span>();
+<span class="keyword">private</span> boolean mDiskcCacheStarting = <span class="literal">true</span>;
+<span class="keyword">private</span> static <span class="keyword">final</span> int <span class="type">DISK_CACHE_SIZE</span> = <span class="number">1024</span> * <span class="number">1024</span> * <span class="number">10</span>; <span class="comment">// 10MB</span>
+<span class="keyword">private</span> static <span class="keyword">final</span> <span class="type">String</span> <span class="type">DISK_CACHE_SUBDIR</span> = <span class="string">"thumbnails"</span>;
 
-@Override
-<span class="keyword">protected</span> <span class="keyword">void</span> onCreate(Bundle saveInstanceState){
+<span class="annotation">@Override</span>
+<span class="keyword">protected</span> void onCreate(<span class="type">Bundle</span> saveInstanceState){
     ...
     <span class="comment">// Initialize momery cache</span>
     ...
+    <span class="type">File</span> cacheDir = getDiskCacheDir(<span class="keyword">this</span>, <span class="type">DISK_CACHE_SUBDIR</span>);
+    <span class="keyword">new</span> <span class="type">InitDiskCacheTask</span>().execute(cacheDir);
+    ...
+}
+
+<span class="class"><span class="keyword">class</span> <span class="title">InitDiskCacheTask</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">AsyncTask&lt;File</span> , <span class="title">Void</span>, <span class="title">Void&gt;</span>{</span>
+    <span class="annotation">@Override</span>
+    <span class="keyword">protected</span> <span class="type">Void</span> doInBackgroud(<span class="type">File</span>...params){
+        synchronized(mDiskCacheLock){
+            <span class="type">File</span> cacheDir = params[<span class="number">0</span>];
+            mDiskLruCache = <span class="type">DiskLruCache</span>.open(cacheDir, <span class="type">DISK_CACHE_SIZE</span>);
+            mDiskCacheStarting = <span class="literal">false</span>; <span class="comment">// Finished initialization</span>
+            mDiskCacheLock.notifyAll(); <span class="comment">// Wake any waiting threads</span>
+        }
+        <span class="keyword">return</span> <span class="literal">null</span>;
+    }
+}
+
+<span class="class"><span class="keyword">class</span> <span class="title">BitmapWorkerTask</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">AsyncTask&lt;Integer</span>, <span class="title">Void</span>, <span class="title">Bitmap&gt;</span>{</span>
+    ...
+    <span class="comment">// Decode image in backgroud</span>
+    <span class="annotation">@Overrid</span>
+    <span class="keyword">protected</span> <span class="type">Bitmap</span> doInBackground(<span class="type">Integer</span>...params){
+        <span class="keyword">final</span> <span class="type">String</span> imageKey = <span class="type">String</span>.valueOf(params[<span class="number">0</span>]);
+        <span class="comment">// Check disk cache in background thread</span>
+        <span class="type">Bitmap</span> bitmap = getBitmapFromDiskCache(imageKey);
+        <span class="keyword">if</span>(bitmap == <span class="literal">null</span>){ <span class="comment">// Not found in disk cache</span>
+            <span class="comment">// Process as normal</span>
+            <span class="keyword">final</span> <span class="type">Bitmap</span> bitmap = decodeSampleBitmapFromResource(
+                    getResource(), params[<span class="number">0</span>] , <span class="number">100</span> , <span class="number">100</span>);
+        }
+        <span class="comment">// add final bitmap to caches</span>
+        addBitmapToCache(imageKey , bitmap);
+
+        <span class="keyword">return</span> bitmap;
+    }
+    ...
+}
+
+public void addBitmapToCache(<span class="type">String</span> key ,<span class="type">Bitmap</span> bitmap){
+    <span class="comment">// Add to memory cache as before</span>
+    <span class="keyword">if</span>(getBitmapFromMemCache(key) == <span class="literal">null</span>){
+        mMemoryCache.put(key , bitmap);
+    }
+
+    <span class="comment">// Also add to disk cache</span>
+    synchronized (mDiskCacheLock){
+        <span class="keyword">if</span>(mDiskLruCache != <span class="literal">null</span> &amp;&amp; mDiskLruCache.get(key) == <span class="literal">null</span>){
+            mDiskLruCache.put(key , bitmap);
+        }
+    }
+}
+
+public <span class="type">Bitmap</span> getBitmapFromDiskCache(<span class="type">String</span> key){
+
+
 }
 </code></pre></span>
         
