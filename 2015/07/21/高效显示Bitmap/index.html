@@ -41,7 +41,7 @@
 <meta property="og:url" content="http://alexwan1989.com/2015/07/21/高效显示Bitmap/index.html">
 <meta property="og:site_name" content="Alexwan’Blog">
 <meta property="og:description" content="一、高效加载大图图形有不同的形状与大小。在大多数情况下它们的实际大小都比需要呈现的尺寸大很多。系统的图库应用显示那些我们使用相机拍摄的照片，但是那些图片的分辨率通常都比设备屏幕的分辨率要高很多。考虑到应用是在有限的内存下工作，我们只需要在内存中加载一个低分辨率的照片即可。为了更便于显示，这个分辨率的照片应该是与其对应的UI控件大小相适配。加载超过屏幕分辨率的高分辨率照片不仅对显示没有任何的提升，还">
-<meta property="og:updated_time" content="2015-07-26T15:40:29.000Z">
+<meta property="og:updated_time" content="2015-07-26T15:47:53.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android-Bitmap的高效加载与处理">
 <meta name="twitter:description" content="一、高效加载大图图形有不同的形状与大小。在大多数情况下它们的实际大小都比需要呈现的尺寸大很多。系统的图库应用显示那些我们使用相机拍摄的照片，但是那些图片的分辨率通常都比设备屏幕的分辨率要高很多。考虑到应用是在有限的内存下工作，我们只需要在内存中加载一个低分辨率的照片即可。为了更便于显示，这个分辨率的照片应该是与其对应的UI控件大小相适配。加载超过屏幕分辨率的高分辨率照片不仅对显示没有任何的提升，还">
@@ -357,7 +357,7 @@ mImageView.setImageBitmap<span class="params">(decodeSampleBitmapFromResource<sp
 }
 </code></pre><p>这个方法不仅适用于ListView和GridView控件，在那些需要循环利用子视图的控件中同样适用：只要设置图片到ImageView的地方调用loadBitmap方法。</p>
 <h2 id="三、缓存Bitmap">三、缓存Bitmap</h2><p>在大多数情况下（如：在使用ListView，GridView或ViewPager时），屏幕上的图片和因滑动将要显示的图片的数量通常是没有限制的。通过循环使用子视图可以缓存内存的使用，垃圾回收器也会释放那些不在需要使用的Bitmap。稳了保证流畅的用户体验，我们希望避免在每次屏幕滑动回来时，重复调用处理图片。我们采用内存与磁盘缓存来快速地重新加载那些处理过的图片。<br>下面讲解如何使用内存缓存和磁盘缓存来提高响应速度和UI流畅度。</p>
-<h3 id="(1)_使用内存缓存">(1) 使用内存缓存</h3><p>内存缓存使用程序的内存保存图片以达到快速访问图片的目的。LruCache特别适合用来缓存Bitmaps，它使用一个强引用的LinkedHashMap保存最近引用的对象，并且在缓存超出设置的大小的时候删除最近最少使用的对象。</p>
+<h3 id="（1）使用内存缓存">（1）使用内存缓存</h3><p>内存缓存使用程序的内存保存图片以达到快速访问图片的目的。LruCache特别适合用来缓存Bitmaps，它使用一个强引用的LinkedHashMap保存最近引用的对象，并且在缓存超出设置的大小的时候删除最近最少使用的对象。</p>
 <blockquote>
 <p>Note：过去一种比较流行的内存缓存实现方法是使用软引用或弱引用对Bitmap进行缓存，但是不推荐这样的做法。从Android 2.3（API LEVEL 9）开始，垃圾回收机制变得更加频繁，软（弱）引用释放的频率也随之增高，导致使用引用的效率降低很多。而且在Android3.0（API Level 11）之前，备份的Bitmap会存放在Native Memory中，不是以可预知的方式被释放的，可能会导致程序超出它的内存限制而崩溃</p>
 </blockquote>
@@ -430,7 +430,7 @@ mImageView.setImageBitmap<span class="params">(decodeSampleBitmapFromResource<sp
     }
     ...
 }
-</code></pre><h3 id="(2)_使用磁盘缓存">(2) 使用磁盘缓存</h3><p>内存缓存能够提高访问最近使用过的Bitmap的速度，但是无法保证最近访问过的Bitmap能够保存在缓存中。像类似GridView等需要大量数据填充的控件很容易就会用尽整个内存缓存。另外，我们的应用可能会被类似打电话等行为而暂停并退到后台，因为后台应用可能会被杀死，那么内存缓存就会被销毁，里面的Bitmap也就不存在了。一旦用户恢复应用的转台，那么应用就需要重新处理那些图片。<br>磁盘缓存可以保存那些已经处理过的Bitmap，它还可以减少那些不在内存缓存中Bitmap的加载次数。当然从磁盘读取图片会比内存要慢，而且由于磁盘读取操作时间是不可预期的，读取操作需要在后台线程中处理。</p>
+</code></pre><h3 id="（2）使用磁盘缓存">（2）使用磁盘缓存</h3><p>内存缓存能够提高访问最近使用过的Bitmap的速度，但是无法保证最近访问过的Bitmap能够保存在缓存中。像类似GridView等需要大量数据填充的控件很容易就会用尽整个内存缓存。另外，我们的应用可能会被类似打电话等行为而暂停并退到后台，因为后台应用可能会被杀死，那么内存缓存就会被销毁，里面的Bitmap也就不存在了。一旦用户恢复应用的转台，那么应用就需要重新处理那些图片。<br>磁盘缓存可以保存那些已经处理过的Bitmap，它还可以减少那些不在内存缓存中Bitmap的加载次数。当然从磁盘读取图片会比内存要慢，而且由于磁盘读取操作时间是不可预期的，读取操作需要在后台线程中处理。</p>
 <blockquote>
 <p>Note:如果图片会被更频繁的访问，使用ContentProvider或许会更加合适，比如在图库应用中。</p>
 </blockquote>
@@ -692,7 +692,7 @@ class BitmapWorkerTask extends AsyncTask&lt;Integer, Void, Bitmap&gt;{
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、高效加载大图"><span class="nav-number">1.</span> <span class="nav-text">一、高效加载大图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#（1）读取位图的尺寸和类型"><span class="nav-number">1.1.</span> <span class="nav-text">（1）读取位图的尺寸和类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（2）加载一个按比例缩小的版本到内存中"><span class="nav-number">1.2.</span> <span class="nav-text">（2）加载一个按比例缩小的版本到内存中</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、非UI线程处理Bitmap"><span class="nav-number">2.</span> <span class="nav-text">二、非UI线程处理Bitmap</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#(1)_使用AysncTask(Use_a_AsyncTask)"><span class="nav-number">2.1.</span> <span class="nav-text">(1) 使用AysncTask(Use a AsyncTask)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#(2)_处理并发问题"><span class="nav-number">2.2.</span> <span class="nav-text">(2) 处理并发问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、缓存Bitmap"><span class="nav-number">3.</span> <span class="nav-text">三、缓存Bitmap</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#(1)_使用内存缓存"><span class="nav-number">3.1.</span> <span class="nav-text">(1) 使用内存缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#(2)_使用磁盘缓存"><span class="nav-number">3.2.</span> <span class="nav-text">(2) 使用磁盘缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（3）处理配置改变"><span class="nav-number">3.3.</span> <span class="nav-text">（3）处理配置改变</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四_管理Bitmap的内存"><span class="nav-number">4.</span> <span class="nav-text">四 管理Bitmap的内存</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、高效加载大图"><span class="nav-number">1.</span> <span class="nav-text">一、高效加载大图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#（1）读取位图的尺寸和类型"><span class="nav-number">1.1.</span> <span class="nav-text">（1）读取位图的尺寸和类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（2）加载一个按比例缩小的版本到内存中"><span class="nav-number">1.2.</span> <span class="nav-text">（2）加载一个按比例缩小的版本到内存中</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、非UI线程处理Bitmap"><span class="nav-number">2.</span> <span class="nav-text">二、非UI线程处理Bitmap</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#(1)_使用AysncTask(Use_a_AsyncTask)"><span class="nav-number">2.1.</span> <span class="nav-text">(1) 使用AysncTask(Use a AsyncTask)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#(2)_处理并发问题"><span class="nav-number">2.2.</span> <span class="nav-text">(2) 处理并发问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、缓存Bitmap"><span class="nav-number">3.</span> <span class="nav-text">三、缓存Bitmap</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#（1）使用内存缓存"><span class="nav-number">3.1.</span> <span class="nav-text">（1）使用内存缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（2）使用磁盘缓存"><span class="nav-number">3.2.</span> <span class="nav-text">（2）使用磁盘缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（3）处理配置改变"><span class="nav-number">3.3.</span> <span class="nav-text">（3）处理配置改变</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四_管理Bitmap的内存"><span class="nav-number">4.</span> <span class="nav-text">四 管理Bitmap的内存</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
