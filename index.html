@@ -405,9 +405,10 @@ mImageView.setImageBitmap<span class="params">(decodeSampleBitmapFromResource<sp
 <span class="keyword">public</span> Bitmap getBitmapFromMemCache(<span class="keyword">String</span> <span class="variable">key</span>){
     <span class="keyword">return</span> mMemoryCache.<span class="built_in">get</span>(<span class="variable">key</span>);
 }
-
-Note:在上面的例子中，有<span class="number">1</span>/<span class="number">8</span>的内存空间被用作缓存。意味着hdpi的设备上最少大概有<span class="number">4</span>MB的缓存控件（<span class="number">32</span>/<span class="number">8</span>）。如果一    个填满图片的GridView控件放置在<span class="number">800</span>x480像素的手机屏幕上，大概会花费<span class="number">1.5</span>MB的缓存空间（<span class="number">800</span>x480x4 bytes），     因此缓存的容量大概可以缓存<span class="number">2.5</span>页的图片内容
-</code></pre><p>当加载Bitmap显示到ImageView之前，会先从LruCache中检查是否存在这个Bitmap。如果确实存在，它会立即被用来显示到ImageView上，如果没有找到，会触发一个后台线程去处理显示Bitmao任务。</p>
+</code></pre><blockquote>
+<p>Note:在上面的例子中，有1/8的内存空间被用作缓存。意味着hdpi的设备上最少大概有4MB的缓存控件（32/8）。如果一个填满图片的GridView控件放置在800x480像素的手机屏幕上，大概会花费1.5MB的缓存空间（800x480x4 bytes）， 因此缓存的容量大概可以缓存2.5页的图片内容</p>
+</blockquote>
+<p>当加载Bitmap显示到ImageView之前，会先从LruCache中检查是否存在这个Bitmap。如果确实存在，它会立即被用来显示到ImageView上，如果没有找到，会触发一个后台线程去处理显示Bitmao任务。</p>
 <pre><code><span class="keyword">public</span> <span class="keyword">void</span> loadBitmap(<span class="keyword">int</span> resId, ImageView imageView){
     <span class="keyword">final</span> String imageKey = String.valueOf(resId);
     <span class="keyword">final</span> Bitmap bitmap = getBitmapFromMemCache(imagekey);
