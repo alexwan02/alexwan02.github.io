@@ -41,7 +41,7 @@
 <meta property="og:url" content="http://alexwan1989.com/2015/07/27/Android-Bitmap的高效加载与处理/index.html">
 <meta property="og:site_name" content="Alexwan’Blog">
 <meta property="og:description" content="一、高效加载大图图形有不同的形状与大小。在大多数情况下它们的实际大小都比需要呈现的尺寸大很多。系统的图库应用显示那些我们使用相机拍摄的照片，但是那些图片的分辨率通常都比设备屏幕的分辨率要高很多。考虑到应用是在有限的内存下工作，我们只需要在内存中加载一个低分辨率的照片即可。为了更便于显示，这个分辨率的照片应该是与其对应的UI控件大小相适配。加载超过屏幕分辨率的高分辨率照片不仅对显示没有任何的提升，还">
-<meta property="og:updated_time" content="2015-07-27T14:45:23.000Z">
+<meta property="og:updated_time" content="2015-07-27T16:28:42.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android-Bitmap的高效加载与处理">
 <meta name="twitter:description" content="一、高效加载大图图形有不同的形状与大小。在大多数情况下它们的实际大小都比需要呈现的尺寸大很多。系统的图库应用显示那些我们使用相机拍摄的照片，但是那些图片的分辨率通常都比设备屏幕的分辨率要高很多。考虑到应用是在有限的内存下工作，我们只需要在内存中加载一个低分辨率的照片即可。为了更便于显示，这个分辨率的照片应该是与其对应的UI控件大小相适配。加载超过屏幕分辨率的高分辨率照片不仅对显示没有任何的提升，还">
@@ -568,7 +568,101 @@ class BitmapWorkerTask extends AsyncTask&lt;Integer, Void, Bitmap&gt;{
     }
 }
 </code></pre><p>为了测试上面的效果，可以尝试在保留Fragment与没有这样做的情况下旋转屏幕。我们会发现当保留缓存时，从内存缓存中重新绘制几乎没有延迟的现象。内存缓存中没有的图片可能存储在磁盘缓存中。如果两个缓存中都没有，则图像会像平时正常流畅一样被处理。</p>
-<h2 id="四_管理Bitmap的内存">四 管理Bitmap的内存</h2><p>为了优化垃圾回收机制与Bitmap的重用，我们还有一些特定的事情可以做。<a href="http://developer.android.com/downloads/samples/DisplayingBitmaps.zip" target="_blank" rel="external">DisplayingBitmaps</a>的示例程序会演示如何设计我们的程序，使得它能够在不同的Android平台上高效的运行。</p>
+<h2 id="四_管理Bitmap的内存">四 管理Bitmap的内存</h2><p>为了优化垃圾回收机制与Bitmap的重用，我们还有一些特定的事情可以做。<a href="http://developer.android.com/downloads/samples/DisplayingBitmaps.zip" target="_blank" rel="external">DisplayingBitmaps</a>的示例程序会演示如何设计我们的程序，使得它能够在不同的Android平台上高效的运行。<br>Android管理Bitmap内存使用的演变进程:</p>
+<ul>
+<li>在Android 2.2(API Level 8)以及之前，当垃圾回收发生时，应用的线程是会被暂停的，这会导致延迟滞后，降低系统效率。从Android 2.3开始，添加了并发垃圾回收的机制，意味着Bitmap不在被引用之后，它所占用的内存会被立即回收。</li>
+<li>在Android 2.3.3(API Level 10)以及之前，一个Bitmap的像素级数据(pixel data)是存储在Native内存空间中的。这些数据与Bitmap本身隔离，Bitmap本身被存放在Dalvik堆中。我们无法预测在Native内存中的像素级数据何时会被释放，这意味着程序容易超过它的内存限制并且崩溃。在Android 3.0(API Level 11)开始，像素级数据则是与Bitmap本身一起存放在Dalvik堆中。</li>
+</ul>
+<p>下面介绍如何在不同的Android版本上优化Bitmap内存使用。</p>
+<h3 id="（1）管理Android_2-3-3及以下版本的内存使用">（1）管理Android 2.3.3及以下版本的内存使用</h3><p>在Android 2.3.3(API Level 10)以及更低版本上，推荐使用recycle()方法。如果在应用中显示了大量的Bitmap数据，我们很可能会遇到OutOfMemoryError的错误。recycle()方法可以使程序更快的释放内存。</p>
+<blockquote>
+<p>Caution：只有当我们确定这个Bitmap不再需要用到的时候才应该使用recycle()。在执行recycle()方法之后，如果尝试绘制这个Bitmap，我们将得到”Canvas: trying to use a recycled bitmap”的错误提示</p>
+</blockquote>
+<p>下面的代码片段演示如何使用recycle()。它使用引用计数的方法(mDisplayRefCount 与 mCacheRefCount)来追踪一个Bitmap目前是否被显示或是否在缓存中。并且在下面列举的条件满足时，回收Bitmap：</p>
+<ul>
+<li>mDisplayRefCount 与 mCacheRefCount 的引用计数均为0;</li>
+<li>bitmap不为null，并且它还没有被回收。</li>
+</ul>
+<p>代码：</p>
+<pre><code><span class="keyword">private</span> <span class="keyword">int</span> mCacheRefCount = <span class="number">0</span>;
+<span class="keyword">private</span> <span class="keyword">int</span> mDisplayRefCount = <span class="number">0</span>;
+...
+<span class="comment">// 通知图片的显示状态已经改变</span>
+<span class="comment">// 图片不再显示count自减</span>
+<span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">setIsDisplayed</span><span class="params">(<span class="keyword">boolean</span> isDisplayed)</span></span>{
+    synchronised(<span class="keyword">this</span>){
+        <span class="keyword">if</span>(isDisplayed){
+            mDisplayRefCount++;
+            mHasBeanDisplayed = <span class="keyword">true</span>;
+        }<span class="keyword">else</span>{
+            mDisplayRefCount--;
+        }
+    }
+    <span class="comment">// 检查是否可以回收</span>
+    checkState();
+}
+<span class="comment">// 通知图片缓存状态改变</span>
+<span class="comment">// 图片不再被缓存count自减</span>
+<span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">setIsCached</span><span class="params">(<span class="keyword">boolean</span> isCached)</span></span>{
+    <span class="keyword">synchronized</span>(<span class="keyword">this</span>){
+        is(isCached){
+            mCacheRefCount++;
+        }<span class="keyword">else</span>{
+            mCacheRefCount--;
+        }
+    }
+    <span class="comment">// 检车是否回收图片</span>
+    checState();
+}
+<span class="keyword">private</span> <span class="keyword">synchronized</span> <span class="function"><span class="keyword">void</span> <span class="title">checkState</span><span class="params">()</span></span>{
+    <span class="comment">// 图片缓存和显示的引用count 是否等于0</span>
+    <span class="comment">// 并且图片已经显示过，则回收</span>
+    <span class="keyword">if</span>(mCacheRefCount &lt;= <span class="number">0</span> &amp;&amp;mDisplayRefCount &lt;= <span class="number">0</span> &amp;&amp; mHasBeanDisplayed &amp;&amp; hasValidBitmap()){
+        getBitmap().recycle();
+    }
+}
+</code></pre><h3 id="（2）管理Android3-0及其以上版本的内存">（2）管理Android3.0及其以上版本的内存</h3><p>从Android 3.0(API Level 11)开始，引进了<a href="http://developer.android.com/reference/android/graphics/BitmapFactory.Options.html#inBitmap" target="_blank" rel="external">BitmapFactory.Option.inBitmap</a>字段。如果使用了这个设置字段，decode方法会在加载Bitmap数据的时候去重用已经存在的Bitmap。这意味着Bitmap的内存是被重新利用的，这样可以提升性能，并且减少了内存的分配与回收。然而，使用inBitmap有一些限制，特别是在Android 4.4(API Level 19)之前，只有同等大小的位图才可以被重用。详情请查看<a href="http://developer.android.com/reference/android/graphics/BitmapFactory.Options.html#inBitmap" target="_blank" rel="external">inBitmap文档</a>；</p>
+<h3 id="（3）保存Bitmap供以后使用">（3）保存Bitmap供以后使用</h3><p>下面演示了如何将一个已经存在的Bitmap存放起来一边后续使用。当一个应用运行在Android 3.0或者更高的平台上并且Bitmap从LruCache中移除时，Bitmap的一个软引用会被存放在HashSet中，这样便于之后可能被<a href="http://developer.android.com/reference/android/graphics/BitmapFactory.Options.html#inBitmap" target="_blank" rel="external">inBitmap</a>重用。</p>
+<pre><code>Set&lt;SoftReference&lt;Bitmap&gt;&gt; mReusableBitmaps;
+private LruCache&lt;String,BitmapDrawable&gt; mMemoryCache;
+<span class="comment">// 如果SDK版本高于或等于Honeycomb,创建一个同步的HashSet存储重用的bitmaps</span>
+<span class="keyword">if</span><span class="params">(Utils.hasHoneycomb<span class="params">()</span>)</span>{
+    mReusableBitmaps = 
+        Collections.synchronizedSet<span class="params">(new HashSet&lt;SoftReference&lt;Bitmap&gt;&gt;<span class="params">()</span>)</span>;
+}
+mMemoryCache = new LruCache&lt;String,BitmapDrawable&gt;<span class="params">(mCacheParams.memCacheSize)</span>{
+    <span class="comment">// 通知移除的实体不再被缓存</span>
+    @Override
+    protected void entryRemoved<span class="params">(boolean evicted , String key , BitmapDrawable oldValue ,
+        BitmapDrawable newValue)</span>{
+        <span class="keyword">if</span><span class="params">(RecyclingBitmaoDrawable.class.isInstance<span class="params">(oldValue)</span>)</span>{
+            <span class="comment">// 被移除的实体是重用的drawavble，所以通知已经被移除内存缓存</span>
+            <span class="params">(<span class="params">(RecyclingBitmapDrawable)</span>oldValye)</span>.setIsCached<span class="params">(<span class="literal">false</span>)</span>;
+        }<span class="keyword">else</span>{
+            <span class="comment">// 如果移除的试题是个标准的BitmapDrawable</span>
+            <span class="keyword">if</span><span class="params">(Utils.hasHoneycomb<span class="params">()</span>)</span>{
+                <span class="comment">// 如果运行在Honeycomb版本以及以上，把bitmap添加到弱引用set集合中</span>
+                mReusableBitmaps.add<span class="params">(new SoftReference&lt;Bitmap&gt;<span class="params">(oldValue.getBitmap<span class="params">()</span>)</span>)</span>;
+            }
+        }        
+    }
+...
+}
+</code></pre><h3 id="（4）使用已经存在的Bitmap">（4）使用已经存在的Bitmap</h3><p>在运行程序中，decode方法会检查看是否存在可重用的Bitmap。例如：</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">static</span> Bitmap decodeSampledBitmapFromFile(String filename,
+        <span class="keyword">int</span> reqWitdth , <span class="keyword">int</span> reqHeight , ImageCache cache){
+    <span class="keyword">final</span> BitmapFactory.<span class="keyword">Options</span> <span class="keyword">options</span> = <span class="keyword">new</span> BitmapFactory.<span class="keyword">Options</span>();
+    ...
+    BitmapFactory.decodeFile(filename , <span class="keyword">options</span>);
+    ...
+    <span class="comment">// 运行在android 3.0版本及以上 使用inBitmap</span>
+    <span class="keyword">if</span>(Utils.hasHoneycomb()){
+        addInBitmapOptions(<span class="keyword">options</span> , cache);
+    }
+    ...
+    <span class="keyword">return</span> BitmapFactory.decodeFile(filename , <span class="keyword">options</span>);
+}
+</code></pre><p>下面的代码是上述代码片段中, addInBitmapOptions()方法的具体实现。它会为inBitmap查找一个已经存在的Bitmap，并将它设置为inBitmap的值。注意这个方法只有在找到合适并且可重用的Bitmap时才会复制给inBitmap(我们需要在赋值之前进行检查);</p>
 </span>
       
     </div>
@@ -693,7 +787,7 @@ class BitmapWorkerTask extends AsyncTask&lt;Integer, Void, Bitmap&gt;{
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、高效加载大图"><span class="nav-number">1.</span> <span class="nav-text">一、高效加载大图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#（1）读取位图的尺寸和类型"><span class="nav-number">1.1.</span> <span class="nav-text">（1）读取位图的尺寸和类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（2）加载一个按比例缩小的版本到内存中"><span class="nav-number">1.2.</span> <span class="nav-text">（2）加载一个按比例缩小的版本到内存中</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、非UI线程处理Bitmap"><span class="nav-number">2.</span> <span class="nav-text">二、非UI线程处理Bitmap</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#(1)_使用AysncTask(Use_a_AsyncTask)"><span class="nav-number">2.1.</span> <span class="nav-text">(1) 使用AysncTask(Use a AsyncTask)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#(2)_处理并发问题"><span class="nav-number">2.2.</span> <span class="nav-text">(2) 处理并发问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、缓存Bitmap"><span class="nav-number">3.</span> <span class="nav-text">三、缓存Bitmap</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#（1）使用内存缓存"><span class="nav-number">3.1.</span> <span class="nav-text">（1）使用内存缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（2）使用磁盘缓存"><span class="nav-number">3.2.</span> <span class="nav-text">（2）使用磁盘缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（3）处理配置改变"><span class="nav-number">3.3.</span> <span class="nav-text">（3）处理配置改变</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四_管理Bitmap的内存"><span class="nav-number">4.</span> <span class="nav-text">四 管理Bitmap的内存</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、高效加载大图"><span class="nav-number">1.</span> <span class="nav-text">一、高效加载大图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#（1）读取位图的尺寸和类型"><span class="nav-number">1.1.</span> <span class="nav-text">（1）读取位图的尺寸和类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（2）加载一个按比例缩小的版本到内存中"><span class="nav-number">1.2.</span> <span class="nav-text">（2）加载一个按比例缩小的版本到内存中</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、非UI线程处理Bitmap"><span class="nav-number">2.</span> <span class="nav-text">二、非UI线程处理Bitmap</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#(1)_使用AysncTask(Use_a_AsyncTask)"><span class="nav-number">2.1.</span> <span class="nav-text">(1) 使用AysncTask(Use a AsyncTask)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#(2)_处理并发问题"><span class="nav-number">2.2.</span> <span class="nav-text">(2) 处理并发问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、缓存Bitmap"><span class="nav-number">3.</span> <span class="nav-text">三、缓存Bitmap</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#（1）使用内存缓存"><span class="nav-number">3.1.</span> <span class="nav-text">（1）使用内存缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（2）使用磁盘缓存"><span class="nav-number">3.2.</span> <span class="nav-text">（2）使用磁盘缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（3）处理配置改变"><span class="nav-number">3.3.</span> <span class="nav-text">（3）处理配置改变</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四_管理Bitmap的内存"><span class="nav-number">4.</span> <span class="nav-text">四 管理Bitmap的内存</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#（1）管理Android_2-3-3及以下版本的内存使用"><span class="nav-number">4.1.</span> <span class="nav-text">（1）管理Android 2.3.3及以下版本的内存使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（2）管理Android3-0及其以上版本的内存"><span class="nav-number">4.2.</span> <span class="nav-text">（2）管理Android3.0及其以上版本的内存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（3）保存Bitmap供以后使用"><span class="nav-number">4.3.</span> <span class="nav-text">（3）保存Bitmap供以后使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（4）使用已经存在的Bitmap"><span class="nav-number">4.4.</span> <span class="nav-text">（4）使用已经存在的Bitmap</span></a></li></ol></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
