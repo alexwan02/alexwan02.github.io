@@ -41,7 +41,7 @@
 <meta property="og:url" content="http://alexwan1989.com/2015/07/21/高效显示Bitmap/index.html">
 <meta property="og:site_name" content="Alexwan’Blog">
 <meta property="og:description" content="一、高效加载大图图形有不同的形状与大小。在大多数情况下它们的实际大小都比需要呈现的尺寸大很多。系统的图库应用显示那些我们使用相机拍摄的照片，但是那些图片的分辨率通常都比设备屏幕的分辨率要高很多。考虑到应用是在有限的内存下工作，我们只需要在内存中加载一个低分辨率的照片即可。为了更便于显示，这个分辨率的照片应该是与其对应的UI控件大小相适配。加载超过屏幕分辨率的高分辨率照片不仅对显示没有任何的提升，还">
-<meta property="og:updated_time" content="2015-07-26T15:47:53.000Z">
+<meta property="og:updated_time" content="2015-07-27T13:28:36.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android-Bitmap的高效加载与处理">
 <meta name="twitter:description" content="一、高效加载大图图形有不同的形状与大小。在大多数情况下它们的实际大小都比需要呈现的尺寸大很多。系统的图库应用显示那些我们使用相机拍摄的照片，但是那些图片的分辨率通常都比设备屏幕的分辨率要高很多。考虑到应用是在有限的内存下工作，我们只需要在内存中加载一个低分辨率的照片即可。为了更便于显示，这个分辨率的照片应该是与其对应的UI控件大小相适配。加载超过屏幕分辨率的高分辨率照片不仅对显示没有任何的提升，还">
@@ -568,7 +568,8 @@ class BitmapWorkerTask extends AsyncTask&lt;Integer, Void, Bitmap&gt;{
     }
 }
 </code></pre><p>为了测试上面的效果，可以尝试在保留Fragment与没有这样做的情况下旋转屏幕。我们会发现当保留缓存时，从内存缓存中重新绘制几乎没有延迟的现象。内存缓存中没有的图片可能存储在磁盘缓存中。如果两个缓存中都没有，则图像会像平时正常流畅一样被处理。</p>
-<h2 id="四_管理Bitmap的内存">四 管理Bitmap的内存</h2></span>
+<h2 id="四_管理Bitmap的内存">四 管理Bitmap的内存</h2><p>为了优化垃圾回收机制与Bitmap的重用，我们还有一些特定的事情可以做。<a href="http://developer.android.com/downloads/samples/DisplayingBitmaps.zip" target="_blank" rel="external">DisplayingBitmaps</a>的示例程序会演示如何设计我们的程序，使得它能够在不同的Android平台上高效的运行。</p>
+</span>
       
     </div>
 

@@ -572,7 +572,8 @@ class BitmapWorkerTask extends AsyncTask&lt;Integer, Void, Bitmap&gt;{
     }
 }
 </code></pre><p>为了测试上面的效果，可以尝试在保留Fragment与没有这样做的情况下旋转屏幕。我们会发现当保留缓存时，从内存缓存中重新绘制几乎没有延迟的现象。内存缓存中没有的图片可能存储在磁盘缓存中。如果两个缓存中都没有，则图像会像平时正常流畅一样被处理。</p>
-<h2 id="四_管理Bitmap的内存">四 管理Bitmap的内存</h2></span>
+<h2 id="四_管理Bitmap的内存">四 管理Bitmap的内存</h2><p>为了优化垃圾回收机制与Bitmap的重用，我们还有一些特定的事情可以做。<a href="http://developer.android.com/downloads/samples/DisplayingBitmaps.zip" target="_blank" rel="external">DisplayingBitmaps</a>的示例程序会演示如何设计我们的程序，使得它能够在不同的Android平台上高效的运行。</p>
+</span>
         
       
     </div>
