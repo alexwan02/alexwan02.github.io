@@ -41,7 +41,7 @@
 <meta property="og:url" content="http://alexwan1989.com/2015/07/27/Android-Bitmap的高效加载与处理/index.html">
 <meta property="og:site_name" content="Alexwan’Blog">
 <meta property="og:description" content="一、高效加载大图图形有不同的形状与大小。在大多数情况下它们的实际大小都比需要呈现的尺寸大很多。系统的图库应用显示那些我们使用相机拍摄的照片，但是那些图片的分辨率通常都比设备屏幕的分辨率要高很多。考虑到应用是在有限的内存下工作，我们只需要在内存中加载一个低分辨率的照片即可。为了更便于显示，这个分辨率的照片应该是与其对应的UI控件大小相适配。加载超过屏幕分辨率的高分辨率照片不仅对显示没有任何的提升，还">
-<meta property="og:updated_time" content="2015-07-27T16:28:42.000Z">
+<meta property="og:updated_time" content="2015-07-28T13:29:35.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android-Bitmap的高效加载与处理">
 <meta name="twitter:description" content="一、高效加载大图图形有不同的形状与大小。在大多数情况下它们的实际大小都比需要呈现的尺寸大很多。系统的图库应用显示那些我们使用相机拍摄的照片，但是那些图片的分辨率通常都比设备屏幕的分辨率要高很多。考虑到应用是在有限的内存下工作，我们只需要在内存中加载一个低分辨率的照片即可。为了更便于显示，这个分辨率的照片应该是与其对应的UI控件大小相适配。加载超过屏幕分辨率的高分辨率照片不仅对显示没有任何的提升，还">
@@ -662,7 +662,80 @@ mMemoryCache = new LruCache&lt;String,BitmapDrawable&gt;<span class="params">(mC
     ...
     <span class="keyword">return</span> BitmapFactory.decodeFile(filename , <span class="keyword">options</span>);
 }
-</code></pre><p>下面的代码是上述代码片段中, addInBitmapOptions()方法的具体实现。它会为inBitmap查找一个已经存在的Bitmap，并将它设置为inBitmap的值。注意这个方法只有在找到合适并且可重用的Bitmap时才会复制给inBitmap(我们需要在赋值之前进行检查);</p>
+</code></pre><p>下面的代码是上述代码片段中, addInBitmapOptions()方法的具体实现。它会为inBitmap查找一个已经存在的Bitmap，并将它设置为inBitmap的值。注意这个方法只有在找到合适并且可重用的Bitmap时才会赋值给inBitmap(我们需要在赋值之前进行检查):</p>
+<pre><code>private <span class="keyword">static</span> <span class="type">void</span> addInBitmapOptions(<span class="type">BitmapFactory</span>.<span class="type">Options</span> options,
+        <span class="type">ImageCache</span> chache){
+    // inBitmap仅对可变的bitmaps生效，需要强制返回一个可变的bitmaps
+    options.<span class="type">InMutable</span> = <span class="literal">true</span>;
+    <span class="keyword">if</span>(cache != null){
+        // 检查使用inBitmap的配置的bitmap
+        <span class="type">Bitmap</span> inBitmap = cache。getBitmapFromReusableSet(options);
+        <span class="keyword">if</span>(inBitmap != null){
+            // 如果找到合适的bitmap对象,设置为inBitmap的值
+            options.inBitmap = inBitmap;
+        }
+    }        
+}
+
+// 迭代重用的bitmaps，查找课用作inBitmap的bitmap对象
+protected <span class="type">Bitmap</span> getBitmapFromReusableSet(<span class="type">BitmapFactory</span>.<span class="type">Options</span> options){
+        <span class="type">Bitmap</span> bitmap = null;
+        <span class="keyword">if</span>(mReusableBitmaps != null &amp;&amp; !mReusableBitmaps.isEmpty()){
+            synchronized(mReusableBitmaps){
+                final <span class="type">Iterator</span>&lt;<span class="type">SoftReference</span>&lt;<span class="type">Bitmap</span>&gt;&gt; <span class="keyword">iterator</span>
+                        = mReusableBitmaps.<span class="keyword">iterator</span>;
+                <span class="type">Bitmap</span> item;
+                <span class="keyword">while</span>(<span class="keyword">iterator</span>.hasNext()){
+                    item = <span class="keyword">iterator</span>.next().get();
+                    <span class="keyword">if</span>(null != item &amp;&amp; item.isMutable()){
+                        // 检查是否可以用作inBitmap
+                        <span class="keyword">if</span>(canUserForInBitmap(item , options)){
+                            bitmap = item;
+                            // 从重用集合中移除，确保不再被使用
+                            <span class="keyword">iterator</span>.remove();
+                            <span class="keyword">break</span>;
+                        }
+                    }<span class="keyword">else</span>{
+                        // 如果饮用被清空，从集合中清空
+                        <span class="keyword">iterator</span>.remove();
+                    }
+                }
+            }
+        }
+    <span class="keyword">return</span> bitmap;
+}
+</code></pre><p>最后，判断后弦Bitmap是否满足inBitmap的大小条件</p>
+<pre><code><span class="keyword">static</span> <span class="built_in">boolean</span> canUserForInBitmap(Bitmap candidate,
+        BitmapFactory.Options targetOptions){
+    <span class="keyword">if</span>(Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.KITKAT){
+        <span class="comment">// Android 4.4(KitKat)版本以上如果需求的bitmap大小小于重用的bitmap大小，</span>
+        <span class="comment">//则可以使用重用候选的bitmap</span>
+        <span class="built_in">int</span> <span class="variable">width</span> = targetOptions.outWidth / targetOptions.inSampleSize;
+        <span class="built_in">int</span> <span class="variable">height</span> = targetOptions.outHeight / targetOptions.inSampleSize;
+        <span class="built_in">int</span> byteCount = <span class="variable">width</span> * <span class="variable">height</span> * getBytesPerPixel(candidate.getConfig());
+        <span class="keyword">return</span> byteCount &lt;= candidate.getAllocationByteCount();
+    }
+
+    <span class="comment">// 在Android 4.4版本之前 宽和高必须一致，缩放比例必须为1</span>
+    <span class="keyword">return</span> candidate.getWidth() == targetOptions.outWidth 
+            &amp;&amp; candidate.getHeight() == targetOptions.outHeight
+            &amp;&amp; targetOptions.inSampleSize == <span class="number">1</span>;
+}
+
+<span class="comment">// 根据bitmap的配置返回对应的byte值</span>
+<span class="keyword">static</span> <span class="built_in">int</span> getBytesPerPixel(Config config){
+    <span class="keyword">if</span>(config == Config.ARGB_8888){
+        <span class="keyword">return</span> <span class="number">4</span>;
+    }<span class="keyword">else</span> <span class="keyword">if</span>(config == Config.RAG_565){
+        <span class="keyword">return</span> <span class="number">2</span>;
+    }<span class="keyword">else</span> <span class="keyword">if</span>(config == Config.argb_4444){
+        <span class="keyword">return</span> <span class="number">2</span>;
+    }<span class="keyword">else</span> <span class="keyword">if</span>(config == Config.ALPHA_8){
+        <span class="keyword">return</span> <span class="number">1</span>;
+    }
+    <span class="keyword">return</span> <span class="number">1</span>;
+}
+</code></pre><p>结束。。。。</p>
 </span>
       
     </div>
