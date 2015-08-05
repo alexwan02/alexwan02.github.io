@@ -42,7 +42,10 @@
 <meta property="og:site_name" content="Alexwan’Blog">
 <meta property="og:description" content="作为一个Android开发人员，大家都或多或少地了解了Android官方推出的Material Design依赖库。在官方推出依赖库之前，我们要是想使用Material Design的UI风格，只能使用第三方的开源依赖库。但是现在Google在2015年的I/O的开发者大会上宣布了名为Android Design Support Library的官方的Material Design UI 风格的依">
 <meta property="og:image" content="http://himg2.huanqiu.com/attachment2010/2015/0212/20150212122432411.png">
-<meta property="og:updated_time" content="2015-08-05T14:27:13.000Z">
+<meta property="og:image" content="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot20.jpg">
+<meta property="og:image" content="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot17n.png">
+<meta property="og:image" content="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot18n_1.png">
+<meta property="og:updated_time" content="2015-08-05T15:31:57.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Use Android Design Support Library For Your App ">
 <meta name="twitter:description" content="作为一个Android开发人员，大家都或多或少地了解了Android官方推出的Material Design依赖库。在官方推出依赖库之前，我们要是想使用Material Design的UI风格，只能使用第三方的开源依赖库。但是现在Google在2015年的I/O的开发者大会上宣布了名为Android Design Support Library的官方的Material Design UI 风格的依">
@@ -209,8 +212,71 @@
       
 
       
-        <span itemprop="articleBody"><p><img src="http://himg2.huanqiu.com/attachment2010/2015/0212/20150212122432411.png" alt=""></p>
-<p>作为一个Android开发人员，大家都或多或少地了解了Android官方推出的Material Design依赖库。在官方推出依赖库之前，我们要是想使用Material Design的UI风格，只能使用第三方的开源依赖库。但是现在Google在2015年的I/O的开发者大会上宣布了名为Android Design Support Library的官方的Material Design UI 风格的依赖库。<br>好了，废话不多说，进入主题！在本篇文章我们逐步来介绍如何来使用这个库.</p>
+        <span itemprop="articleBody"><div align="center"><br>    <img src="http://himg2.huanqiu.com/attachment2010/2015/0212/20150212122432411.png"><br></div>
+
+
+<p>作为一个Android开发人员，大家都或多或少地了解了Android官方推出的Material Design依赖库。在官方推出依赖库之前，我们要是想使用Material Design的UI风格，只能使用第三方的开源依赖库。但是现在Google在2015年的I/O的开发者大会上宣布了名为Android Design Support Library的官方的Material Design UI 风格的依赖库。<br>好了，废话不多说，进入主题！在本篇文章我们逐步来介绍如何来使用这个库.<br><a id="more"></a><br>Activity的theme的风格调整，在AppTheme中添加Material Design的样式</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;item name=<span class="string">"colorPrimary"</span>&gt;<span class="hexcolor">#2196F3</span>&lt;/item&gt;</span><br><span class="line">&lt;item name=<span class="string">"colorPrimaryDark"</span>&gt;<span class="hexcolor">#1565C0</span>&lt;/item&gt;</span><br><span class="line">&lt;item name=<span class="string">"colorAccent"</span>&gt;<span class="hexcolor">#E91E63</span>&lt;/item&gt;</span><br></pre></td></tr></table></figure>
+<p>OK 开始吧！</p>
+<h3 id="一、从Github上把源码Clone下来">一、从Github上把源码Clone下来</h3><p>我已经把项目的基本配置资源文件上传到了<a href="https://github.com/nuuneoi/Lab-Android-DesignLibrary" target="_blank" rel="external">Github</a>上。你可以Clone到本地导入到AS中。代码中MainActivity是完成后的代码，你可以在CodeLabActivity 类中根据我们的步骤来体验Material Design设计的快感。</p>
+<blockquote>
+<p>注：推荐使用Google的官方IDE Android Studio，本篇也是以AS来介绍</p>
+</blockquote>
+<p>你需要做的第一步是成功地把Demo运行起来，简单吧！</p>
+<h3 id="二、添加Android_Design_Support_Library_Dependency">二、添加Android Design Support Library Dependency</h3><p>如何添加Android Design Support Library到我们的项目呢，也是很简单的。只需要在项目的build.gradle配置文件中添加上那么一句话</p>
+<pre><code><span class="keyword">compile</span> <span class="string">'com.android.support:design:22.2.1'</span>
+</code></pre><p>Very Good</p>
+<blockquote>
+<p>注:Design Support Library依赖Support v4 and AppCompat v7，想要使用Design Support Library要记住还要导入v4和v7的依赖哟。<br>另外，从Github上Clone的代码已经添加了上面一行配置代码，如果你是自己创建的新项目，需要自己添加这行配置。</p>
+</blockquote>
+<h3 id="三、添加FAB">三、添加FAB</h3><p>FAB（Floating Action Button简称）是一个带有阴影效果的圆形Button，典型的Meterail Design设计风格。所以我们从添加FAB开始，在布局文件中添加FloatingActionButton，将它放置在FrameLayout的布局里面是因为FAB需要一个父布局来使它位于屏幕的右下角。把下面的代码替换掉activity_code_lab.xml布局文件中的原有代码</p>
+<pre><code>&lt;android<span class="class">.support</span><span class="class">.v4</span><span class="class">.widget</span><span class="class">.DrawerLayout</span> ...
+xmlns:app=<span class="string">"http://schemas.android.com/apk/res-auto"</span>
+....&gt;
+
+&lt;FrameLayout
+    android:id=<span class="string">"@+id/rootLayout"</span>
+    android:layout_width=<span class="string">"match_parent"</span>
+    android:layout_height=<span class="string">"match_parent"</span>
+    &gt;
+
+    &lt;android<span class="class">.support</span><span class="class">.design</span><span class="class">.widget</span><span class="class">.FloatingActionButton</span>
+        android:id=<span class="string">"@+id/fabBtn"</span>
+        android:layout_width=<span class="string">"wrap_content"</span>
+        android:layout_height=<span class="string">"wrap_content"</span>
+        android:layout_gravity=<span class="string">"bottom|right"</span>
+        android:src=<span class="string">"@drawable/ic_plus"</span>
+        app:fabSize=<span class="string">"normal"</span> /&gt;
+
+&lt;/FrameLayout&gt;
+
+...
+
+&lt;/android<span class="class">.support</span><span class="class">.v4</span><span class="class">.widget</span><span class="class">.DrawerLayout</span>&gt;
+</code></pre><p>android:src ：用来定义你需要ICON(建议为40dp大小的透明png文件)</p>
+<p>android:fabSize ：用来定义FAB的大小</p>
+<pre><code><span class="attribute">normal</span>：使用标准的<span class="number">56</span>dp大小的<span class="tag">button</span>
+mini：使用<span class="number">40</span>dp大小的button
+</code></pre><p>下图就是我们运行代码后的结果啦！</p>
+<div align="center"><br>    <img src="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot20.jpg"><br></div>
+
+<p>但是我们运行在Android 5.0上时候会有问题，看下图</p>
+<div align="center"><br>    <img src="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot17n.png"><br></div>
+
+<p>为什么有这个问题，其实这是个BUG，相信未来Design Library的开发者会修复的。当时我又想现在就使用怎么办，也是有解决的办法的。我们在dimen文件中配置一下就可以了，在API Level 21+ 以上dimens文件中设置FAB’s margin right and margin bottom为16dp，以下的版本设置为0dp就能够解决问题了。</p>
+<p>res/values/dimens.xml</p>
+<pre><code><span class="tag">&lt;<span class="title">dimen</span> <span class="attribute">name</span>=<span class="value">"codelab_fab_margin_right"</span>&gt;</span>0dp<span class="tag">&lt;/<span class="title">dimen</span>&gt;</span>
+<span class="tag">&lt;<span class="title">dimen</span> <span class="attribute">name</span>=<span class="value">"codelab_fab_margin_bottom"</span>&gt;</span>0dp<span class="tag">&lt;/<span class="title">dimen</span>&gt;</span>
+</code></pre><p>res/values-v21/dimens.xml</p>
+<pre><code><span class="tag">&lt;<span class="title">dimen</span> <span class="attribute">name</span>=<span class="value">"codelab_fab_margin_right"</span>&gt;</span>16dp<span class="tag">&lt;/<span class="title">dimen</span>&gt;</span>
+<span class="tag">&lt;<span class="title">dimen</span> <span class="attribute">name</span>=<span class="value">"codelab_fab_margin_bottom"</span>&gt;</span>16dp<span class="tag">&lt;/<span class="title">dimen</span>&gt;</span>
+</code></pre><p>res/layout/activity_code_lab.xml</p>
+<pre><code>&lt;<span class="tag">android</span><span class="class">.support</span><span class="class">.design</span><span class="class">.widget</span><span class="class">.FloatingActionButton</span>
+    ...
+    <span class="rule"><span class="attribute">android</span>:<span class="value">layout_marginBottom=<span class="string">"@dimen/codelab_fab_margin_bottom"</span>
+    android:layout_marginRight=<span class="string">"@dimen/codelab_fab_margin_right"</span>
+.../&gt;</span></span>
+</code></pre><p> 哈哈 大功告成！<br> <div align="center"><br>    <img src="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot18n_1.png"><br></div><br>更多内容—敬请期待</p>
 </span>
       
     </div>
@@ -335,7 +401,7 @@
           <div class="post-toc">
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、从Github上把源码Clone下来"><span class="nav-number">1.</span> <span class="nav-text">一、从Github上把源码Clone下来</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、添加Android_Design_Support_Library_Dependency"><span class="nav-number">2.</span> <span class="nav-text">二、添加Android Design Support Library Dependency</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、添加FAB"><span class="nav-number">3.</span> <span class="nav-text">三、添加FAB</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
