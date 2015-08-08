@@ -46,7 +46,10 @@
 <meta property="og:image" content="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot17n.png">
 <meta property="og:image" content="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot18n_1.png">
 <meta property="og:image" content="http://inthecheesefactory.com/uploads/source/designlibrary/snackbar.jpg">
-<meta property="og:updated_time" content="2015-08-06T14:55:09.000Z">
+<meta property="og:image" content="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot24.jpg">
+<meta property="og:image" content="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot19n.png">
+<meta property="og:image" content="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot20n.png">
+<meta property="og:updated_time" content="2015-08-08T03:19:07.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Use Android Design Support Library For Your App ">
 <meta name="twitter:description" content="作为一个Android开发人员，大家都或多或少地了解了Android官方推出的Material Design依赖库。在官方推出依赖库之前，我们要是想使用Material Design的UI风格，只能使用第三方的开源依赖库。但是现在Google在2015年的I/O的开发者大会上宣布了名为Android Design Support Library的官方的Material Design UI 风格的依">
@@ -293,17 +296,27 @@ mini：使用<span class="number">40</span>dp大小的button
     });
 }
 </code></pre><h3 id="四、Play_with_Snackbar">四、Play with Snackbar</h3><p>Snackbar, 一个显示在屏幕下方的黑色消息框。SnackBar类似与Toast，但是不同于Toast是悬浮显示在屏幕上，而SnackBar而是UI的一部分。</p>
-<p><div align="center"><br>    <img src="http://inthecheesefactory.com/uploads/source/designlibrary/snackbar.jpg"><br></div><br>Snackbar使用的方式也类似Toast</p>
-<pre><code><span class="tag">Snackbar</span><span class="class">.make</span>(someView,<span class="string">"Hello . I am Snackbar !"</span>, Snackbar.LENGTH_SHORT)
-    <span class="class">.setAction</span>(<span class="string">"Undo"</span>, new View.<span class="function">onClickListener</span>(){
-        <span class="variable">@Override</span>
-        public void <span class="function">onClick</span>(View v){
+<div align="center"><br>    <img src="http://inthecheesefactory.com/uploads/source/designlibrary/snackbar.jpg"><br></div><br>Snackbar使用的方式也类似Toast<br><br>    Snackbar.make(someView,”Hello . I am Snackbar !”, Snackbar.LENGTH_SHORT)<br>        .setAction(“Undo”, new View.onClickListener(){<br>            @Override<br>            public void onClick(View v){<br><br>            }<br>        })<br>        .show();<br><br>make()：第一个参数表示显示位于View或Layout的bottom位置。在例子中使用FrameLayout<br>setAction()：定义显示在SnackBar右边的按钮的Action（可选）<br>接下来我们添加以下代码<br><br>    FrameLayout rootLayout;<br>    …<br>    private void initInstances(){<br><br>        …<br>        rootLayout = (FrameLayout) findViewById(R.id.rootLayout);<br>        fabBtn = (FloatingActionButton) findViewById(R.id.fabBtn);<br>        fabBtn.setOnClickListener(new OnClickListener(){<br>            @Override<br>            public void onClick(View v){<br>                Snackbar.make(someView,”Hello . I am Snackbar !”,Snackbar.LENGTH_SHORT)<br>                    .setAction(“Undo”, new View.onClickListener(){<br>                        @Override<br>                        public void onClick(View v){<br><br>                        }<br>                    })<br>                    .show();<br>            }<br>        });<br><br>    }<br><br>点击看看效果<br><div align="center"><br>    <img src="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot24.jpg"><br></div>
 
-        }
-    })
-    <span class="class">.show</span>();
-</code></pre><p>make()：第一个参数表示显示位于View或Layout的bottom位置。在例子中使用FrameLayout<br>setAction()：定义显示在SnackBar右边的按钮的Action（可选）<br>接下来我们再添加几行代码</p>
-</span>
+<p>显示出来了，但是把FAB遮住了，是因为FAB与Snackbar之间没有布局没有关联。因此我们引入一个特殊的新布局CoordinatorLayout 让子View互相适配。</p>
+<h3 id="五、使用CoordinatorLayout">五、使用CoordinatorLayout</h3><p>修改布局文件，替换掉原来的FrameLayout<br>res/layout/activity_code_lab.xml</p>
+<pre><code>&lt;android<span class="class">.support</span><span class="class">.design</span><span class="class">.widget</span><span class="class">.CoordinatorLayout</span>
+    android:id=<span class="string">"@+id/rootLayout"</span>
+    android:layout:<span class="attribute">width</span>=<span class="string">"match_parent"</span>
+    android:layout:<span class="attribute">height</span>=<span class="string">"match_parent"</span>&gt;
+    &lt;android<span class="class">.support</span><span class="class">.design</span><span class="class">.widget</span><span class="class">.FloatingActionButton</span>.../&gt;
+&lt;/android<span class="class">.support</span><span class="class">.design</span><span class="class">.widget</span><span class="class">.CoordinatorLayout</span>&gt;
+</code></pre><p>修改CodeLabActivity.java的rootLayout 的类型为CoordinatorLayout</p>
+<pre><code>// FrameLayout rootLayout<span class="comment">;</span>
+CoordinatorLayout rootLayout<span class="comment">;</span>
+
+//rootLayout = <span class="list">(<span class="keyword">FrameLayout</span>)</span> findViewById<span class="list">(<span class="keyword">R</span>.id.rootLayout)</span><span class="comment">;</span>
+rootLayout = <span class="list">(<span class="keyword">CoordinatorLayout</span>)</span> findViewById<span class="list">(<span class="keyword">R</span>.id.rootLayout)</span><span class="comment">;</span>
+</code></pre><p>使用CoordinatorLayout在Android 4.4上有个bug，FAB的margin会变为0.</p>
+<div align="center"><br>    <img src="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot19n.png"><br></div><br>这个BUG值存在Android Design Support Library 22.2.2 ，等待Google修复。现在使用必须设置 FAB的margin right 和 margin bottom的值为16dp。<br><br>res/values/dimens.xml<br><br>    <dimen name="codelab_fab_margin_right">16dp</dimen><br>    <dimen name="codelab_fab_margin_left">16dp</dimen><br><br>看看效果<br>    <div align="center"><br>        <img src="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot20n.png"><br>    </div>
+
+<p>此时FAB就可以跟着Snackbar的消失出现而移动了。<br>除此以外还添加了一些特效。Snackbar可以滑动消失</p>
+<p style="text-algin: center"><br><video id="video" controls="controls" width="360" height="200"><br>    <source src="http://inthecheesefactory.com/uploads/source/designlibrary/scrolling105.mp4" type="video/mp4"><br></video><br></p></span>
       
     </div>
 
@@ -427,7 +440,7 @@ mini：使用<span class="number">40</span>dp大小的button
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、从Github上把源码Clone下来"><span class="nav-number">1.</span> <span class="nav-text">一、从Github上把源码Clone下来</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、添加Android_Design_Support_Library_Dependency"><span class="nav-number">2.</span> <span class="nav-text">二、添加Android Design Support Library Dependency</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、添加FAB"><span class="nav-number">3.</span> <span class="nav-text">三、添加FAB</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四、Play_with_Snackbar"><span class="nav-number">4.</span> <span class="nav-text">四、Play with Snackbar</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、从Github上把源码Clone下来"><span class="nav-number">1.</span> <span class="nav-text">一、从Github上把源码Clone下来</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、添加Android_Design_Support_Library_Dependency"><span class="nav-number">2.</span> <span class="nav-text">二、添加Android Design Support Library Dependency</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、添加FAB"><span class="nav-number">3.</span> <span class="nav-text">三、添加FAB</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四、Play_with_Snackbar"><span class="nav-number">4.</span> <span class="nav-text">四、Play with Snackbar</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#五、使用CoordinatorLayout"><span class="nav-number">5.</span> <span class="nav-text">五、使用CoordinatorLayout</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
