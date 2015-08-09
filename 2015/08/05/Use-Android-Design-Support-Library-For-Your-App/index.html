@@ -49,7 +49,15 @@
 <meta property="og:image" content="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot24.jpg">
 <meta property="og:image" content="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot19n.png">
 <meta property="og:image" content="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot20n.png">
-<meta property="og:updated_time" content="2015-08-08T09:13:54.000Z">
+<meta property="og:image" content="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot29.jpg">
+<meta property="og:image" content="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot30.jpg">
+<meta property="og:image" content="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot31.jpg">
+<meta property="og:image" content="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot32.jpg">
+<meta property="og:image" content="http://inthecheesefactory.com/uploads/source/designlibrary/tabmodetabgravity.jpg">
+<meta property="og:image" content="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot18n_1.png">
+<meta property="og:image" content="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot20n.png">
+<meta property="og:image" content="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot19n.png">
+<meta property="og:updated_time" content="2015-08-09T03:29:10.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Use Android Design Support Library For Your App ">
 <meta name="twitter:description" content="作为一个Android开发人员，大家都或多或少地了解了Android官方推出的Material Design依赖库。在官方推出依赖库之前，我们要是想使用Material Design的UI风格，只能使用第三方的开源依赖库。但是现在Google在2015年的I/O的开发者大会上宣布了名为Android Design Support Library的官方的Material Design UI 风格的依">
@@ -226,8 +234,10 @@
 </blockquote>
 <p>你需要做的第一步是成功地把Demo运行起来，简单吧！</p>
 <p>Activity的theme的风格调整，在AppTheme中添加Material Design的样式</p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;item name=<span class="string">"colorPrimary"</span>&gt;<span class="hexcolor">#2196F3</span>&lt;/item&gt;</span><br><span class="line">&lt;item name=<span class="string">"colorPrimaryDark"</span>&gt;<span class="hexcolor">#1565C0</span>&lt;/item&gt;</span><br><span class="line">&lt;item name=<span class="string">"colorAccent"</span>&gt;<span class="hexcolor">#E91E63</span>&lt;/item&gt;</span><br></pre></td></tr></table></figure>
-<h3 id="二、添加Android_Design_Support_Library_Dependency">二、添加Android Design Support Library Dependency</h3><p>如何添加Android Design Support Library到我们的项目呢，也是很简单的。只需要在项目的build.gradle配置文件中添加上那么一句话</p>
+<pre><code>&lt;item name=<span class="string">"colorPrimary"</span>&gt;<span class="hexcolor">#2196F3</span>&lt;/item&gt;
+&lt;item name=<span class="string">"colorPrimaryDark"</span>&gt;<span class="hexcolor">#1565C0</span>&lt;/item&gt;
+&lt;item name=<span class="string">"colorAccent"</span>&gt;<span class="hexcolor">#E91E63</span>&lt;/item&gt;
+</code></pre><h3 id="二、添加Android_Design_Support_Library_Dependency">二、添加Android Design Support Library Dependency</h3><p>如何添加Android Design Support Library到我们的项目呢，也是很简单的。只需要在项目的build.gradle配置文件中添加上那么一句话</p>
 <pre><code><span class="keyword">compile</span> <span class="string">'com.android.support:design:22.2.1'</span>
 </code></pre><p>Very Good</p>
 <blockquote>
@@ -296,7 +306,37 @@ mini：使用<span class="number">40</span>dp大小的button
     });
 }
 </code></pre><h3 id="四、Play_with_Snackbar">四、Play with Snackbar</h3><p>Snackbar, 一个显示在屏幕下方的黑色消息框。SnackBar类似与Toast，但是不同于Toast是悬浮显示在屏幕上，而SnackBar而是UI的一部分。</p>
-<div align="center"><br>    <img src="http://inthecheesefactory.com/uploads/source/designlibrary/snackbar.jpg"><br></div><br>Snackbar使用的方式也类似Toast<br><br>    Snackbar.make(someView,”Hello, I an Snackbar !” , Snackbar.LENGTH_SHORT)<br>            .setAction(“Undo”, new View.onClickListener(){<br>                    @0verride<br>                    public void onClick(View v){<br><br>                    }<br>                })<br>            .show();<br><br>make()：第一个参数表示显示位于View或Layout的bottom位置。在例子中使用FrameLayout<br>setAction()：定义显示在SnackBar右边的按钮的Action（可选）<br>接下来我们添加以下代码<br><br>    FrameLayout rootLayout<br>    …<br>    private void initInstances(){<br>        …<br>        rootLayout =(FrameLayout) findViewById(R.id.rootLayout);<br>        fabBtn = (FloatingActionButton) findViewById(R.id.fabBtn);<br>        fabBtn<br>    }<br><br>    FrameLayout rootLayout<br>    …<br>    private void initInstances(){<br><br>        …<br>        rootLayout = (FrameLayout) findViewById(R.id.rootLayout);<br>        fabBtn = (FloatingActionButton) findViewById(R.id.fabBtn);<br>        fabBtn.setOnClickListener(new OnClickListener(){<br>            @Override<br>            public void onClick(View v){<br>                Snackbar.make(someView,”Hello . I am Snackbar !”,Snackbar.LENGTH_SHORT)<br>                    .setAction(“Undo”, new View.onClickListener(){<br>                        @Override<br>                        public void onClick(View v){<br><br>                        }<br>                    })<br>                    .show();<br>            }<br>        });<br><br>    }<br><br>点击看看效果<br><div align="center"><br>    <img src="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot24.jpg"><br></div>
+<div align="center"><br>    <img src="http://inthecheesefactory.com/uploads/source/designlibrary/snackbar.jpg"><br></div>
+
+<p>Snackbar使用的方式也类似Toast</p>
+<pre><code><span class="tag">Snackbar</span><span class="class">.make</span>(someView,<span class="string">" Hello,I am Snackbar!"</span>, Snackbar.LENGTH_SHORT)<span class="class">.setAction</span>(<span class="string">"Undo"</span>, new View.<span class="function">onClickListener</span>(){
+        <span class="variable">@Override</span>
+        public void <span class="function">onClick</span>(View v){
+        }
+    })
+    <span class="class">.show</span>();
+</code></pre><p>make()：第一个参数表示显示位于View或Layout的bottom位置。在例子中使用FrameLayout<br>setAction()：定义显示在SnackBar右边的按钮的Action（可选）<br>接下来我们添加以下代码</p>
+<pre><code>FrameLayout rootLayout...
+<span class="keyword">private</span> <span class="function"><span class="keyword">void</span> <span class="title">initInstances</span><span class="params">()</span></span>{
+    ...
+    rootLayout =(FrameLayout) findViewById(R.id.rootLayout);
+    fabBtn = (FloatingActionButton) findViewById(R.id.fabBtn);
+    fabBtn.setOnClickListener(<span class="keyword">new</span> OnClickListener(){
+        <span class="annotation">@Overrride</span>
+        <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">onCLick</span><span class="params">(View v)</span></span>{
+            Snackbar.make(someView,<span class="string">"Hello, I an Snackbar !"</span> , Snackbar.LENGTH_SHORT)
+                .setAction(<span class="string">"Undo"</span>, <span class="keyword">new</span> View.onClickListener(){
+                    <span class="annotation">@Override</span>
+                    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span></span>{
+
+                    }
+                })
+                .show();           
+        }
+    });
+}
+</code></pre><p>点击看看效果</p>
+<div align="center"><br>    <img src="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot24.jpg"><br></div>
 
 <p>显示出来了，但是把FAB遮住了，是因为FAB与Snackbar之间没有布局没有关联。因此我们引入一个特殊的新布局CoordinatorLayout 让子View互相适配。</p>
 <h3 id="五、使用CoordinatorLayout">五、使用CoordinatorLayout</h3><p>修改布局文件，替换掉原来的FrameLayout<br>res/layout/activity_code_lab.xml</p>
@@ -313,10 +353,16 @@ CoordinatorLayout rootLayout<span class="comment">;</span>
 //rootLayout = <span class="list">(<span class="keyword">FrameLayout</span>)</span> findViewById<span class="list">(<span class="keyword">R</span>.id.rootLayout)</span><span class="comment">;</span>
 rootLayout = <span class="list">(<span class="keyword">CoordinatorLayout</span>)</span> findViewById<span class="list">(<span class="keyword">R</span>.id.rootLayout)</span><span class="comment">;</span>
 </code></pre><p>使用CoordinatorLayout在Android 4.4上有个bug，FAB的margin会变为0.</p>
-<div align="center"><br>    <img src="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot19n.png"><br></div><br>这个BUG值存在Android Design Support Library 22.2.2 ，等待Google修复。现在使用必须设置 FAB的margin right 和 margin bottom的值为16dp。<br><br>res/values/dimens.xml<br><br>    <dimen name="codelab_fab_margin_right">16dp</dimen><br>    <dimen name="codelab_fab_margin_left">16dp</dimen><br><br>看看效果<br><div align="center"><br>    <img src="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot20n.png"><br></div>
+<div align="center"><br>    <img src="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot19n.png"><br></div>
+
+<p>这个BUG值存在Android Design Support Library 22.2.2 ，等待Google修复。现在使用必须设置 FAB的margin right 和 margin bottom的值为16dp。<br>res/values/dimens.xml</p>
+<pre><code><span class="tag">&lt;<span class="title">dimen</span> <span class="attribute">name</span>=<span class="value">"codelab_fab_margin_right"</span>&gt;</span>16dp<span class="tag">&lt;/<span class="title">dimen</span>&gt;</span>
+<span class="tag">&lt;<span class="title">dimen</span> <span class="attribute">name</span>=<span class="value">"codelab_fab_margin_left"</span>&gt;</span>16dp<span class="tag">&lt;/<span class="title">dimen</span>&gt;</span>
+</code></pre><p>看看效果</p>
+<div align="center"><br>    <img src="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot20n.png"><br></div>
 
 <p>此时FAB就可以跟着Snackbar的消失出现而移动了。除此以外还添加了一些特效：Snackbar可以滑动消失</p>
-<p style="text-algin: center;algin:center;margin:0 auto;"><br><video id="video" controls="controls" width="360" height="200" style="align:center"><br>    <source src="http://inthecheesefactory.com/uploads/source/designlibrary/scrolling105.mp4" type="video/mp4"><br></video><br></p>
+<video id="video" controls="controls" width="360" height="200" style="align:center"><br>    <source src="http://inthecheesefactory.com/uploads/source/designlibrary/scrolling105.mp4" type="video/mp4"><br></video>
 
 <h3 id="六、放弃ActionBar，使用Toolbar">六、放弃ActionBar，使用Toolbar</h3><p>Toolbar 并不是Android Design Support Library的一部分，但是需要配合使用。<br>Toolbar相比ActionBar更加灵活，和Android Design Support库使用具备ActionBar没有的新特性。<br>而转换使用Toolbar也很简单，只需要在定义Activity的样式xml文件中添加几句话即可隐藏掉ActionBar。</p>
 <pre><code>&lt;style <span class="property">name</span>=“AppTheme” parent=“Theme.AppCompat.Light.DarkActionBar”&gt;
@@ -363,6 +409,398 @@ private void initInstance<span class="params">()</span>{
 &lt;/android<span class="class">.support</span><span class="class">.design</span><span class="class">.widget</span><span class="class">.CoordinatorLayout</span>&gt;
 </code></pre><p> 运行代码测试一下，完美！</p>
 <video id="video" controls="controls" style="align:center"><br><source src="http://inthecheesefactory.com/uploads/source/designlibrary/toolbarappbarlayout.mp4"><br></video>
+
+<h3 id="七、在Content区域中添加布局文件">七、在Content区域中添加布局文件</h3><p>现在我们有了FAB，Toolbar。接下来在添加其他的布局<br>我们在AppBarLayout和FAB之间添加几个Button</p>
+<pre><code>...
+&lt;/android<span class="class">.support</span><span class="class">.design</span><span class="class">.widget</span><span class="class">.AppBarLayout</span>&gt;
+
+&lt;LinearLayout
+    android:layout_width=<span class="string">"match_parent"</span>
+    android:layout_height=<span class="string">"match_parent"</span>
+    android:orientation=<span class="string">"vertical"</span>
+&gt;
+&lt;Button
+    android:layout_width=<span class="string">"wrap_content"</span>
+    android:layout_height=<span class="string">"wrap_content"</span>
+    android:text=<span class="string">"Yo Yo"</span>
+/&gt;
+&lt;Button
+    android:layout_width=<span class="string">"wrap_content"</span>
+    android:layout_height=<span class="string">"wrap_content"</span>
+    android:text=<span class="string">"Yo Yo"</span>
+/&gt;
+&lt;/LinearLayout&gt;
+
+&lt;android<span class="class">.support</span><span class="class">.design</span><span class="class">.widget</span><span class="class">.FloatingActionButton</span>
+...&gt;
+</code></pre><p>结果是这样的：</p>
+<div align="center"><br>    <img src="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot29.jpg"><br></div>
+
+<p>看起来Button并没有放在Toolbar下面，因为LinearLayout不是为CoordinatorLayout而设计的。这次没有了<br>像Toolbar一样有个AppBarLayout的布局了。这次我们只要在LinearLayout中添加一个属性就可以了</p>
+<pre><code>&lt;<span class="variable">LinearLayout</span>
+    ...
+    app:layout_behavior=<span class="string">"@string/appbar_scrolling_view_behavior"</span>
+    ...
+    &gt;
+</code></pre><p>还是可以的。</p>
+<div align="center"><br>    <img src="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot30.jpg"><br></div>
+
+<p>大功告成！</p>
+<h3 id="八、使用TabLayout">八、使用TabLayout</h3><p>我们经常会在APP中使用TAB，来增加切换的效果。在Android Meterial Design 依赖库之前我们一般使用第<br>三方依赖库来实现Meterial Design的效果。而现在可以直接使用官方依赖包提供的TabLayout实现相同的功能。<br>    TabLayout与Toolbar一样要放置在AppBarLayout中，因为AppBarLayout继承了LinearLayout，所<br>以直接放在ToolBar下方：</p>
+<pre><code>&lt;android<span class="class">.support</span><span class="class">.design</span><span class="class">.widget</span><span class="class">.AppBarLayout</span> ...&gt;
+
+    &lt;android<span class="class">.support</span><span class="class">.v7</span><span class="class">.widget</span><span class="class">.Toolbar</span> ... /&gt;
+
+    &lt;android<span class="class">.support</span><span class="class">.design</span><span class="class">.widget</span><span class="class">.TabLayout</span>
+        android:id=<span class="string">"@+id/tabLayout"</span>
+        android:layout_width=<span class="string">"match_parent"</span>
+        android:layout_height=<span class="string">"wrap_content"</span>/&gt;
+
+&lt;/android<span class="class">.support</span><span class="class">.design</span><span class="class">.widget</span><span class="class">.AppBarLayout</span>&gt;
+</code></pre><p>在Java代码中添加Tab按钮</p>
+<pre><code>TabLayout <span class="keyword">tabLayout</span>
+
+private void initInstance(){
+    <span class="keyword">tabLayout</span> = (TabLayout) findViewById(R.id.<span class="keyword">tabLayout</span>);
+    <span class="keyword">tabLayout</span>.addTab(<span class="keyword">tabLayout</span>.newTab.setText(Tab <span class="number">1</span>));
+    <span class="keyword">tabLayout</span>.addTab(<span class="keyword">tabLayout</span>.newTab.setText(Tab <span class="number">2</span>));
+    <span class="keyword">tabLayout</span>.addTab(<span class="keyword">tabLayout</span>.newTab.setText(Tab <span class="number">3</span>));
+    ...
+}
+</code></pre><p>上效果</p>
+<div align="center"><br>    <img src="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot31.jpg"><br></div>
+
+<p>Tab的背景颜色自动设置为 Primary Color 。我们注意到Tab字体颜色是黑色的，在布局文件中指定TabLayout<br>的主题样式可以给字体颜色换色。</p>
+<pre><code>&lt;<span class="tag">android</span><span class="class">.support</span><span class="class">.design</span><span class="class">.widget</span><span class="class">.TabLayout</span>
+    ...
+    <span class="rule"><span class="attribute">app</span>:<span class="value">theme=<span class="string">"@style/ThemeOverlay.AppCompat.Dark.ActionBar"</span>/&gt;</span></span>
+</code></pre><p>字体变成白色了</p>
+<div align="center"><br>    <img src="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot32.jpg"><br></div>
+
+<p>使用TabLayout经常会和ViewPager来配合使用，TabLayout提供方法<code>setupWithViewPager(...)</code>设置<br>TabLayout用到的ViewPager。<br>TabLayout有两个属性我们可以用来调整TabLayout中Tab的布局效果</p>
+<pre><code>* app:tabMode - fixed: 固定<span class="constant">tab</span>的位置，当<span class="constant">tab</span>数量过多时，超出屏幕范围后。无法显示更多。
+                scrollable: <span class="constant">tab</span>数量超出屏幕范围，可以滚动<span class="constant">tab</span>，显示更多的<span class="constant">tab</span>
+* app:tabGravity - fill: <span class="constant">tab</span>自动填充tabLayout
+                    center: <span class="constant">tab</span>位于TabLayout的中间
+</code></pre><blockquote>
+<p>如果tabMode为scrollable模式时候，tabGravity的属性自动忽略</p>
+</blockquote>
+<p>看看几种组合模式</p>
+<div align="center"><br>    <img src="http://inthecheesefactory.com/uploads/source/designlibrary/tabmodetabgravity.jpg"><br></div>
+
+<p>TabLayout结束！</p>
+<h3 id="九、让AppBarLayout随着屏幕滚动动态的显示、退出">九、让AppBarLayout随着屏幕滚动动态的显示、退出</h3><p>Android Meterial Design依赖库提供了可以让App Bar随屏幕上下滑动而滚动消失出现。这样可以在屏幕中<br>内容过多的时候提供更多内容空间。在依赖库出现之前，我们只能通过第三方控件来实现这个效果，现在只需要<br>几行代码<br>    首先，我们填充Content内容，让它可以上下滚动。</p>
+<pre><code><span class="tag">&lt;<span class="title">Button</span>
+    <span class="attribute">android:layout_width</span>=<span class="value">"wrap_content"</span>
+    <span class="attribute">android:layout_height</span>=<span class="value">"wrap_content"</span>
+    <span class="attribute">android:text</span>=<span class="value">"Yo Yo"</span>
+    /&gt;</span>
+...
+<span class="comment">&lt;!-- Add 20 more Button --&gt;</span>
+...
+<span class="tag">&lt;<span class="title">Button</span>
+    <span class="attribute">android:layout_width</span>=<span class="value">"wrap_content"</span>
+    <span class="attribute">android:layout_height</span>=<span class="value">"wrap_content"</span>
+    <span class="attribute">android:text</span>=<span class="value">"Yo Yo"</span>
+    /&gt;</span>
+</code></pre><p>然后在LinearLayout外部添加ScrollView，并将app:layout_behavior=”@string/<br>appbar_scrolling_view_behavior”属性从LinearLayout布局中移动到ScrollView中，因为ScrollView<br>现在是CoordinatorLayout的子视图了。</p>
+<pre><code><span class="tag">&lt;<span class="title">ScrollView</span>
+    <span class="attribute">...</span>
+    <span class="attribute">app:layout_behavior</span>=<span class="value">"@string/appbar_scrolling_view_behavior"</span>
+    <span class="attribute">...</span>
+    &gt;</span>
+    <span class="tag">&lt;<span class="title">LinearLayout</span>
+        <span class="attribute">android:layout_width</span>=<span class="value">"match_parent"</span>
+        <span class="attribute">android:layout_height</span>=<span class="value">"match_parent"</span>
+        <span class="attribute">android:orientation</span>=<span class="value">"vertical"</span>
+        &gt;</span>
+        ...
+    <span class="tag">&lt;/<span class="title">LinearLayout</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">ScrollView</span>&gt;</span>
+</code></pre><p>在ToolBar中添加Srcoll Flags 属性</p>
+<pre><code>&lt;<span class="tag">android</span><span class="class">.support</span><span class="class">.v7</span><span class="class">.widget</span><span class="class">.Toolbar</span>
+    ...
+    <span class="rule"><span class="attribute">app</span>:<span class="value">layout_scrollFlags=<span class="string">"scroll|enterAlways"</span>/&gt;</span></span>
+</code></pre><p>测试结果</p>
+<video id="video" controls="controls" width="360" height="200" style="align:center"><br><source src="http://inthecheesefactory.com/uploads/source/designlibrary/scrolling1_1.mp4" type="video/mp4"><br></video>
+
+<p>但是没什么卵用。还是老问题ScrollView was not designed to work with CoordinatorLayout。<br>使用<code>NestedScrollView</code>替换ScrollView.<code>NestedScrollView</code>是v4包提供的配合CoordinatorLayout<br>使用的新ScrollView</p>
+<pre><code>&lt;android<span class="class">.support</span><span class="class">.v4</span><span class="class">.widget</span><span class="class">.NestedScrollView</span>
+    &lt;LinearLayout ...&gt;
+        ...
+    &lt;/LinearLayout&gt;
+&lt;android<span class="class">.support</span><span class="class">.v4</span><span class="class">.widget</span><span class="class">.NestedScrollView</span>&gt;
+</code></pre><p>出于相同的原因，ListView也不能在CoordinatorLayout生效。新<code>RecycleView</code>可以使用。<br>替换后</p>
+<video id="video" controls="controls" width="360" height="200" style="align:center"><br><source src="http://inthecheesefactory.com/uploads/source/designlibrary/scrolling2_1.mp4" type="video/mp4"><br></video>
+
+<p>炫酷！<br>只有Toolbar滑动出屏幕了，而TabLayout仍然显示，是因为我们没有在TabLayout中设置Scroll Flags属性</p>
+<pre><code>&lt;<span class="tag">android</span><span class="class">.support</span><span class="class">.design</span><span class="class">.widget</span><span class="class">.TabLayout</span>
+    ...
+    <span class="rule"><span class="attribute">app</span>:<span class="value">layout_scrollFlags=<span class="string">"scroll|enterAlways"</span> /&gt;</span></span>
+</code></pre><video id="video" controls="controls" width="360" height="200" style="align:center"><br><source src="http://inthecheesefactory.com/uploads/source/designlibrary/scrolling101.mp4" type="video/mp4"><br></video>
+
+<p>Scroll Flags属性<br><code>scroll</code> - view随着屏幕滚动<br><code>enterAlwaysCollapsed</code> - 属性定义了什么时候View返回屏幕。如果View设置了最小高度，View滑出的时<br>候只显示最小高度大小的View，当Content内容全部滑出显示的时候，View的剩下部分才全部显示</p>
+<video id="video" controls="controls" width="360" height="200" style="align:center"><br><source src="http://inthecheesefactory.com/uploads/source/designlibrary/scrolling102.mp4" type="video/mp4"><br></video>
+
+<p><code>enterAlways</code> - 任何手势下滑操作都会让View可见</p>
+<video id="video" controls="controls" width="360" height="200" style="align:center"><br><source src="http://inthecheesefactory.com/uploads/source/designlibrary/scrolling2_1.mp4" type="video/mp4"><br></video>
+
+<p><code>exitUntilCollapsed</code> - 退出到最小高度。这种模式最常用。</p>
+<pre><code>&lt;<span class="tag">android</span><span class="class">.support</span><span class="class">.v7</span><span class="class">.widget</span><span class="class">.Toolbar</span>
+    ...
+    <span class="rule"><span class="attribute">android</span>:<span class="value">layout_height=<span class="string">"192dp"</span>
+    android:gravity=<span class="string">"bottom"</span>
+    android:paddingBottom=<span class="string">"12dp"</span>
+    android:minHeight=<span class="string">"?attr/actionBarSize"</span>
+    app:layout_scrollFlags=<span class="string">"scroll|exitUntilCollapsed"</span>
+    /&gt;</span></span>
+</code></pre><video id="video" controls="controls" width="360" height="200" style="align:center"><br><source src="http://inthecheesefactory.com/uploads/source/designlibrary/scrolling104.mp4" type="video/mp4"><br></video>
+
+<h3 id="十、移除TabLayout">十、移除TabLayout</h3><p>下面几节，我们将讨论更多关于Toolbar的相关特性，因此移除TabLayout的相关代码</p>
+<pre><code><span class="comment">&lt;!--android.support.design.widget.TabLayout --&gt;</span>
+</code></pre><p>Java代码</p>
+<pre><code>//tabLayout = (TabLayout) findViewById(R.id.tabLayout);
+//tabLayout.addTab(tabLayout.newTab().<span class="built_in">set</span>Text(<span class="string">"Tab 1"</span>));
+//tabLayout.addTab(tabLayout.newTab().<span class="built_in">set</span>Text(<span class="string">"Tab 2"</span>));
+//tabLayout.addTab(tabLayout.newTab().<span class="built_in">set</span>Text(<span class="string">"Tab 3"</span>));
+</code></pre><h3 id="十一、Toolbar的收起展开">十一、Toolbar的收起展开</h3><p>在使用<code>exitUntilCollapsed</code>的时候，Toolbar的图标消失了，在App中希望始终显示导航的图标。<br>Design Support Library为Toolbar提供的新的布局<code>CollapsingToolbarLayout</code>可以让Toolbar的<br>图标在收起的时候不被隐藏<br>添加<code>CollapsingToolbarLayout</code>只需要下面几步<br>1.将Toolbar放在CollapsingToolbarLayout中。<br>2.移除Toolbar的layout_scrollFlags属性<br>3.CollapsingToolbarLayout添加layout_scrollFlags属性，设置为<code>scroll|exitUntilCollapsed</code><br>4.改变AppBarLayout展开的高度。在例子中设置为256dp大小的高度</p>
+<pre><code>&lt;android<span class="class">.support</span><span class="class">.design</span><span class="class">.widget</span><span class="class">.AppBarLayout</span>
+    android:layout_width=<span class="string">"match_parent"</span>
+    android:layout_height=<span class="string">"256dp"</span>&gt;
+    &lt;android<span class="class">.support</span><span class="class">.design</span><span class="class">.widget</span><span class="class">.CollapsingToolbarLayout</span>
+        android:id=<span class="string">"@+id/collapsingToolbarLayout"</span>
+        android:layout_width=<span class="string">"match_parent"</span>
+        android:layout_height=<span class="string">"match_parent"</span>
+        app:layout_scrollFlags=<span class="string">"scroll|exitUntilCollapsed"</span>&gt;
+
+        &lt;android<span class="class">.support</span><span class="class">.v7</span><span class="class">.widget</span><span class="class">.Toolbar</span>
+            android:id=<span class="string">"@+id/toolbar"</span>
+            android:layout_width=<span class="string">"match_parent"</span>
+            android:layout_height=<span class="string">"?attr/actionBarSize"</span>
+            android:<span class="attribute">background</span>=<span class="string">"?attr/colorPrimary"</span>
+            android:minHeight=<span class="string">"?attr/actionBarSize"</span>
+            app:theme=<span class="string">"@style/ThemeOverlay.AppCompat.Dark.ActionBar"</span>
+            app:popupTheme=<span class="string">"@style/ThemeOverlay.AppCompat.Light"</span> /&gt;
+
+    &lt;/android<span class="class">.support</span><span class="class">.design</span><span class="class">.widget</span><span class="class">.CollapsingToolbarLayout</span>&gt;
+
+&lt;/android<span class="class">.support</span><span class="class">.design</span><span class="class">.widget</span><span class="class">.AppBarLayout</span>&gt;
+</code></pre><p>效果</p>
+<video id="video" controls="controls" width="360" height="200" style="align:center"><br><source src="http://inthecheesefactory.com/uploads/source/designlibrary/scrolling6.mp4" type="video/mp4"><br></video>
+
+<p>Toolbar的图标仍然滑出的了屏幕。我们要让它固定显示在屏幕的顶部</p>
+<pre><code>&lt;<span class="tag">android</span><span class="class">.support</span><span class="class">.v7</span><span class="class">.widget</span><span class="class">.Toolbar</span>
+    ...
+    <span class="rule"><span class="attribute">app</span>:<span class="value">layout_collapseMode=<span class="string">"pin"</span>
+/&gt;</span></span>
+</code></pre><p>OK</p>
+<video id="video" controls="controls" width="360" height="200" style="align:center"><br><source src="http://inthecheesefactory.com/uploads/source/designlibrary/scrolling7.mp4" type="video/mp4"><br></video> 
+
+<p>咦？Toolbar的标题呢：使用CollapsingToolbarLayout后标题就会消失，只能在Java代码使用<br><code>setTitle(String title)</code>方法设置标题了</p>
+<pre><code>CollapsingToolbarLayout collapsingToolbarLayout;
+
+private void initInstances<span class="params">()</span> {
+    ...
+    collapsingToolbarLayout = <span class="params">(CollapsingToolbarLayout)</span> findViewById<span class="params">(R.id.collapsingToolbarLayout)</span>;
+    collapsingToolbarLayout.setTitle<span class="params">(<span class="string">"Design Library"</span>)</span>;
+}
+</code></pre><p>OK</p>
+<video id="video" controls="controls" width="360" height="200" style="align:center"><br><source src="http://inthecheesefactory.com/uploads/source/designlibrary/scrolling8.mp4" type="video/mp4"><br></video> 
+
+<p>字体是黑色的，用属性android:theme为AppBarLayout设置样式</p>
+<pre><code>&lt;<span class="tag">android</span><span class="class">.support</span><span class="class">.design</span><span class="class">.widget</span><span class="class">.AppBarLayout</span>
+    ...
+    <span class="rule"><span class="attribute">android</span>:<span class="value">theme=<span class="string">"@style/ThemeOverlay.AppCompat.Dark.ActionBar"</span>&gt;</span></span>
+</code></pre><p>OK , 字体变白</p>
+<video id="video" controls="controls" width="360" height="200" style="align:center"><br><source src="http://inthecheesefactory.com/uploads/source/designlibrary/scrolling9.mp4" type="video/mp4"><br></video> 
+
+<p>使用CollapsingToolbarLayout，动画自动使用默认的自动标题动画，也可以使用<br><code>app:expandedTitleMargin</code>,<code>app:expandedTitleMarginBottom</code><br><code>app:expandedTitleMarginEnd</code>,<code>app:expandedTitleMarginStart</code><br>来定义展开的时候的字体的位置。<br>使用<code>app:collapsedTitleTextAppearance</code>和<code>app:expandedTitleTextAppearance</code><br>来定义展开和收起的字体大小<br>设置Margin start 为64dp</p>
+<pre><code>&lt;<span class="tag">android</span><span class="class">.support</span><span class="class">.design</span><span class="class">.widget</span><span class="class">.CollapsingToolbarLayout</span>
+    ...
+    <span class="rule"><span class="attribute">app</span>:<span class="value">expandedTitleMarginStart=<span class="string">"64dp"</span>&gt;</span></span>
+</code></pre><p>OK</p>
+<video id="video" controls="controls" width="360" height="200" style="align:center"><br><source src="http://inthecheesefactory.com/uploads/source/designlibrary/scrolling10.mp4" type="video/mp4"><br></video> 
+
+<h3 id="十二、为App_Bar添加背景">十二、为App Bar添加背景</h3><p>有时候，我们希望为AppBar使用漂亮的背景颜色而不是单调的颜色，CollapsingToolbarLayout继承<br>FrameLayout，所以我们可以使用ImageView作为Toolbar的背景颜色</p>
+<pre><code>&lt;ImageView
+    android:layout_width=<span class="string">"match_parent"</span>
+    android:layout_height=<span class="string">"match_parent"</span>
+    android:scaleType=<span class="string">"centerCrop"</span>
+    android:src=<span class="string">"@drawable/header"</span> /&gt;
+
+&lt;android<span class="class">.support</span><span class="class">.v7</span><span class="class">.widget</span><span class="class">.Toolbar</span>
+...
+</code></pre><p>效果</p>
+<video id="video" controls="controls" width="360" height="200" style="align:center"><br><source src="http://inthecheesefactory.com/uploads/source/designlibrary/scrolling11.mp4" type="video/mp4"><br></video> 
+
+<p>但是ToolBar仍然有个蓝色背景，丑!去掉背景颜色。移除Toolbar的这行代码</p>
+<pre><code><span class="label">android:</span>background=<span class="string">"?attr/colorPrimary"</span>
+</code></pre><p>效果</p>
+<video id="video" controls="controls" width="360" height="200" style="align:center"><br><source src="http://inthecheesefactory.com/uploads/source/designlibrary/scrolling12.mp4" type="video/mp4"><br></video> 
+
+<p>图片现在填充了整个Toolbar的背景了，但是动画看起来还有有点呆板。在ImageView中添加属性</p>
+<pre><code><span class="tag">&lt;<span class="title">ImageView</span>
+    <span class="attribute">...</span>
+    <span class="attribute">app:layout_collapseMode</span>=<span class="value">"parallax"</span> /&gt;</span>
+</code></pre><p>效果</p>
+<video id="video" controls="controls" width="360" height="200" style="align:center"><br><source src="http://inthecheesefactory.com/uploads/source/designlibrary/scrolling14.mp4" type="video/mp4"><br></video> 
+
+<p>还有自定义折叠起后Toolbar最终显示的图片的位置<code>app:layout_collapseParallaxMultiplier</code>。值<br>范围<code>0.0 - 1.0</code>,请自行尝试。<br><code>CollapsingToolbarLayout</code>中有个属性<code>app:contentScrim</code>可以让Toolbar展开时背景为图片，收起<br>时的背景为纯颜色。添加属性</p>
+<pre><code>&lt;<span class="tag">android</span><span class="class">.support</span><span class="class">.design</span><span class="class">.widget</span><span class="class">.CollapsingToolbarLayout</span>
+    ...
+    <span class="rule"><span class="attribute">app</span>:<span class="value">contentScrim=<span class="string">"?attr/colorPrimary"</span>&gt;</span></span>
+</code></pre><p>效果</p>
+<video id="video" controls="controls" width="360" height="200" style="align:center"><br><source src="http://inthecheesefactory.com/uploads/source/designlibrary/scrolling15.mp4" type="video/mp4"><br></video> 
+
+<p>AppBar现在看起来好看多了！</p>
+<h3 id="十三、使用导航布局">十三、使用导航布局</h3><p>使用<code>NavigationView</code>为侧边栏添加内容</p>
+<p>1.在CoordinatorLayout布局下面添加NavigationView的代码</p>
+<pre><code>    ...
+&lt;/android<span class="class">.support</span><span class="class">.design</span><span class="class">.widget</span><span class="class">.CoordinatorLayout</span>&gt;
+
+&lt;android<span class="class">.support</span><span class="class">.design</span><span class="class">.widget</span><span class="class">.NavigationView</span>
+    android:id=<span class="string">"@+id/navigation"</span>
+    android:layout_width=<span class="string">"wrap_content"</span>
+    android:layout_height=<span class="string">"match_parent"</span>           
+    android:layout_gravity=<span class="string">"start"</span>
+    app:headerLayout=<span class="string">"@layout/nav_header"</span>
+    app:itemIconTint=<span class="string">"#333"</span>
+    app:itemTextColor=<span class="string">"#333"</span>
+    app:menu=<span class="string">"@menu/navigation_drawer_items"</span> /&gt;
+&lt;/android<span class="class">.support</span><span class="class">.v4</span><span class="class">.widget</span><span class="class">.DrawerLayout</span>&gt;
+</code></pre><p><code>NavigationView</code>指定的头View和菜单的布局</p>
+<pre><code><span class="label">app:</span>headerLayout=<span class="string">"@layout/nav_header"</span>
+<span class="label">app:</span>menu=<span class="string">"@menu/navigation_drawer_items"</span>
+</code></pre><p>2.创建Header的布局nav_header.xml，如果你是从github上Clone下的代码，这个xml布局文件<br>代码中已经有了，可以直接拿过来用。</p>
+<p>res/layout/nav_header.xml</p>
+<pre><code>&lt;?xml <span class="variable">version=</span><span class="string">"1.0"</span> <span class="variable">encoding=</span><span class="string">"utf-8"</span>?&gt;
+&lt;FrameLayout xmlns:<span class="variable">android=</span><span class="string">"http://schemas.android.com/apk/res/android"</span>
+    android:<span class="variable">layout_width=</span><span class="string">"match_parent"</span>
+    android:<span class="variable">layout_height=</span><span class="string">"192dp"</span>
+    android:<span class="variable">theme=</span><span class="string">"@style/ThemeOverlay.AppCompat.Dark"</span>
+    &gt;
+
+    &lt;ImageView
+        android:<span class="variable">layout_width=</span><span class="string">"match_parent"</span>
+        android:<span class="variable">layout_height=</span><span class="string">"match_parent"</span>
+        android:<span class="variable">src=</span><span class="string">"@drawable/nav_header_bg"</span>
+        android:<span class="variable">scaleType=</span><span class="string">"centerCrop"</span> /&gt;
+
+    &lt;ImageView
+        android:<span class="variable">layout_width=</span><span class="string">"wrap_content"</span>
+        android:<span class="variable">layout_height=</span><span class="string">"wrap_content"</span>
+        android:<span class="variable">src=</span><span class="string">"@drawable/nuuneoi"</span>
+        android:<span class="variable">layout_gravity=</span><span class="string">"bottom"</span>
+        android:<span class="variable">layout_marginBottom=</span><span class="string">"36dp"</span> /&gt;
+
+    &lt;TextView
+        android:<span class="variable">layout_width=</span><span class="string">"match_parent"</span>
+        android:<span class="variable">layout_height=</span><span class="string">"wrap_content"</span>
+        android:<span class="variable">layout_gravity=</span><span class="string">"bottom"</span>
+        android:<span class="variable">layout_margin=</span><span class="string">"16dp"</span>
+        android:<span class="variable">text=</span><span class="string">"nuuneoi"</span>
+        android:<span class="variable">textAppearance=</span><span class="string">"@style/TextAppearance.AppCompat.Body1"</span>/&gt;
+
+&lt;/FrameLayout&gt;
+</code></pre><p>3.创建菜单布局文件navigation_drawer_items.xml，同上Clone的代码中有</p>
+<p>res/layout/navigation_drawer_items.xml</p>
+<pre><code><span class="pi">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
+<span class="tag">&lt;<span class="title">menu</span> <span class="attribute">xmlns:android</span>=<span class="value">"http://schemas.android.com/apk/res/android"</span>&gt;</span>
+
+    <span class="tag">&lt;<span class="title">group</span> <span class="attribute">android:checkableBehavior</span>=<span class="value">"all"</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">item</span>
+            <span class="attribute">android:id</span>=<span class="value">"@+id/navItem1"</span>
+            <span class="attribute">android:icon</span>=<span class="value">"@drawable/ic_action_location_found_dark"</span>
+            <span class="attribute">android:title</span>=<span class="value">"Home"</span>/&gt;</span>
+        <span class="tag">&lt;<span class="title">item</span>
+            <span class="attribute">android:id</span>=<span class="value">"@+id/navItem2"</span>
+            <span class="attribute">android:icon</span>=<span class="value">"@drawable/ic_action_location_found_dark"</span>
+            <span class="attribute">android:title</span>=<span class="value">"Blog"</span>/&gt;</span>
+
+        <span class="tag">&lt;<span class="title">item</span>
+            <span class="attribute">android:id</span>=<span class="value">"@+id/navItem3"</span>
+            <span class="attribute">android:icon</span>=<span class="value">"@drawable/ic_action_location_found_dark"</span>
+            <span class="attribute">android:title</span>=<span class="value">"About"</span>/&gt;</span>
+
+        <span class="tag">&lt;<span class="title">item</span>
+            <span class="attribute">android:id</span>=<span class="value">"@+id/navItem4"</span>
+            <span class="attribute">android:icon</span>=<span class="value">"@drawable/ic_action_location_found_dark"</span>
+            <span class="attribute">android:title</span>=<span class="value">"Contact"</span>/&gt;</span>
+    <span class="tag">&lt;/<span class="title">group</span>&gt;</span>
+
+<span class="tag">&lt;/<span class="title">menu</span>&gt;</span>
+</code></pre><p>运行效果</p>
+<video id="video" controls="controls" width="360" height="200" style="align:center"><br><source src="http://inthecheesefactory.com/uploads/source/designlibrary/scrolling16_1.mp4" type="video/mp4"><br></video> 
+
+<p>NavigationView是为Drawer Menu特别设计的，里面的布局内容大小自动测量，包括我们定义的侧边栏<br>的宽度。<br>NavigationView的点击事件，NavigationView提供<code>setNavigationItemSelectedListener</code>的方法<br>只需要在里面处理Item的点击事件即可。</p>
+<pre><code>NavigationView navigation;
+<span class="keyword">private</span> <span class="typename">void</span> initInstances(){
+    ...
+    navigation = (NavigationView) findViewById(R.id.navigation);
+    navigation.setNavigationItemSelectedListener(<span class="keyword">new</span> NavigationView.OnNavigationItemSelectedListener() {
+            <span class="annotation">@Override</span>
+            <span class="keyword">public</span> <span class="typename">boolean</span> onNavigationItemSelected(MenuItem menuItem) {
+                <span class="typename">int</span> id = menuItem.getItemId();
+                <span class="keyword">switch</span> (id) {
+                    <span class="keyword">case</span> R.id.<span class="string">navItem1:</span>
+                        <span class="keyword">break</span>;
+                    <span class="keyword">case</span> R.id.<span class="string">navItem2:</span>
+                        <span class="keyword">break</span>;
+                    <span class="keyword">case</span> R.id.<span class="string">navItem3:</span>
+                        <span class="keyword">break</span>;
+                }
+                <span class="keyword">return</span> <span class="literal">false</span>;
+            }
+        });
+}
+</code></pre><h3 id="十四、使用TextInputLayout让EditText具有现代化">十四、使用TextInputLayout让EditText具有现代化</h3><p>使用<code>TextInputLayout</code>让EditText显示提示信息和错误信息，只需要在EditText外部添加<br>TextInputLayout的布局（我觉的这样布局层次不就深了么，鸡肋）。</p>
+<pre><code>&lt;android<span class="class">.support</span><span class="class">.design</span><span class="class">.widget</span><span class="class">.TextInputLayout</span>
+    android:layout_width=<span class="string">"match_parent"</span>
+    android:layout_height=<span class="string">"wrap_content"</span>&gt;
+
+    &lt;EditText
+        android:layout_width=<span class="string">"match_parent"</span>
+        android:layout_height=<span class="string">"wrap_content"</span>
+        android:hint=<span class="string">"Username"</span> /&gt;
+&lt;/android<span class="class">.support</span><span class="class">.design</span><span class="class">.widget</span><span class="class">.TextInputLayout</span>&gt;
+</code></pre><p>查看效果</p>
+<video id="video" controls="controls" width="360" height="200" style="align:center"><br><source src="http://inthecheesefactory.com/uploads/source/designlibrary/scrolling17.mp4" type="video/mp4"><br></video>     
+
+<p>结束</p>
+<h3 id="总结">总结</h3><p>Android Design Support Library的还是不错的，非常推荐在你的App使用这个依赖包。现在还有一些<br>bug，因此在使用的时候需要注意这些问题。</p>
+<blockquote>
+<p>Updated [24/07/2015]: From v22.2.0 to v22.2.1<br>在版本v22.2.1中修复了一些问题</p>
+</blockquote>
+<ul>
+<li>TabLayout 更加完美运行在AppBarLayout中，运行更加流畅</li>
+</ul>
+<video id="video" controls="controls" width="360" height="200" style="align:center"><br><source src="http://inthecheesefactory.com/uploads/source/designlibrary/scrolling102.mp4" type="video/mp4"><br></video>     
+
+<ul>
+<li>FloatingActionButton 在Android 5.0版本以上不需要额外设置app:borderWidth</li>
+</ul>
+<p><img src="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot18n_1.png" alt="img"></p>
+<ul>
+<li>exitUntilCollapsed 运行时与描述更相符合了</li>
+</ul>
+<video id="video" controls="controls" width="360" height="200" style="align:center"><br><source src="http://inthecheesefactory.com/uploads/source/designlibrary/scrolling104.mp4" type="video/mp4"><br></video> 
+
+<p><b>仍然存在的Bug</b></p>
+<ul>
+<li>FloatingActionButton 的margin属性在Android 5.0以上版本依然与之前的版本不同。需要额外设置margin值<br><b>新问题</b></li>
+<li>FloatingActionButton 在Android 5.0以下，当FAB放在CoordinatorLayout布局中时候，margin变为0.但是在其他的布局中有一些margin值</li>
+</ul>
+<blockquote>
+<p>使用 FrameLayout<br><img src="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot20n.png" alt="img"></p>
+<p>使用 CoordinatorLayout<br><img src="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot19n.png" alt="img"></p>
+</blockquote>
+<ul>
+<li>FloatingActionButton 随SnackBar消失FAB的返回的动画看起来很怪。</li>
+</ul>
+<video id="video" controls="controls" width="360" height="200" style="align:center"><br><source src="http://inthecheesefactory.com/uploads/source/designlibrary/scrolling105.mp4" type="video/mp4"><br></video> 
+
+<p>希望开发人员能够在后续版本解决这些问题吧。</p>
+<p><a href="http://inthecheesefactory.com/blog/android-design-support-library-codelab/en" target="_blank" rel="external">原文链接</a></p>
 </span>
       
     </div>
@@ -501,7 +939,7 @@ private void initInstance<span class="params">()</span>{
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、从Github上把源码Clone下来"><span class="nav-number">1.</span> <span class="nav-text">一、从Github上把源码Clone下来</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、添加Android_Design_Support_Library_Dependency"><span class="nav-number">2.</span> <span class="nav-text">二、添加Android Design Support Library Dependency</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、添加FAB"><span class="nav-number">3.</span> <span class="nav-text">三、添加FAB</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四、Play_with_Snackbar"><span class="nav-number">4.</span> <span class="nav-text">四、Play with Snackbar</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#五、使用CoordinatorLayout"><span class="nav-number">5.</span> <span class="nav-text">五、使用CoordinatorLayout</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#六、放弃ActionBar，使用Toolbar"><span class="nav-number">6.</span> <span class="nav-text">六、放弃ActionBar，使用Toolbar</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、从Github上把源码Clone下来"><span class="nav-number">1.</span> <span class="nav-text">一、从Github上把源码Clone下来</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、添加Android_Design_Support_Library_Dependency"><span class="nav-number">2.</span> <span class="nav-text">二、添加Android Design Support Library Dependency</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、添加FAB"><span class="nav-number">3.</span> <span class="nav-text">三、添加FAB</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四、Play_with_Snackbar"><span class="nav-number">4.</span> <span class="nav-text">四、Play with Snackbar</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#五、使用CoordinatorLayout"><span class="nav-number">5.</span> <span class="nav-text">五、使用CoordinatorLayout</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#六、放弃ActionBar，使用Toolbar"><span class="nav-number">6.</span> <span class="nav-text">六、放弃ActionBar，使用Toolbar</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#七、在Content区域中添加布局文件"><span class="nav-number">7.</span> <span class="nav-text">七、在Content区域中添加布局文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#八、使用TabLayout"><span class="nav-number">8.</span> <span class="nav-text">八、使用TabLayout</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#九、让AppBarLayout随着屏幕滚动动态的显示、退出"><span class="nav-number">9.</span> <span class="nav-text">九、让AppBarLayout随着屏幕滚动动态的显示、退出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#十、移除TabLayout"><span class="nav-number">10.</span> <span class="nav-text">十、移除TabLayout</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#十一、Toolbar的收起展开"><span class="nav-number">11.</span> <span class="nav-text">十一、Toolbar的收起展开</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#十二、为App_Bar添加背景"><span class="nav-number">12.</span> <span class="nav-text">十二、为App Bar添加背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#十三、使用导航布局"><span class="nav-number">13.</span> <span class="nav-text">十三、使用导航布局</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#十四、使用TextInputLayout让EditText具有现代化"><span class="nav-number">14.</span> <span class="nav-text">十四、使用TextInputLayout让EditText具有现代化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">15.</span> <span class="nav-text">总结</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
