@@ -250,17 +250,29 @@ StringResponse stringResponse = <span class="keyword">new</span> StringRequest(R
         });
 <span class="comment">// 添加请求带队列中</span>
 queue.add(stringRequest);
-</code></pre><p>Volley会传递返回到的解析后的响应到主线程中，可以根据返回的响应来控制UI的，除此Volley还提供了可以取消请求任务的相关方法。<br>3.Volley请求的过程。</p>
+</code></pre><p>Volley会传递返回到的解析后的响应到主线程中，可以根据返回的响应来控制UI的，除此Volley还提供了可以取消请求任务的相关方法。<br>3.Volley请求的过程。<br>发送一个请求，只需要创建一个<code>Request</code>对象，使用<code>RequestQueue</code>的<code>add()</code>方法添加到队列中。请求的数据通过传输通道获取服务和数据响应。<br>当你调用<code>add()</code>方法的时候，Volley会运行一个缓存线程和一个网络分发的线程池。添加请求到队列后，先通过缓存线程判断当前请求是否可以使用缓存来返回数据。如果有缓存则返回缓存响应和解析的缓存数据。如果没有获取到缓存响应，则将请求加入到网络请求队列中。第一个可用的网络线程从队列中获取到请求，建立http传输通道，解析线程返回的响应，如果可以使用缓存的话，同时将解析的数据保存到缓存中，最后将解析的响应数据传递给主线程。</p>
+<blockquote>
+<p>注意：耗时操作如阻塞的I/O操作和数据解析/解码操作都在线程中处理，你可以从任何线程中添加请求，但是响应的数据总是在主线程中传输。<br>下图是Volley请求的生命周期。</p>
+</blockquote>
 <div align="center"><br>    <img src="https://github.com/alexwan1989/alexwan1989.github.io/blob/master/images/%E8%AF%B7%E6%B1%82%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F.png?raw=true" width="650px" height="400px"><br></div>
 
-
-
-
-
-
-
-
-
+<p>4.取消请求<br>使用<code>Request</code>对象调用<code>cancel()</code>方法来取消你的请求。一旦请求被取消，Volley能够确保你的响应相关处理不会被调用，也就是说你在Activity的<code>onStop()</code>方法中取消所有的请求，而不用在你的handler中去判断<code>getActivity() == null</code>，无论<code>onSaveInstanceState()</code>方法是否已经被调用，或者其他种情况。<br>为了充分利用这个优点，你通常只要通过检测工作中的请求来在需要的时候来取消他们。还有个更简单的方法：你可以为每个请求配置tag属性，用这个tag属性来取消你要的请求。比如：你可以为给Activity的请求添加Tag，在<code>onStop()</code>方法中调用<code>requestQueue.cancellAll(this)</code>来取消相关Activity中的数据请求。相似：可以在Viewpager中为所有的图片请求根据各自的tab添加对应的tag属性，在切换页面的时候取消请求，但要保证取消的请求不被其他tab页使用。<br>下面是一些对应的代码<br>（1）.在你的请求中定义tag值</p>
+<pre><code><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">String</span> TAG = <span class="string">"MyTag"</span>;
+StringRequest stringRequest;<span class="comment">// 假设存在</span>
+RequestQueue requestQueue; <span class="comment">// 假设存在</span>
+<span class="comment">// 设置tag</span>
+stringRequest.setTag(TAG);
+<span class="comment">// 添加请求到队列中</span>
+requestQueue.<span class="built_in">add</span>(stringRequest);
+</code></pre><p>（2）.在Activity的<code>onStop()</code>方法中取消所有对应tag属性的请求。</p>
+<pre><code><span class="annotation">@Override</span>
+<span class="keyword">protected</span> <span class="function"><span class="keyword">void</span> <span class="title">onStop</span><span class="params">()</span></span>{
+    <span class="keyword">super</span>.onStop();
+    <span class="keyword">if</span>(requestQueue != <span class="keyword">null</span>){
+        requestQueue.cancellAll(TAG);
+    }
+}
+</code></pre><p>小心使用取消请求操作，如果你依赖你的响应处理来改变对应状态或关闭其他操作，需要做出说明。</p>
 </span>
         
       
