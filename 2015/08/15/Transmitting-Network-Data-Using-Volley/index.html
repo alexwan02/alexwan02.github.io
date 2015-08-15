@@ -60,7 +60,7 @@ Volley善于在远程调用操">
 8.调试和追踪工具
 Volley善于在远程调用操">
 <meta property="og:image" content="https://github.com/alexwan1989/alexwan1989.github.io/blob/master/images/%E8%AF%B7%E6%B1%82%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F.png?raw=true">
-<meta property="og:updated_time" content="2015-08-15T15:53:04.000Z">
+<meta property="og:updated_time" content="2015-08-15T15:58:58.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="网络请求框架：Volley[译]">
 <meta name="twitter:description" content="Volley 概述Volley是开源的Android网络请求库。可以让app网络请求更加快捷，更重要的是让网络请求更迅速。Volley的特点
@@ -247,11 +247,11 @@ Volley善于在远程调用操">
 8.调试和追踪工具
 </code></pre><p>Volley善于在远程调用操作来与UI交互，如获取结构化数据的搜索结果页。Volley可以和任何协议轻松集成。支持String，images，和JSON等类型数据，Volley包种内置了你需要的功能，只需要关心app的功能逻辑即可。Volley在内存来保留所有的响应，因此Volley不适合用来出来大的下载和数据流操作。文件下载操作建议考虑使用<a href="https://developer.android.com/reference/android/app/DownloadManager.html" target="_blank" rel="external">DownloadManager</a><br>Google的Volley的核心库位于<code>frameworks/volley</code>下，包括主要的请求分发逻辑代码。<code>volley/toolbox</code>包括一套常用的实用工具。除了Google官方的开源包，<a href="https://github.com/mcxiaoke/android-volley" target="_blank" rel="external">Github</a>上也提供了Volley的相关源码。</p>
 <a id="more"></a>
-<h5 id="（一）Volley库的引入：">（一）Volley库的引入：</h5><p>（1）通过引入库的方式<br>1.使用Git命令克隆Volley库（本文使用github的）</p>
+<h5 id="一、Volley库的引入：">一、Volley库的引入：</h5><p>（1）通过引入库的方式<br>1.使用Git命令克隆Volley库（本文使用github的）</p>
 <pre><code>git clone <span class="string">https:</span><span class="comment">//github.com/mcxiaoke/android-volley</span>
 </code></pre><p>2.导入下载库，在Android项目引入Volley作为项目的依赖库<br>（2）Gradle配置的方式<br>1.在Gradle配置文件中加入</p>
 <pre><code><span class="keyword">compile</span> <span class="string">'com.mcxiaoke.volley:library:1.0.18'</span>
-</code></pre><h5 id="（二）发送简单的请求">（二）发送简单的请求</h5><p>使用Volley对象高效率创建<code>RequestQueue</code>对象，传入请求<code>Request</code>对象。<code>RequestQueue</code>主要用于管理网络操作，读写缓存，数据解析等线程的处理。<code>Request</code>处理请求响应的数据解析任务，<code>Volley</code>负责分发数据解析处理的结果到主线程。本节讲解如何使用<code>Volley.newRequestQueue</code>方法创建<code>RequestQueue</code>对象来请求网络数据<br>1.在AndroidManifest中添加网络请求权限</p>
+</code></pre><h5 id="二、发送简单的请求">二、发送简单的请求</h5><p>使用Volley对象高效率创建<code>RequestQueue</code>对象，传入请求<code>Request</code>对象。<code>RequestQueue</code>主要用于管理网络操作，读写缓存，数据解析等线程的处理。<code>Request</code>处理请求响应的数据解析任务，<code>Volley</code>负责分发数据解析处理的结果到主线程。本节讲解如何使用<code>Volley.newRequestQueue</code>方法创建<code>RequestQueue</code>对象来请求网络数据<br>1.在AndroidManifest中添加网络请求权限</p>
 <pre><code>&lt;uses-permission android:<span class="property">name</span>=<span class="string">"android.permission.INTERNET"</span>/&gt;
 </code></pre><p>2.创建RequestQueue</p>
 <pre><code><span class="keyword">final</span> TextView mTextView = (TextView) findViewById(R.id.text);
@@ -298,7 +298,7 @@ requestQueue.<span class="built_in">add</span>(stringRequest);
     }
 }
 </code></pre><p>小心使用取消请求操作，如果你依赖你的响应处理来改变对应状态或关闭其他操作，需要做出说明。</p>
-<h5 id="（三）设置请求队列">（三）设置请求队列</h5></span>
+<h5 id="三、设置请求队列">三、设置请求队列</h5></span>
       
     </div>
 
@@ -436,7 +436,7 @@ requestQueue.<span class="built_in">add</span>(stringRequest);
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#Volley_概述"><span class="nav-number">1.</span> <span class="nav-text">Volley 概述</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#（一）Volley库的引入："><span class="nav-number">2.</span> <span class="nav-text">（一）Volley库的引入：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#（二）发送简单的请求"><span class="nav-number">3.</span> <span class="nav-text">（二）发送简单的请求</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#（三）设置请求队列"><span class="nav-number">4.</span> <span class="nav-text">（三）设置请求队列</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#Volley_概述"><span class="nav-number">1.</span> <span class="nav-text">Volley 概述</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#一、Volley库的引入："><span class="nav-number">2.</span> <span class="nav-text">一、Volley库的引入：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#二、发送简单的请求"><span class="nav-number">3.</span> <span class="nav-text">二、发送简单的请求</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#三、设置请求队列"><span class="nav-number">4.</span> <span class="nav-text">三、设置请求队列</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>

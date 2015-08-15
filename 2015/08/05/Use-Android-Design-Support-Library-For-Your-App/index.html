@@ -57,7 +57,7 @@
 <meta property="og:image" content="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot18n_1.png">
 <meta property="og:image" content="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot20n.png">
 <meta property="og:image" content="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot19n.png">
-<meta property="og:updated_time" content="2015-08-09T03:29:10.000Z">
+<meta property="og:updated_time" content="2015-08-15T15:58:29.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Use Android Design Support Library For Your App ">
 <meta name="twitter:description" content="作为一个Android开发人员，大家都或多或少地了解了Android官方推出的Material Design依赖库。在官方推出依赖库之前，我们要是想使用Material Design的UI风格，只能使用第三方的开源依赖库。但是现在Google在2015年的I/O的开发者大会上宣布了名为Android Design Support Library的官方的Material Design UI 风格的依">
@@ -228,7 +228,7 @@
 
 
 <p>作为一个Android开发人员，大家都或多或少地了解了Android官方推出的Material Design依赖库。在官方推出依赖库之前，我们要是想使用Material Design的UI风格，只能使用第三方的开源依赖库。但是现在Google在2015年的I/O的开发者大会上宣布了名为Android Design Support Library的官方的Material Design UI 风格的依赖库。在本篇文章我们逐步来介绍如何来使用这个库.<br>好了，废话不多说，进入主题！<br><a id="more"></a><br>OK 开始吧！</p>
-<h3 id="一、从Github上把源码Clone下来">一、从Github上把源码Clone下来</h3><p>我已经把项目的基本配置资源文件上传到了<a href="https://github.com/nuuneoi/Lab-Android-DesignLibrary" target="_blank" rel="external">Github</a>上。你可以Clone到本地导入到AS中。代码中MainActivity是完成后的代码，你可以在CodeLabActivity 类中根据我们的步骤来体验Material Design设计的快感。</p>
+<h5 id="一、从Github上把源码Clone下来">一、从Github上把源码Clone下来</h5><p>我已经把项目的基本配置资源文件上传到了<a href="https://github.com/nuuneoi/Lab-Android-DesignLibrary" target="_blank" rel="external">Github</a>上。你可以Clone到本地导入到AS中。代码中MainActivity是完成后的代码，你可以在CodeLabActivity 类中根据我们的步骤来体验Material Design设计的快感。</p>
 <blockquote>
 <p>注：推荐使用Google的官方IDE Android Studio，本篇也是以AS来介绍</p>
 </blockquote>
@@ -237,13 +237,13 @@
 <pre><code>&lt;item name=<span class="string">"colorPrimary"</span>&gt;<span class="hexcolor">#2196F3</span>&lt;/item&gt;
 &lt;item name=<span class="string">"colorPrimaryDark"</span>&gt;<span class="hexcolor">#1565C0</span>&lt;/item&gt;
 &lt;item name=<span class="string">"colorAccent"</span>&gt;<span class="hexcolor">#E91E63</span>&lt;/item&gt;
-</code></pre><h3 id="二、添加Android_Design_Support_Library_Dependency">二、添加Android Design Support Library Dependency</h3><p>如何添加Android Design Support Library到我们的项目呢，也是很简单的。只需要在项目的build.gradle配置文件中添加上那么一句话</p>
+</code></pre><h5 id="二、添加Android_Design_Support_Library_Dependency">二、添加Android Design Support Library Dependency</h5><p>如何添加Android Design Support Library到我们的项目呢，也是很简单的。只需要在项目的build.gradle配置文件中添加上那么一句话</p>
 <pre><code><span class="keyword">compile</span> <span class="string">'com.android.support:design:22.2.1'</span>
 </code></pre><p>Very Good</p>
 <blockquote>
 <p>注:Design Support Library依赖Support v4 and AppCompat v7，想要使用Design Support Library要记住还要导入v4和v7的依赖哟。<br>另外，从Github上Clone的代码已经添加了上面一行配置代码，如果你是自己创建的新项目，需要自己添加这行配置。</p>
 </blockquote>
-<h3 id="三、添加FAB">三、添加FAB</h3><p>FAB（Floating Action Button简称）是一个带有阴影效果的圆形Button，典型的Meterail Design设计风格。所以我们从添加FAB开始，在布局文件中添加FloatingActionButton，将它放置在FrameLayout的布局里面是因为FAB需要一个父布局来使它位于屏幕的右下角。把下面的代码替换掉activity_code_lab.xml布局文件中的原有代码</p>
+<h5 id="三、添加FAB">三、添加FAB</h5><p>FAB（Floating Action Button简称）是一个带有阴影效果的圆形Button，典型的Meterail Design设计风格。所以我们从添加FAB开始，在布局文件中添加FloatingActionButton，将它放置在FrameLayout的布局里面是因为FAB需要一个父布局来使它位于屏幕的右下角。把下面的代码替换掉activity_code_lab.xml布局文件中的原有代码</p>
 <pre><code>&lt;android<span class="class">.support</span><span class="class">.v4</span><span class="class">.widget</span><span class="class">.DrawerLayout</span> ...
 xmlns:app=<span class="string">"http://schemas.android.com/apk/res-auto"</span>
 ....&gt;
@@ -305,7 +305,7 @@ mini：使用<span class="number">40</span>dp大小的button
         }
     });
 }
-</code></pre><h3 id="四、Play_with_Snackbar">四、Play with Snackbar</h3><p>Snackbar, 一个显示在屏幕下方的黑色消息框。SnackBar类似与Toast，但是不同于Toast是悬浮显示在屏幕上，而SnackBar而是UI的一部分。</p>
+</code></pre><h5 id="四、Play_with_Snackbar">四、Play with Snackbar</h5><p>Snackbar, 一个显示在屏幕下方的黑色消息框。SnackBar类似与Toast，但是不同于Toast是悬浮显示在屏幕上，而SnackBar而是UI的一部分。</p>
 <div align="center"><br>    <img src="http://inthecheesefactory.com/uploads/source/designlibrary/snackbar.jpg"><br></div>
 
 <p>Snackbar使用的方式也类似Toast</p>
@@ -339,7 +339,7 @@ mini：使用<span class="number">40</span>dp大小的button
 <div align="center"><br>    <img src="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot24.jpg"><br></div>
 
 <p>显示出来了，但是把FAB遮住了，是因为FAB与Snackbar之间没有布局没有关联。因此我们引入一个特殊的新布局CoordinatorLayout 让子View互相适配。</p>
-<h3 id="五、使用CoordinatorLayout">五、使用CoordinatorLayout</h3><p>修改布局文件，替换掉原来的FrameLayout<br>res/layout/activity_code_lab.xml</p>
+<h5 id="五、使用CoordinatorLayout">五、使用CoordinatorLayout</h5><p>修改布局文件，替换掉原来的FrameLayout<br>res/layout/activity_code_lab.xml</p>
 <pre><code>&lt;android<span class="class">.support</span><span class="class">.design</span><span class="class">.widget</span><span class="class">.CoordinatorLayout</span>
     android:id=<span class="string">"@+id/rootLayout"</span>
     android:layout:<span class="attribute">width</span>=<span class="string">"match_parent"</span>
@@ -364,7 +364,7 @@ rootLayout = <span class="list">(<span class="keyword">CoordinatorLayout</span>)
 <p>此时FAB就可以跟着Snackbar的消失出现而移动了。除此以外还添加了一些特效：Snackbar可以滑动消失</p>
 <video id="video" controls="controls" width="360" height="200" style="align:center"><br>    <source src="http://inthecheesefactory.com/uploads/source/designlibrary/scrolling105.mp4" type="video/mp4"><br></video>
 
-<h3 id="六、放弃ActionBar，使用Toolbar">六、放弃ActionBar，使用Toolbar</h3><p>Toolbar 并不是Android Design Support Library的一部分，但是需要配合使用。<br>Toolbar相比ActionBar更加灵活，和Android Design Support库使用具备ActionBar没有的新特性。<br>而转换使用Toolbar也很简单，只需要在定义Activity的样式xml文件中添加几句话即可隐藏掉ActionBar。</p>
+<h5 id="六、放弃ActionBar，使用Toolbar">六、放弃ActionBar，使用Toolbar</h5><p>Toolbar 并不是Android Design Support Library的一部分，但是需要配合使用。<br>Toolbar相比ActionBar更加灵活，和Android Design Support库使用具备ActionBar没有的新特性。<br>而转换使用Toolbar也很简单，只需要在定义Activity的样式xml文件中添加几句话即可隐藏掉ActionBar。</p>
 <pre><code>&lt;style <span class="property">name</span>=“AppTheme” parent=“Theme.AppCompat.Light.DarkActionBar”&gt;
     &lt;<span class="property">item</span> <span class="property">name</span>=“windowActionBar”&gt;<span class="constant">false</span>&lt;/<span class="property">item</span>&gt;
     &lt;<span class="property">item</span> <span class="property">name</span>=“windowNoTitle”&gt;<span class="constant">true</span>&lt;/<span class="property">item</span>&gt;
@@ -410,7 +410,7 @@ private void initInstance<span class="params">()</span>{
 </code></pre><p> 运行代码测试一下，完美！</p>
 <video id="video" controls="controls" style="align:center"><br><source src="http://inthecheesefactory.com/uploads/source/designlibrary/toolbarappbarlayout.mp4"><br></video>
 
-<h3 id="七、在Content区域中添加布局文件">七、在Content区域中添加布局文件</h3><p>现在我们有了FAB，Toolbar。接下来在添加其他的布局<br>我们在AppBarLayout和FAB之间添加几个Button</p>
+<h5 id="七、在Content区域中添加布局文件">七、在Content区域中添加布局文件</h5><p>现在我们有了FAB，Toolbar。接下来在添加其他的布局<br>我们在AppBarLayout和FAB之间添加几个Button</p>
 <pre><code>...
 &lt;/android<span class="class">.support</span><span class="class">.design</span><span class="class">.widget</span><span class="class">.AppBarLayout</span>&gt;
 
@@ -446,7 +446,7 @@ private void initInstance<span class="params">()</span>{
 <div align="center"><br>    <img src="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot30.jpg"><br></div>
 
 <p>大功告成！</p>
-<h3 id="八、使用TabLayout">八、使用TabLayout</h3><p>我们经常会在APP中使用TAB，来增加切换的效果。在Android Meterial Design 依赖库之前我们一般使用第<br>三方依赖库来实现Meterial Design的效果。而现在可以直接使用官方依赖包提供的TabLayout实现相同的功能。<br>    TabLayout与Toolbar一样要放置在AppBarLayout中，因为AppBarLayout继承了LinearLayout，所<br>以直接放在ToolBar下方：</p>
+<h5 id="八、使用TabLayout">八、使用TabLayout</h5><p>我们经常会在APP中使用TAB，来增加切换的效果。在Android Meterial Design 依赖库之前我们一般使用第<br>三方依赖库来实现Meterial Design的效果。而现在可以直接使用官方依赖包提供的TabLayout实现相同的功能。<br>    TabLayout与Toolbar一样要放置在AppBarLayout中，因为AppBarLayout继承了LinearLayout，所<br>以直接放在ToolBar下方：</p>
 <pre><code>&lt;android<span class="class">.support</span><span class="class">.design</span><span class="class">.widget</span><span class="class">.AppBarLayout</span> ...&gt;
 
     &lt;android<span class="class">.support</span><span class="class">.v7</span><span class="class">.widget</span><span class="class">.Toolbar</span> ... /&gt;
@@ -489,7 +489,7 @@ private void initInstance(){
 <div align="center"><br>    <img src="http://inthecheesefactory.com/uploads/source/designlibrary/tabmodetabgravity.jpg"><br></div>
 
 <p>TabLayout结束！</p>
-<h3 id="九、让AppBarLayout随着屏幕滚动动态的显示、退出">九、让AppBarLayout随着屏幕滚动动态的显示、退出</h3><p>Android Meterial Design依赖库提供了可以让App Bar随屏幕上下滑动而滚动消失出现。这样可以在屏幕中<br>内容过多的时候提供更多内容空间。在依赖库出现之前，我们只能通过第三方控件来实现这个效果，现在只需要<br>几行代码<br>    首先，我们填充Content内容，让它可以上下滚动。</p>
+<h5 id="九、让AppBarLayout随着屏幕滚动动态的显示、退出">九、让AppBarLayout随着屏幕滚动动态的显示、退出</h5><p>Android Meterial Design依赖库提供了可以让App Bar随屏幕上下滑动而滚动消失出现。这样可以在屏幕中<br>内容过多的时候提供更多内容空间。在依赖库出现之前，我们只能通过第三方控件来实现这个效果，现在只需要<br>几行代码<br>    首先，我们填充Content内容，让它可以上下滚动。</p>
 <pre><code><span class="tag">&lt;<span class="title">Button</span>
     <span class="attribute">android:layout_width</span>=<span class="value">"wrap_content"</span>
     <span class="attribute">android:layout_height</span>=<span class="value">"wrap_content"</span>
@@ -556,7 +556,7 @@ private void initInstance(){
     /&gt;</span></span>
 </code></pre><video id="video" controls="controls" width="360" height="200" style="align:center"><br><source src="http://inthecheesefactory.com/uploads/source/designlibrary/scrolling104.mp4" type="video/mp4"><br></video>
 
-<h3 id="十、移除TabLayout">十、移除TabLayout</h3><p>下面几节，我们将讨论更多关于Toolbar的相关特性，因此移除TabLayout的相关代码</p>
+<h5 id="十、移除TabLayout">十、移除TabLayout</h5><p>下面几节，我们将讨论更多关于Toolbar的相关特性，因此移除TabLayout的相关代码</p>
 <pre><code><span class="comment">&lt;!--android.support.design.widget.TabLayout --&gt;</span>
 </code></pre><p>Java代码</p>
 <pre><code>//tabLayout = (TabLayout) findViewById(R.id.tabLayout);
@@ -621,7 +621,7 @@ private void initInstances<span class="params">()</span> {
 </code></pre><p>OK</p>
 <video id="video" controls="controls" width="360" height="200" style="align:center"><br><source src="http://inthecheesefactory.com/uploads/source/designlibrary/scrolling10.mp4" type="video/mp4"><br></video> 
 
-<h3 id="十二、为App_Bar添加背景">十二、为App Bar添加背景</h3><p>有时候，我们希望为AppBar使用漂亮的背景颜色而不是单调的颜色，CollapsingToolbarLayout继承<br>FrameLayout，所以我们可以使用ImageView作为Toolbar的背景颜色</p>
+<h5 id="十二、为App_Bar添加背景">十二、为App Bar添加背景</h5><p>有时候，我们希望为AppBar使用漂亮的背景颜色而不是单调的颜色，CollapsingToolbarLayout继承<br>FrameLayout，所以我们可以使用ImageView作为Toolbar的背景颜色</p>
 <pre><code>&lt;ImageView
     android:layout_width=<span class="string">"match_parent"</span>
     android:layout_height=<span class="string">"match_parent"</span>
@@ -653,7 +653,7 @@ private void initInstances<span class="params">()</span> {
 <video id="video" controls="controls" width="360" height="200" style="align:center"><br><source src="http://inthecheesefactory.com/uploads/source/designlibrary/scrolling15.mp4" type="video/mp4"><br></video> 
 
 <p>AppBar现在看起来好看多了！</p>
-<h3 id="十三、使用导航布局">十三、使用导航布局</h3><p>使用<code>NavigationView</code>为侧边栏添加内容</p>
+<h5 id="十三、使用导航布局">十三、使用导航布局</h5><p>使用<code>NavigationView</code>为侧边栏添加内容</p>
 <p>1.在CoordinatorLayout布局下面添加NavigationView的代码</p>
 <pre><code>    ...
 &lt;/android<span class="class">.support</span><span class="class">.design</span><span class="class">.widget</span><span class="class">.CoordinatorLayout</span>&gt;
@@ -753,7 +753,7 @@ private void initInstances<span class="params">()</span> {
             }
         });
 }
-</code></pre><h3 id="十四、使用TextInputLayout让EditText具有现代化">十四、使用TextInputLayout让EditText具有现代化</h3><p>使用<code>TextInputLayout</code>让EditText显示提示信息和错误信息，只需要在EditText外部添加<br>TextInputLayout的布局（我觉的这样布局层次不就深了么，鸡肋）。</p>
+</code></pre><h5 id="十四、使用TextInputLayout让EditText具有现代化">十四、使用TextInputLayout让EditText具有现代化</h5><p>使用<code>TextInputLayout</code>让EditText显示提示信息和错误信息，只需要在EditText外部添加<br>TextInputLayout的布局（我觉的这样布局层次不就深了么，鸡肋）。</p>
 <pre><code>&lt;android<span class="class">.support</span><span class="class">.design</span><span class="class">.widget</span><span class="class">.TextInputLayout</span>
     android:layout_width=<span class="string">"match_parent"</span>
     android:layout_height=<span class="string">"wrap_content"</span>&gt;
@@ -767,7 +767,7 @@ private void initInstances<span class="params">()</span> {
 <video id="video" controls="controls" width="360" height="200" style="align:center"><br><source src="http://inthecheesefactory.com/uploads/source/designlibrary/scrolling17.mp4" type="video/mp4"><br></video>     
 
 <p>结束</p>
-<h3 id="总结">总结</h3><p>Android Design Support Library的还是不错的，非常推荐在你的App使用这个依赖包。现在还有一些<br>bug，因此在使用的时候需要注意这些问题。</p>
+<h5 id="总结">总结</h5><p>Android Design Support Library的还是不错的，非常推荐在你的App使用这个依赖包。现在还有一些<br>bug，因此在使用的时候需要注意这些问题。</p>
 <blockquote>
 <p>Updated [24/07/2015]: From v22.2.0 to v22.2.1<br>在版本v22.2.1中修复了一些问题</p>
 </blockquote>
@@ -941,7 +941,7 @@ private void initInstances<span class="params">()</span> {
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、从Github上把源码Clone下来"><span class="nav-number">1.</span> <span class="nav-text">一、从Github上把源码Clone下来</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、添加Android_Design_Support_Library_Dependency"><span class="nav-number">2.</span> <span class="nav-text">二、添加Android Design Support Library Dependency</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、添加FAB"><span class="nav-number">3.</span> <span class="nav-text">三、添加FAB</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四、Play_with_Snackbar"><span class="nav-number">4.</span> <span class="nav-text">四、Play with Snackbar</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#五、使用CoordinatorLayout"><span class="nav-number">5.</span> <span class="nav-text">五、使用CoordinatorLayout</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#六、放弃ActionBar，使用Toolbar"><span class="nav-number">6.</span> <span class="nav-text">六、放弃ActionBar，使用Toolbar</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#七、在Content区域中添加布局文件"><span class="nav-number">7.</span> <span class="nav-text">七、在Content区域中添加布局文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#八、使用TabLayout"><span class="nav-number">8.</span> <span class="nav-text">八、使用TabLayout</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#九、让AppBarLayout随着屏幕滚动动态的显示、退出"><span class="nav-number">9.</span> <span class="nav-text">九、让AppBarLayout随着屏幕滚动动态的显示、退出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#十、移除TabLayout"><span class="nav-number">10.</span> <span class="nav-text">十、移除TabLayout</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#十一、Toolbar的收起展开"><span class="nav-number">11.</span> <span class="nav-text">十一、Toolbar的收起展开</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#十二、为App_Bar添加背景"><span class="nav-number">12.</span> <span class="nav-text">十二、为App Bar添加背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#十三、使用导航布局"><span class="nav-number">13.</span> <span class="nav-text">十三、使用导航布局</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#十四、使用TextInputLayout让EditText具有现代化"><span class="nav-number">14.</span> <span class="nav-text">十四、使用TextInputLayout让EditText具有现代化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">15.</span> <span class="nav-text">总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#一、从Github上把源码Clone下来"><span class="nav-number">1.</span> <span class="nav-text">一、从Github上把源码Clone下来</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#二、添加Android_Design_Support_Library_Dependency"><span class="nav-number">2.</span> <span class="nav-text">二、添加Android Design Support Library Dependency</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#三、添加FAB"><span class="nav-number">3.</span> <span class="nav-text">三、添加FAB</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#四、Play_with_Snackbar"><span class="nav-number">4.</span> <span class="nav-text">四、Play with Snackbar</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#五、使用CoordinatorLayout"><span class="nav-number">5.</span> <span class="nav-text">五、使用CoordinatorLayout</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#六、放弃ActionBar，使用Toolbar"><span class="nav-number">6.</span> <span class="nav-text">六、放弃ActionBar，使用Toolbar</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#七、在Content区域中添加布局文件"><span class="nav-number">7.</span> <span class="nav-text">七、在Content区域中添加布局文件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#八、使用TabLayout"><span class="nav-number">8.</span> <span class="nav-text">八、使用TabLayout</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#九、让AppBarLayout随着屏幕滚动动态的显示、退出"><span class="nav-number">9.</span> <span class="nav-text">九、让AppBarLayout随着屏幕滚动动态的显示、退出</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#十、移除TabLayout"><span class="nav-number">10.</span> <span class="nav-text">十、移除TabLayout</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#十一、Toolbar的收起展开"><span class="nav-number"></span> <span class="nav-text">十一、Toolbar的收起展开</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#十二、为App_Bar添加背景"><span class="nav-number">1.</span> <span class="nav-text">十二、为App Bar添加背景</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#十三、使用导航布局"><span class="nav-number">2.</span> <span class="nav-text">十三、使用导航布局</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#十四、使用TextInputLayout让EditText具有现代化"><span class="nav-number">3.</span> <span class="nav-text">十四、使用TextInputLayout让EditText具有现代化</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
