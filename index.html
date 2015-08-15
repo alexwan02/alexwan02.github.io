@@ -221,7 +221,7 @@
 6.请求重试和补偿机制
 7.异步处理返回结果，正确更新UI
 8.调试和追踪工具
-</code></pre><p>Volley善于在远程调用操作来与UI交互，如获取结构化数据的搜索结果页。Volley可以和任何协议轻松集成。支持<br>String，images，和JSON等类型数据，Volley包种内置了你需要的功能，只需要关心app的功能逻辑即可。<br>Volley在内存来保留所有的响应，因此Volley不适合用来出来大的下载和数据流操作。文件下载操作建议考虑使用<br><a href="https://developer.android.com/reference/android/app/DownloadManager.html" target="_blank" rel="external">DownloadManager</a><br>Google的Volley的核心库位于<code>frameworks/volley</code>下，包括主要的请求分发逻辑代码。<code>volley/toolbox</code>包括<br>一套常用的实用工具。除了Google官方的开源包，<a href="https://github.com/mcxiaoke/android-volley" target="_blank" rel="external">Github</a>上<br>也提供了Volley的相关源码。</p>
+</code></pre><p>Volley善于在远程调用操作来与UI交互，如获取结构化数据的搜索结果页。Volley可以和任何协议轻松集成。支持<br>String，images，和JSON等类型数据，Volley包种内置了你需要的功能，只需要关心app的功能逻辑即可。<br>Volley在内存来保留所有的响应，因此Volley不适合用来出来大的下载和数据流操作。文件下载操作建议考虑使用<a href="https://developer.android.com/reference/android/app/DownloadManager.html" target="_blank" rel="external">DownloadManager</a><br>Google的Volley的核心库位于<code>frameworks/volley</code>下，包括主要的请求分发逻辑代码。<code>volley/toolbox</code>包括<br>一套常用的实用工具。除了Google官方的开源包，<a href="https://github.com/mcxiaoke/android-volley" target="_blank" rel="external">Github</a>上<br>也提供了Volley的相关源码。</p>
 <h5 id="（一）Volley库的引入：">（一）Volley库的引入：</h5><p>（1）通过引入库的方式<br>1.使用Git命令克隆Volley库（本文使用github的）</p>
 <pre><code>git clone <span class="string">https:</span><span class="comment">//github.com/mcxiaoke/android-volley</span>
 </code></pre><p>2.导入下载库，在Android项目引入Volley作为项目的依赖库<br>（2）Gradle配置的方式<br>1.在Gradle配置文件中加入</p>
