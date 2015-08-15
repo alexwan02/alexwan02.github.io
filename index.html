@@ -221,12 +221,12 @@
 6.请求重试和补偿机制
 7.异步处理返回结果，正确更新UI
 8.调试和追踪工具
-</code></pre><p>Volley善于在远程调用操作来与UI交互，如获取结构化数据的搜索结果页。Volley可以和任何协议轻松集成。支持<br>String，images，和JSON等类型数据，Volley包种内置了你需要的功能，只需要关心app的功能逻辑即可。<br>Volley在内存来保留所有的响应，因此Volley不适合用来出来大的下载和数据流操作。文件下载操作建议考虑使用<a href="https://developer.android.com/reference/android/app/DownloadManager.html" target="_blank" rel="external">DownloadManager</a><br>Google的Volley的核心库位于<code>frameworks/volley</code>下，包括主要的请求分发逻辑代码。<code>volley/toolbox</code>包括<br>一套常用的实用工具。除了Google官方的开源包，<a href="https://github.com/mcxiaoke/android-volley" target="_blank" rel="external">Github</a>上<br>也提供了Volley的相关源码。</p>
+</code></pre><p>Volley善于在远程调用操作来与UI交互，如获取结构化数据的搜索结果页。Volley可以和任何协议轻松集成。支持String，images，和JSON等类型数据，Volley包种内置了你需要的功能，只需要关心app的功能逻辑即可。Volley在内存来保留所有的响应，因此Volley不适合用来出来大的下载和数据流操作。文件下载操作建议考虑使用<a href="https://developer.android.com/reference/android/app/DownloadManager.html" target="_blank" rel="external">DownloadManager</a><br>Google的Volley的核心库位于<code>frameworks/volley</code>下，包括主要的请求分发逻辑代码。<code>volley/toolbox</code>包括一套常用的实用工具。除了Google官方的开源包，<a href="https://github.com/mcxiaoke/android-volley" target="_blank" rel="external">Github</a>上也提供了Volley的相关源码。</p>
 <h5 id="（一）Volley库的引入：">（一）Volley库的引入：</h5><p>（1）通过引入库的方式<br>1.使用Git命令克隆Volley库（本文使用github的）</p>
 <pre><code>git clone <span class="string">https:</span><span class="comment">//github.com/mcxiaoke/android-volley</span>
 </code></pre><p>2.导入下载库，在Android项目引入Volley作为项目的依赖库<br>（2）Gradle配置的方式<br>1.在Gradle配置文件中加入</p>
 <pre><code><span class="keyword">compile</span> <span class="string">'com.mcxiaoke.volley:library:1.0.18'</span>
-</code></pre><h4 id="（二）发送简单的请求">（二）发送简单的请求</h4><p>使用Volley对象高效率创建<code>RequestQueue</code>对象，传入请求<code>Request</code>对象。<code>RequestQueue</code>主要用于管理网络操作，<br>读写缓存，数据解析等线程的处理。<code>Request</code>处理请求响应的数据解析任务，<code>Volley</code>负责分发数据解析处理的结果到主<br>线程。<br>本节讲解如何使用<code>Volley.newRequestQueue</code>方法创建<code>RequestQueue</code>对象来请求网络数据<br>1.在AndroidManifest中添加网络请求权限</p>
+</code></pre><h4 id="（二）发送简单的请求">（二）发送简单的请求</h4><p>使用Volley对象高效率创建<code>RequestQueue</code>对象，传入请求<code>Request</code>对象。<code>RequestQueue</code>主要用于管理网络操作，读写缓存，数据解析等线程的处理。<code>Request</code>处理请求响应的数据解析任务，<code>Volley</code>负责分发数据解析处理的结果到主线程。本节讲解如何使用<code>Volley.newRequestQueue</code>方法创建<code>RequestQueue</code>对象来请求网络数据<br>1.在AndroidManifest中添加网络请求权限</p>
 <pre><code>&lt;uses-permission android:<span class="property">name</span>=<span class="string">"android.permission.INTERNET"</span>/&gt;
 </code></pre><p>2.创建RequestQueue</p>
 <pre><code><span class="keyword">final</span> TextView mTextView = (TextView) findViewById(R.id.text);
@@ -250,11 +250,8 @@ StringResponse stringResponse = <span class="keyword">new</span> StringRequest(R
         });
 <span class="comment">// 添加请求带队列中</span>
 queue.add(stringRequest);
-</code></pre><p>Volley会传递返回到的解析后的响应到主线程中，可以根据返回的响应来控制UI的，除此Volley还提供了可以<br>取消请求任务的相关方法。<br>3.Volley请求的过程。</p>
+</code></pre><p>Volley会传递返回到的解析后的响应到主线程中，可以根据返回的响应来控制UI的，除此Volley还提供了可以取消请求任务的相关方法。<br>3.Volley请求的过程。</p>
 <p><img src="http://img3.douban.com/view/photo/photo/public/p2262843740.jpg" alt="img"></p>
-<!--<div align="center">-->
-<!--<img src="http://img3.douban.com/view/photo/photo/public/p2262843740.jpg" style="width:600;height:450"/>-->
-<!--</div>-->
 </span>
         
       
