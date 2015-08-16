@@ -61,7 +61,7 @@ Volley善于在远程调用操作来与UI交">
 Volley善于在远程调用操作来与UI交">
 <meta property="og:image" content="https://github.com/alexwan1989/alexwan1989.github.io/blob/master/images/what's%20volley.png?raw=true">
 <meta property="og:image" content="https://github.com/alexwan1989/alexwan1989.github.io/blob/master/images/%E8%AF%B7%E6%B1%82%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F.png?raw=true">
-<meta property="og:updated_time" content="2015-08-16T15:25:29.000Z">
+<meta property="og:updated_time" content="2015-08-16T15:27:33.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="网络请求框架：Volley[译]">
 <meta name="twitter:description" content="Volley是开源的Android网络请求库。可以让app网络请求更加快捷，更重要的是让网络请求更迅速，具有以下几个方面的特点：
@@ -415,21 +415,32 @@ MySingleton.getInstance<span class="params">(this)</span>.addToRequestQueue<span
     }
 });
 </code></pre><p>  // 使用单例模式加载图片<br>  MySingleton.getInstance(this).addToRequestQueue(request);</p>
-<h6 id="3-使用ImageLoader和NetworkImageView">3.使用ImageLoader和NetworkImageView</h6><p>使用ImageLoader和NetworkImageView高效加载大量的图片。在XML布局文件中使用NetworkImageView替换ImageView</p>
-<p>  &lt;com.android.volley.toolbox.NetworkImageView</p>
-<pre><code><span class="label">android:</span>id=<span class="string">"@+id/networkImageView"</span>
-<span class="label">android:</span>layout_width=<span class="string">"150dp"</span>
-<span class="label">android:</span>layout_height=<span class="string">"170dp"</span>
-<span class="label">android:</span>layout_centerHorizontal=<span class="string">"true"</span> /&gt;
-</code></pre><p>（1）.只使用ImageLoader</p>
-<p>  ImageLoader mImageLoader;<br>  ImageView mImageView;<br>  // 图片地址<br>  private static final String IMAGE_URL = “<a href="http://developer.android.com/images/training/system-ui.png" target="_blank" rel="external">http://developer.android.com/images/training/system-ui.png</a>“;<br>  …<br>  mImageView = (ImageView) findViewById(R.id.regularImageView);</p>
-<p>  // 使用单例加载网络图片<br>  mImageLoader = MySingleton.getInstance(this).getImageLoader();<br>  mImageLoader.get(IMAGE_URL, ImageLoader.getImageListener(mImageView,R.drawable.def_image, R.drawable.err_image));</p>
 </li>
 </ul>
-<p>（2）.ImageLoaderh和NetworkImageView结合使用</p>
+<h6 id="3-使用ImageLoader和NetworkImageView">3.使用ImageLoader和NetworkImageView</h6><p>使用ImageLoader和NetworkImageView高效加载大量的图片。在XML布局文件中使用NetworkImageView替换ImageView</p>
+<pre><code>&lt;<span class="tag">com</span><span class="class">.android</span><span class="class">.volley</span><span class="class">.toolbox</span><span class="class">.NetworkImageView</span>
+    <span class="rule"><span class="attribute">android</span>:<span class="value">id=<span class="string">"@+id/networkImageView"</span>
+    android:layout_width=<span class="string">"150dp"</span>
+    android:layout_height=<span class="string">"170dp"</span>
+    android:layout_centerHorizontal=<span class="string">"true"</span> /&gt;</span></span>
+</code></pre><p>（1）.只使用ImageLoader</p>
+<pre><code>ImageLoader mImageLoader;
+ImageView mImageView;
+<span class="comment">// 图片地址</span>
+private static final String IMAGE_URL = 
+        <span class="string">"http://developer.android.com/images/training/system-ui.png"</span>;
+...
+mImageView = <span class="params">(ImageView)</span> findViewById<span class="params">(R.id.regularImageView)</span>;
+
+<span class="comment">// 使用单例加载网络图片</span>
+mImageLoader = MySingleton.getInstance<span class="params">(this)</span>.getImageLoader<span class="params">()</span>;
+mImageLoader.get<span class="params">(IMAGE_URL, ImageLoader.getImageListener<span class="params">(mImageView,
+        R.drawable.def_image, R.drawable.err_image)</span>)</span>;
+</code></pre><p>（2）.ImageLoaderh和NetworkImageView结合使用</p>
 <pre><code>ImageLoader mImageLoader;
 NetworkImageView mNetworkImageView;
-private static final String IMAGE_URL = <span class="string">"http://developer.android.com/images/training/system-ui.png"</span>;
+private static final String IMAGE_URL = 
+        <span class="string">"http://developer.android.com/images/training/system-ui.png"</span>;
 ...
 
 <span class="comment">// 获取NetworkImageView控件</span>
@@ -486,7 +497,8 @@ mNetworkImageView.setImageUrl<span class="params">(IMAGE_URL, mImageLoader)</spa
 }
 </code></pre><p>使用缓存来初始化<code>ImageLoader</code></p>
 <pre><code>RequestQueue mRequestQueue<span class="comment">; // 假设已经初始化</span>
-ImageLoader mImageLoader = new ImageLoader<span class="list">(<span class="keyword">mRequestQueue</span>, new LruBitmapCache<span class="list">(<span class="keyword">LruBitmapCache</span>.getCacheSize<span class="list">()</span>)</span>)</span><span class="comment">;</span>
+ImageLoader mImageLoader = new ImageLoader<span class="list">(<span class="keyword">mRequestQueue</span>, 
+        new LruBitmapCache<span class="list">(<span class="keyword">LruBitmapCache</span>.getCacheSize<span class="list">()</span>)</span>)</span><span class="comment">;</span>
 </code></pre><h6 id="6-请求JSON数据">6.请求JSON数据</h6><p>Volley提供两个类来请求JSON数据</p>
 <ul>
 <li><code>JsonArrayRequest</code> -根据URL请求JSON数组</li>
@@ -526,7 +538,8 @@ MySingleton.getInstance(<span class="keyword">this</span>).addToRequestQueue(jsO
         <span class="built_in">String</span> json <span class="subst">=</span> <span class="literal">new</span> <span class="built_in">String</span>(response<span class="built_in">.</span><span class="built_in">data</span>,
         <span class="comment">// 获取字符编码格式</span>
         HttpHeaderParser<span class="built_in">.</span>parseCharset(response<span class="built_in">.</span>headers));
-        <span class="keyword">return</span> Response<span class="built_in">.</span>success(gson<span class="built_in">.</span>fromJson(json, clazz),HttpHeaderParser<span class="built_in">.</span>parseCacheHeaders(response));
+        <span class="keyword">return</span> Response<span class="built_in">.</span>success(gson<span class="built_in">.</span>fromJson(json, clazz),
+                HttpHeaderParser<span class="built_in">.</span>parseCacheHeaders(response));
     }       
     <span class="comment">// 处理错误</span>
     <span class="attribute">...</span>
@@ -555,7 +568,8 @@ MySingleton.getInstance(<span class="keyword">this</span>).addToRequestQueue(jsO
     * <span class="doctag">@param</span> 返回的Java类
     * <span class="doctag">@param</span> 请求头部
     */</span>
-    <span class="function"><span class="keyword">public</span> <span class="title">GsonRequest</span><span class="params">(String url, Class&lt;T&gt; clazz, Map&lt;String, String&gt; headers,Listener&lt;T&gt; listener, ErrorListener errorListener)</span> </span>{
+    <span class="function"><span class="keyword">public</span> <span class="title">GsonRequest</span><span class="params">(String url, Class&lt;T&gt; clazz, Map&lt;String, String&gt; headers,
+            Listener&lt;T&gt; listener, ErrorListener errorListener)</span> </span>{
         <span class="keyword">super</span>(Method.GET, url, errorListener);
         <span class="keyword">this</span>.clazz = clazz;
         <span class="keyword">this</span>.headers = headers;
@@ -575,8 +589,10 @@ MySingleton.getInstance(<span class="keyword">this</span>).addToRequestQueue(jsO
     <span class="annotation">@Override</span>
     <span class="keyword">protected</span> Response&lt;T&gt; parseNetworkResponse(NetworkResponse response) {
         <span class="keyword">try</span> {
-            String json = <span class="keyword">new</span> String(response.data,HttpHeaderParser.parseCharset(response.headers));
-            <span class="keyword">return</span> Response.success(gson.fromJson(json, clazz),HttpHeaderParser.parseCacheHeaders(response));
+            String json = <span class="keyword">new</span> String(response.data,
+                    HttpHeaderParser.parseCharset(response.headers));
+            <span class="keyword">return</span> Response.success(gson.fromJson(json, clazz),
+                    HttpHeaderParser.parseCacheHeaders(response));
         } <span class="keyword">catch</span> (UnsupportedEncodingException e) {
             <span class="keyword">return</span> Response.<span class="keyword">error</span>(<span class="keyword">new</span> ParseError(e));
         } <span class="keyword">catch</span> (JsonSyntaxException e) {
