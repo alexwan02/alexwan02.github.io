@@ -61,7 +61,7 @@ Volley善于在远程调用操作来与UI交">
 Volley善于在远程调用操作来与UI交">
 <meta property="og:image" content="https://github.com/alexwan1989/alexwan1989.github.io/blob/master/images/what's%20volley.png?raw=true">
 <meta property="og:image" content="https://github.com/alexwan1989/alexwan1989.github.io/blob/master/images/%E8%AF%B7%E6%B1%82%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F.png?raw=true">
-<meta property="og:updated_time" content="2015-08-16T13:27:28.000Z">
+<meta property="og:updated_time" content="2015-08-16T15:23:51.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="网络请求框架：Volley[译]">
 <meta name="twitter:description" content="Volley是开源的Android网络请求库。可以让app网络请求更加快捷，更重要的是让网络请求更迅速，具有以下几个方面的特点：
@@ -392,7 +392,201 @@ getRequestQueue<span class="params">()</span>;
 ...
 <span class="comment">// 添加请求到队列中</span>
 MySingleton.getInstance<span class="params">(this)</span>.addToRequestQueue<span class="params">(stringRequest)</span>;
-</code></pre></span>
+</code></pre><h5 id="四、创建请求对象">四、创建请求对象</h5><p>Volley内置了一下几个常用的请求类型</p>
+<ul>
+<li>StringRequest: 指定URL返回String类型的数据请求</li>
+<li>ImageRequest: 指定URL返回图片类型的数据请求</li>
+<li>JsonObjectRequest，JsonArrayReqeust(都是JsonRequest子类)。指定URL返回JSON对象或JSON数组数据的请求<h6 id="1-请求图片数据">1.请求图片数据</h6>Volley为请求图片数据提供一下几个常用类。</li>
+<li>ImageRequest：一个封装的图片请求，返回Bitmap对象，可以对返回的Bitmap重新定义大小。最大的优点是使用Volley的线程调度保证耗时的图片操作自动在一个工作线程中执行。</li>
+<li>ImageLoader：一个帮助类，处理加载图片和缓存图片。<code>ImageLoader</code>是图片数据请求的统一调度，如在ListView中显示大量的图片，<code>ImageLoader</code>在调用普通的Volley缓存之前首先会去获取内存缓存中的图片，来防止ListView加载图片闪烁的问题。保证在获取到缓存时不会阻塞或延迟主线程。<code>ImageLoader</code>还合并请求响应，不用每个响应处理都为View设置一个Bitmap的处理，同时传输多个响应，提升App性能。</li>
+<li><p>NetworkImageView：使用ImageLoader来构建图片请求，替代了<code>ImageView</code>来显示网络图片。如果View从视图中移除，<code>NetworkImageView</code>可以取消对应的网络图片的请求。</p>
+<h6 id="2-使用ImageRequest">2.使用ImageRequest</h6><p>下面是<code>ImageRequest</code>示例代码，请求网络图片并在App中显示。代码中<code>RequestQueue</code>使用了上面讲到的单例模式。</p>
+<p>  ImageView mImageView;<br>  String url = “<a href="http://xxx.png" target="_blank" rel="external">http://xxx.png</a>“;<br>  mImageView = findViewById(R.id.myImageView);<br>  …<br>  // 请求网络图片，并在UI中显示<br>  ImageRequest request = new ImageRequest(url,</p>
+<pre><code><span class="keyword">new</span> Reponse.Listener&lt;Bitmap&gt;(){
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(Bitmap bitmap)</span></span>{
+        mImageView.setImageBitmap(bitmap);
+    }
+},<span class="number">0</span>,<span class="number">0</span>,<span class="keyword">null</span>,
+<span class="keyword">new</span> Response.ErrorListener(){
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">onErrorResponse</span><span class="params">(VolleyError <span class="keyword">error</span>)</span> </span>{
+        mImageView.setImageResource(R.drawable.image_load_error);
+    }
+});
+</code></pre><p>  // 使用单例模式加载图片<br>  MySingleton.getInstance(this).addToRequestQueue(request);</p>
+<h6 id="3-使用ImageLoader和NetworkImageView">3.使用ImageLoader和NetworkImageView</h6><p>使用ImageLoader和NetworkImageView高效加载大量的图片。在XML布局文件中使用NetworkImageView替换ImageView</p>
+<p>  &lt;com.android.volley.toolbox.NetworkImageView</p>
+<pre><code><span class="label">android:</span>id=<span class="string">"@+id/networkImageView"</span>
+<span class="label">android:</span>layout_width=<span class="string">"150dp"</span>
+<span class="label">android:</span>layout_height=<span class="string">"170dp"</span>
+<span class="label">android:</span>layout_centerHorizontal=<span class="string">"true"</span> /&gt;
+</code></pre><p>（1）.只使用ImageLoader</p>
+<p>  ImageLoader mImageLoader;<br>  ImageView mImageView;<br>  // 图片地址<br>  private static final String IMAGE_URL = “<a href="http://developer.android.com/images/training/system-ui.png" target="_blank" rel="external">http://developer.android.com/images/training/system-ui.png</a>“;<br>  …<br>  mImageView = (ImageView) findViewById(R.id.regularImageView);</p>
+<p>  // 使用单例加载网络图片<br>  mImageLoader = MySingleton.getInstance(this).getImageLoader();<br>  mImageLoader.get(IMAGE_URL, ImageLoader.getImageListener(mImageView,R.drawable.def_image, R.drawable.err_image));</p>
+</li>
+</ul>
+<p>（2）.ImageLoaderh和NetworkImageView结合使用</p>
+<pre><code>ImageLoader mImageLoader;
+NetworkImageView mNetworkImageView;
+private static final String IMAGE_URL = <span class="string">"http://developer.android.com/images/training/system-ui.png"</span>;
+...
+
+<span class="comment">// 获取NetworkImageView控件</span>
+mNetworkImageView = <span class="params">(NetworkImageView)</span> findViewById<span class="params">(R.id.networkImageView)</span>;
+
+<span class="comment">// 创建ImageLoader</span>
+mImageLoader = MySingleton.getInstance<span class="params">(this)</span>.getImageLoader<span class="params">()</span>;
+
+<span class="comment">// 指定图片地址和ImageLoader</span>
+mNetworkImageView.setImageUrl<span class="params">(IMAGE_URL, mImageLoader)</span>;
+</code></pre><p>使用单例可以让图片缓存保留时间比对应的Activity生命周期更长。如果不使用单例，则要在Activity中每次创建的时候都要初始化一次ImageLoader，容易造成UI加载图片闪烁的现象。</p>
+<h6 id="4-LRU_cache例子">4.LRU cache例子</h6><p>Volley通过<code>DiskBasedCache</code>提供了标准的缓存机制，用来将请求的数据缓存到磁盘上。如果使用<code>ImageLoader</code>，还需要实现<code>ImageLoader.ImageCache</code>的接口来创建内存缓存，并将缓存设为单例模式。<br>下面是实现内存缓存的<code>LruBitmapCache</code>的Java类。继承了<a href="https://developer.android.com/reference/android/support/v4/util/LruCache.html" target="_blank" rel="external">LruCache</a>类并且实现<code>ImageLoader.ImageCache</code>接口。</p>
+<pre><code><span class="keyword">import</span> android.graphics.Bitmap;
+<span class="keyword">import</span> android.support.v4.util.LruCache;
+<span class="keyword">import</span> android.util.DisplayMetrics;
+<span class="keyword">import</span> com.android.volley.toolbox.ImageLoader.ImageCache;
+
+<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LruBitmapCache</span> <span class="keyword">extends</span> <span class="title">LruCache</span>&lt;<span class="title">String</span>, <span class="title">Bitmap</span>&gt;
+    <span class="keyword">implements</span> <span class="title">ImageCache</span> </span>{
+
+    <span class="function"><span class="keyword">public</span> <span class="title">LruBitmapCache</span><span class="params">(<span class="keyword">int</span> maxSize)</span> </span>{
+        <span class="keyword">super</span>(maxSize);
+    }
+
+    <span class="function"><span class="keyword">public</span> <span class="title">LruBitmapCache</span><span class="params">(Context ctx)</span> </span>{
+        <span class="keyword">this</span>(getCacheSize(ctx));
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">protected</span> <span class="function"><span class="keyword">int</span> <span class="title">sizeOf</span><span class="params">(String key, Bitmap value)</span> </span>{
+        <span class="keyword">return</span> value.getRowBytes() * value.getHeight();
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="function">Bitmap <span class="title">getBitmap</span><span class="params">(String url)</span> </span>{
+        <span class="function"><span class="keyword">return</span> <span class="title">get</span><span class="params">(url)</span></span>;
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">putBitmap</span><span class="params">(String url, Bitmap bitmap)</span> </span>{
+        put(url, bitmap);
+    }
+
+    <span class="comment">// 根据不同屏幕大小返回缓存大小</span>
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">int</span> <span class="title">getCacheSize</span><span class="params">(Context ctx)</span> </span>{
+        <span class="keyword">final</span> DisplayMetrics displayMetrics = ctx.getResources().
+        getDisplayMetrics();
+        <span class="keyword">final</span> <span class="keyword">int</span> screenWidth = displayMetrics.widthPixels;
+        <span class="keyword">final</span> <span class="keyword">int</span> screenHeight = displayMetrics.heightPixels;
+        <span class="comment">// 4 bytes per pixel</span>
+        <span class="keyword">final</span> <span class="keyword">int</span> screenBytes = screenWidth * screenHeight * <span class="number">4</span>;
+        <span class="keyword">return</span> screenBytes * <span class="number">3</span>;
+    }
+}
+</code></pre><p>使用缓存来初始化<code>ImageLoader</code></p>
+<pre><code>RequestQueue mRequestQueue<span class="comment">; // 假设已经初始化</span>
+ImageLoader mImageLoader = new ImageLoader<span class="list">(<span class="keyword">mRequestQueue</span>, new LruBitmapCache<span class="list">(<span class="keyword">LruBitmapCache</span>.getCacheSize<span class="list">()</span>)</span>)</span><span class="comment">;</span>
+</code></pre><h6 id="6-请求JSON数据">6.请求JSON数据</h6><p>Volley提供两个类来请求JSON数据</p>
+<ul>
+<li><code>JsonArrayRequest</code> -根据URL请求JSON数组</li>
+<li><p><code>JsonObjectRequest</code>-根据URL请求JSON数据，请求对象可以使用JSON数据作为请求数据<br>两个类都是<code>JsonRequest</code>的子类。可以使用如下的类似代码发送数据请求</p>
+<p>  TextView mTxtDisplay;<br>  ImageView mImageView;<br>  mTxtDisplay = (TextView) findViewById(R.id.txtDisplay);<br>  String url = “<a href="http://my-json-feed" target="_blank" rel="external">http://my-json-feed</a>“;</p>
+<p>  JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, url, null, </p>
+<pre><code><span class="keyword">new</span> Response.Listener&lt;JSONObject&gt;() {
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(JSONObject response)</span> </span>{
+        mTxtDisplay.setText(<span class="string">"Response: "</span> + response.toString());
+        <span class="comment">// <span class="doctag">TODO</span> 使用JSON解析工具来解析JSON对象</span>
+    }
+}, <span class="keyword">new</span> Response.ErrorListener() {
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">onErrorResponse</span><span class="params">(VolleyError <span class="keyword">error</span>)</span> </span>{
+        <span class="comment">// <span class="doctag">TODO</span> Auto-generated method stub</span>
+
+    }
+});
+
+<span class="comment">// 添加JSON请求到请求队列中.</span>
+MySingleton.getInstance(<span class="keyword">this</span>).addToRequestQueue(jsObjRequest);
+</code></pre></li>
+</ul>
+<h5 id="五-实现自定义请求">五.实现自定义请求</h5><p>Volley提供多种的数据请求，如<code>JsonArrayRequest</code>，<code>JsonObjectRequest</code>，<code>StringRequest</code>，<code>ImageRequest</code>等。有时我们需要除此以外的请求的返回类型数据，这是需要我们去自定义属于我们自己的数据请求Java类。创建自定义的请求类型，要考虑几点：</p>
+<ul>
+<li>继承<code>Request&lt;T&gt;</code>类，<code>&lt;T&gt;</code>泛型代表返回的数据类型。如返回是String类型的数据，创建自定义请求时候要继承<code>Request&lt;String&gt;</code>。可以参考<code>StringRequest</code>和<code>ImageRequest</code>类</li>
+<li>实现方法<code>parseNetworkResponse()</code>和<code>deliverResponse()</code></li>
+</ul>
+<h6 id="1-parseNetworkResponse">1.parseNetworkResponse</h6><p><code>Response</code>封装各种类型的返回数据如String，image和Json。下面是实现<code>parseNetworkResponse()</code>的代码范例</p>
+<pre><code>@Override
+<span class="keyword">protected</span> Response<span class="subst">&lt;</span>T<span class="subst">&gt;</span> parseNetworkResponse(
+    NetworkResponse response) {
+    try {
+        <span class="built_in">String</span> json <span class="subst">=</span> <span class="literal">new</span> <span class="built_in">String</span>(response<span class="built_in">.</span><span class="built_in">data</span>,
+        <span class="comment">// 获取字符编码格式</span>
+        HttpHeaderParser<span class="built_in">.</span>parseCharset(response<span class="built_in">.</span>headers));
+        <span class="keyword">return</span> Response<span class="built_in">.</span>success(gson<span class="built_in">.</span>fromJson(json, clazz),HttpHeaderParser<span class="built_in">.</span>parseCacheHeaders(response));
+    }       
+    <span class="comment">// 处理错误</span>
+    <span class="attribute">...</span>
+}
+</code></pre><blockquote>
+<p>注意：<code>parseNetworkResponse()</code>使用<code>NetworkResponse</code>作为它的参数。NetworkResponse包含返回响应状态码，响应的头部和比特数组类型数据。实现的方法中必须返回<code>Response&lt;T&gt;</code>类型的数据。包含你指定返回的数据对象，缓存元数据（cache metadata）或错误信息如数据解析错误；</p>
+</blockquote>
+<p>如果你使用非标准的缓存语意，你可以自己创建<code>Cache.Entry</code>对象，多数情况下类似下面的返回值均是正常的。</p>
+<pre><code><span class="tag">return</span> <span class="tag">Response</span><span class="class">.success</span>(<span class="tag">myDecodedObject</span>,<span class="tag">HttpHeaderParser</span><span class="class">.parseCacheHeaders</span>(<span class="tag">response</span>));
+</code></pre><p>Volley在线程中调用<code>parseNetworkResponse()</code>方法，保证耗时操作不会阻塞和延迟主线程。</p>
+<h6 id="2-deliverResponse">2.deliverResponse</h6><p>Volley在主线程中调用<code>parseNetworkResponse()</code>返回的数据，大多数请求引用一个回调接口：</p>
+<pre><code><span class="keyword">protected</span> <span class="function"><span class="keyword">void</span> <span class="title">deliverResponse</span><span class="params">(T response)</span> </span>{
+    listener.onResponse(response);
+}
+</code></pre><h6 id="3-GsonRequest请求范例">3.GsonRequest请求范例</h6><p><a href="http://code.google.com/p/google-gson/" target="_blank" rel="external">Gson</a>是Java与JSON的Google数据解析框架。你可以定义和JSON键值一样的属性名称的Java对象，传入Gson类对象，自动为你创建Java对象。下面是Gson请求的范例：</p>
+<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GsonRequest</span>&lt;<span class="title">T</span>&gt; <span class="keyword">extends</span> <span class="title">Request</span>&lt;<span class="title">T</span>&gt; </span>{
+    <span class="keyword">private</span> <span class="keyword">final</span> Gson gson = <span class="keyword">new</span> Gson();
+    <span class="keyword">private</span> <span class="keyword">final</span> Class&lt;T&gt; clazz;
+    <span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, String&gt; headers;
+    <span class="keyword">private</span> <span class="keyword">final</span> Listener&lt;T&gt; listener;
+
+    <span class="comment">/**
+    * 创建请求，并返回JSON对象
+    *
+    * <span class="doctag">@param</span> url 请求的URL
+    * <span class="doctag">@param</span> 返回的Java类
+    * <span class="doctag">@param</span> 请求头部
+    */</span>
+    <span class="function"><span class="keyword">public</span> <span class="title">GsonRequest</span><span class="params">(String url, Class&lt;T&gt; clazz, Map&lt;String, String&gt; headers,Listener&lt;T&gt; listener, ErrorListener errorListener)</span> </span>{
+        <span class="keyword">super</span>(Method.GET, url, errorListener);
+        <span class="keyword">this</span>.clazz = clazz;
+        <span class="keyword">this</span>.headers = headers;
+        <span class="keyword">this</span>.listener = listener;
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">public</span> Map&lt;String, String&gt; getHeaders() <span class="keyword">throws</span> AuthFailureError {
+        <span class="keyword">return</span> headers != <span class="keyword">null</span> ? headers : <span class="keyword">super</span>.getHeaders();
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">protected</span> <span class="function"><span class="keyword">void</span> <span class="title">deliverResponse</span><span class="params">(T response)</span> </span>{
+        listener.onResponse(response);
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="keyword">protected</span> Response&lt;T&gt; parseNetworkResponse(NetworkResponse response) {
+        <span class="keyword">try</span> {
+            String json = <span class="keyword">new</span> String(response.data,HttpHeaderParser.parseCharset(response.headers));
+            <span class="keyword">return</span> Response.success(gson.fromJson(json, clazz),HttpHeaderParser.parseCacheHeaders(response));
+        } <span class="keyword">catch</span> (UnsupportedEncodingException e) {
+            <span class="keyword">return</span> Response.<span class="keyword">error</span>(<span class="keyword">new</span> ParseError(e));
+        } <span class="keyword">catch</span> (JsonSyntaxException e) {
+            <span class="keyword">return</span> Response.<span class="keyword">error</span>(<span class="keyword">new</span> ParseError(e));
+        }
+    }
+}
+</code></pre><p>Volley也提供了相关的JSON请求<code>JsonArrayRequest</code>and<code>JsonArrayObject</code>。可以考虑使用对应的请求类</p>
+<p>结束。</p>
+</span>
       
     </div>
 
@@ -530,7 +724,7 @@ MySingleton.getInstance<span class="params">(this)</span>.addToRequestQueue<span
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#一、Volley库的引入"><span class="nav-number">1.</span> <span class="nav-text">一、Volley库的引入</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#二、发送简单的请求"><span class="nav-number">2.</span> <span class="nav-text">二、发送简单的请求</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1-在AndroidManifest中添加网络请求权限"><span class="nav-number">2.1.</span> <span class="nav-text">1.在AndroidManifest中添加网络请求权限</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-创建RequestQueue"><span class="nav-number">2.2.</span> <span class="nav-text">2.创建RequestQueue</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#3-Volley请求的过程。"><span class="nav-number">2.3.</span> <span class="nav-text">3.Volley请求的过程。</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#4-取消请求"><span class="nav-number">2.4.</span> <span class="nav-text">4.取消请求</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#三、创建请求队列RequestQueue"><span class="nav-number">3.</span> <span class="nav-text">三、创建请求队列RequestQueue</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1-创建缓存和网络对象"><span class="nav-number">3.1.</span> <span class="nav-text">1.创建缓存和网络对象</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-使用单例设计模式"><span class="nav-number">3.2.</span> <span class="nav-text">2.使用单例设计模式</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#一、Volley库的引入"><span class="nav-number">1.</span> <span class="nav-text">一、Volley库的引入</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#二、发送简单的请求"><span class="nav-number">2.</span> <span class="nav-text">二、发送简单的请求</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1-在AndroidManifest中添加网络请求权限"><span class="nav-number">2.1.</span> <span class="nav-text">1.在AndroidManifest中添加网络请求权限</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-创建RequestQueue"><span class="nav-number">2.2.</span> <span class="nav-text">2.创建RequestQueue</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#3-Volley请求的过程。"><span class="nav-number">2.3.</span> <span class="nav-text">3.Volley请求的过程。</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#4-取消请求"><span class="nav-number">2.4.</span> <span class="nav-text">4.取消请求</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#三、创建请求队列RequestQueue"><span class="nav-number">3.</span> <span class="nav-text">三、创建请求队列RequestQueue</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1-创建缓存和网络对象"><span class="nav-number">3.1.</span> <span class="nav-text">1.创建缓存和网络对象</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-使用单例设计模式"><span class="nav-number">3.2.</span> <span class="nav-text">2.使用单例设计模式</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#四、创建请求对象"><span class="nav-number">4.</span> <span class="nav-text">四、创建请求对象</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1-请求图片数据"><span class="nav-number">4.1.</span> <span class="nav-text">1.请求图片数据</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-使用ImageRequest"><span class="nav-number">4.2.</span> <span class="nav-text">2.使用ImageRequest</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#3-使用ImageLoader和NetworkImageView"><span class="nav-number">4.3.</span> <span class="nav-text">3.使用ImageLoader和NetworkImageView</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#4-LRU_cache例子"><span class="nav-number">4.4.</span> <span class="nav-text">4.LRU cache例子</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#6-请求JSON数据"><span class="nav-number">4.5.</span> <span class="nav-text">6.请求JSON数据</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#五-实现自定义请求"><span class="nav-number">5.</span> <span class="nav-text">五.实现自定义请求</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1-parseNetworkResponse"><span class="nav-number">5.1.</span> <span class="nav-text">1.parseNetworkResponse</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-deliverResponse"><span class="nav-number">5.2.</span> <span class="nav-text">2.deliverResponse</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#3-GsonRequest请求范例"><span class="nav-number">5.3.</span> <span class="nav-text">3.GsonRequest请求范例</span></a></li></ol></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
