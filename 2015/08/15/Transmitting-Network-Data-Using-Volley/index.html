@@ -61,7 +61,7 @@ Volley善于在远程调用操作来与UI交">
 Volley善于在远程调用操作来与UI交">
 <meta property="og:image" content="https://github.com/alexwan1989/alexwan1989.github.io/blob/master/images/what's%20volley.png?raw=true">
 <meta property="og:image" content="https://github.com/alexwan1989/alexwan1989.github.io/blob/master/images/%E8%AF%B7%E6%B1%82%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F.png?raw=true">
-<meta property="og:updated_time" content="2015-08-16T08:06:16.000Z">
+<meta property="og:updated_time" content="2015-08-16T09:47:05.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="网络请求框架：Volley[译]">
 <meta name="twitter:description" content="Volley是开源的Android网络请求库。可以让app网络请求更加快捷，更重要的是让网络请求更迅速，具有以下几个方面的特点：
@@ -342,8 +342,55 @@ StringRequest stringRequest <span class="subst">=</span> <span class="literal">n
 
 <span class="comment">// 添加请求到队列中</span>
 mRequestQueue<span class="built_in">.</span>add(stringRequest);
-</code></pre><p>如果仅仅是请求一次，不想加入线程池，可以在需要的地方创建<code>RequestQueue</code>，然后在响应或错误返回中调用<code>stop</code>方法。常用的用法是：创建一个单例模式的<code>RequestQueue</code>对象，在app生命周期内，只需要实例化一次。<br>2.使用单例设计模式</p>
-</span>
+</code></pre><p>如果仅仅是请求一次，不想加入线程池，可以在需要的地方创建<code>RequestQueue</code>，然后在响应或错误返回中调用<code>stop</code>方法。常用的用法是：创建一个单例模式的<code>RequestQueue</code>对象，在app生命周期内，只需要实例化一次。<br>2.使用单例设计模式<br>如果app频繁请求网络数据，使用单例模式来创建<code>RquestQueue</code>效率更高。实现单例模式有多种方式，建议是定义单例模式的类，封装<code>RequestQueue</code>对象和其他Volley的功能。另外一种方式是创建一个<code>Application</code>的子类，在<code>Application.onCreate()</code>方法中创建一个静态的<code>RequestQueue</code>对象，这个方式<a href="https://developer.android.com/reference/android/app/Application.html" target="_blank" rel="external">不推荐使用</a>，因为使用一个静态单例模式更加模块化。<br><code>RequestQueue</code>强烈建议在<code>Application</code>中初始化，而不是在<code>Activity</code>中，不用在每次创建Actvitiy时都要初始化一次。<br>下面是封装了<code>RequestQueue</code>和<code>ImageLoader</code>的一个单例模式</p>
+<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MySingleton</span></span>{
+    <span class="keyword">private</span> <span class="keyword">static</span> MySingleton mInstance;
+    <span class="keyword">private</span> RequestQueue mRequestQueue;
+    <span class="keyword">private</span> ImageLoader mImageLoader;
+    <span class="keyword">private</span> <span class="keyword">static</span> Context mCtx;
+    <span class="function"><span class="keyword">private</span> <span class="title">MySingleton</span><span class="params">(Context context)</span></span>{
+        mCtx = context;
+        mRequestQueue = getRequestQueue();
+        mImageLoader = <span class="keyword">new</span> ImageLoader(mRequestQueue,<span class="keyword">new</span> ImageLoader.ImageCache(){
+        <span class="keyword">private</span> <span class="keyword">final</span> LruCache&lt;String,Bitmap&gt; cache = <span class="keyword">new</span> LruCache&lt;String,Bitmap&gt;(<span class="number">20</span>);
+            <span class="annotation">@Override</span>
+            <span class="keyword">public</span> <span class="function">Bitmap <span class="title">getBitmap</span><span class="params">(String url)</span></span>{
+                <span class="function"><span class="keyword">return</span> cache.<span class="title">get</span><span class="params">(url)</span></span>;
+            }
+            <span class="annotation">@Override</span>
+            <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">putBitmap</span><span class="params">(String url , Bitmap bitmap)</span></span>{
+                cache.put(url,bitmap);
+            }
+        })
+    }
+    <span class="keyword">public</span> <span class="keyword">static</span> syncronized <span class="function">MySingleton <span class="title">getInstance</span><span class="params">(Context context)</span></span>{
+        <span class="keyword">if</span>(mInstance == <span class="keyword">null</span>){
+            mInstance  = <span class="keyword">new</span> MySingleton(context);
+        }
+        <span class="keyword">return</span> mInstance;
+    }
+    <span class="keyword">public</span> <span class="function">RequestQueue <span class="title">getRequestQueue</span><span class="params">()</span></span>{
+        <span class="keyword">if</span>(mRequestQueue == <span class="keyword">null</span>){
+            <span class="comment">// 使用 getApplicationContext()作为键值</span>
+            mRequestQueue = Volley,newRequestQueue(mCtx.getApplicationContext());
+        }
+        <span class="keyword">return</span> mRequestQueue;
+    }
+    <span class="keyword">public</span> &lt;T&gt; <span class="function"><span class="keyword">void</span> <span class="title">addToRequestQueue</span><span class="params">(Request&lt;T&gt; req)</span></span>{
+        getRequestQueue.add(req);
+    }
+    <span class="keyword">public</span> <span class="function">ImageLoader <span class="title">getImageLoader</span><span class="params">()</span></span>{
+        <span class="keyword">return</span> mImageLoader;
+    }
+}
+</code></pre><p>使用单例</p>
+<pre><code><span class="comment">// 获取RequestQueue</span>
+RequestQueue queue = MySingleton.getInstance<span class="params">(this.getApplicationContext<span class="params">()</span>)</span>;
+getRequestQueue<span class="params">()</span>;
+...
+<span class="comment">// 添加请求到队列中</span>
+MySingleton.getInstance<span class="params">(this)</span>.addToRequestQueue<span class="params">(stringRequest)</span>;
+</code></pre></span>
       
     </div>
 
