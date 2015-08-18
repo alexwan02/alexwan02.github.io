@@ -46,7 +46,7 @@
 8.调试和追踪工具
 Volley善于在远程调用操作来与UI交">
 <meta property="og:type" content="article">
-<meta property="og:title" content="网络请求框架：Volley[译]">
+<meta property="og:title" content="Android:网络请求框架Volley[译]">
 <meta property="og:url" content="http://alexwan1989.com/2015/08/15/Transmitting-Network-Data-Using-Volley/index.html">
 <meta property="og:site_name" content="Alexwan’Blog">
 <meta property="og:description" content="Volley是开源的Android网络请求库。可以让app网络请求更加快捷，更重要的是让网络请求更迅速，具有以下几个方面的特点：
@@ -61,9 +61,9 @@ Volley善于在远程调用操作来与UI交">
 Volley善于在远程调用操作来与UI交">
 <meta property="og:image" content="https://github.com/alexwan1989/alexwan1989.github.io/blob/master/images/what's%20volley.png?raw=true">
 <meta property="og:image" content="https://github.com/alexwan1989/alexwan1989.github.io/blob/master/images/%E8%AF%B7%E6%B1%82%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F.png?raw=true">
-<meta property="og:updated_time" content="2015-08-16T15:47:37.000Z">
+<meta property="og:updated_time" content="2015-08-18T14:22:36.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="网络请求框架：Volley[译]">
+<meta name="twitter:title" content="Android:网络请求框架Volley[译]">
 <meta name="twitter:description" content="Volley是开源的Android网络请求库。可以让app网络请求更加快捷，更重要的是让网络请求更迅速，具有以下几个方面的特点：
 1.自动执行网络请求
 2.多线程并发的网络连接
@@ -83,7 +83,7 @@ Volley善于在远程调用操作来与UI交">
   };
 </script>
 
-    <title> 网络请求框架：Volley[译] // Alexwan’Blog </title>
+    <title> Android:网络请求框架Volley[译] // Alexwan’Blog </title>
 </head>
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 <!--[if lte IE 8]>
@@ -202,7 +202,7 @@ Volley善于在远程调用操作来与UI交">
           
           
             
-              网络请求框架：Volley[译]
+              Android:网络请求框架Volley[译]
             
           
         </h1>
@@ -345,7 +345,7 @@ StringRequest stringRequest <span class="subst">=</span> <span class="literal">n
 <span class="comment">// 添加请求到队列中</span>
 mRequestQueue<span class="built_in">.</span>add(stringRequest);
 </code></pre><p>如果仅仅是请求一次，不想加入线程池，可以在需要的地方创建<code>RequestQueue</code>，然后在响应或错误返回中调用<code>stop</code>方法。常用的用法是：创建一个单例模式的<code>RequestQueue</code>对象，在app生命周期内，只需要实例化一次。</p>
-<h6 id="2、使用单例设计模式">2、使用单例设计模式</h6><p>如果app频繁请求网络数据，使用单例模式来创建<code>RquestQueue</code>效率更高。实现单例模式有多种方式，建议是定义单例模式的类，封装<code>RequestQueue</code>对象和其他Volley的功能。另外一种方式是创建一个<code>Application</code>的子类，在<code>Application.onCreate()</code>方法中创建一个静态的<code>RequestQueue</code>对象，这个方式<a href="https://developer.android.com/reference/android/app/Application.html" target="_blank" rel="external">不推荐使用</a>，因为使用一个静态单例模式更加模块化。<br><code>RequestQueue</code>强烈建议在<code>Application</code>中初始化，而不是在<code>Activity</code>中，不用在每次创建Actvitiy时都要初始化一次。<br>下面是封装了<code>RequestQueue</code>和<code>ImageLoader</code>的一个单例模式</p>
+<h6 id="2、使用单例设计模式">2、使用单例设计模式</h6><p>如果app频繁请求网络数据，使用单例模式来创建<code>RquestQueue</code>效率更高。实现单例模式有多种方式，建议是定义单例模式的类，封装<code>RequestQueue</code>对象和其他Volley的功能。另外一种方式是创建一个<code>Application</code>的子类，在<code>Application.onCreate()</code>方法中创建一个静态的<code>RequestQueue</code>对象，这个方式<a href="https://developer.android.com/reference/android/app/Application.html" target="_blank" rel="external">不推荐使用</a>，因为使用一个静态单例模式更加模块化。<br><code>RequestQueue</code>强烈建议使用<code>Application</code>的context初始化，而不是使用<code>Activity</code>的context参数，不必在每次创建Actvitiy时都要进行初始化，保证高效使用单例模式。<br>下面是封装了RequestQueue和ImageLoader的一个单例模式</p>
 <pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MySingleton</span></span>{
     <span class="keyword">private</span> <span class="keyword">static</span> MySingleton mInstance;
     <span class="keyword">private</span> RequestQueue mRequestQueue;
@@ -525,7 +525,7 @@ JsonObjectRequest jsObjRequest = <span class="keyword">new</span> JsonObjectRequ
     });
 <span class="comment">// 添加JSON请求到请求队列中.</span>
 MySingleton.getInstance(<span class="keyword">this</span>).addToRequestQueue(jsObjRequest);
-</code></pre><h5 id="五、实现自定义请求">五、实现自定义请求</h5><p>Volley提供多种的数据请求，如<code>JsonArrayRequest</code>，<code>JsonObjectRequest</code>，<code>StringRequest</code>，<code>ImageRequest</code>等。有时我们需要除此以外的请求的返回类型数据，这是需要我们去自定义属于我们自己的数据请求Java类。创建自定义的请求类型，要考虑几点</p>
+</code></pre><h5 id="五、创建自定义请求">五、创建自定义请求</h5><p>Volley提供多种的数据请求，如<code>JsonArrayRequest</code>，<code>JsonObjectRequest</code>，<code>StringRequest</code>，<code>ImageRequest</code>等。有时我们需要除此以外的请求的返回类型数据，这是需要我们去自定义属于我们自己的数据请求Java类。创建自定义的请求类型，要考虑几点</p>
 <p>1.继承<code>Request&lt;T&gt;</code>类，<code>&lt;T&gt;</code>泛型代表返回的数据类型。如返回是String类型的数据，创建自定义请求时候要继承<code>Request&lt;String&gt;</code>。可以参考<code>StringRequest</code>和<code>ImageRequest</code>类<br>2.实现方法<code>parseNetworkResponse()</code>和<code>deliverResponse()</code></p>
 <h6 id="1、parseNetworkResponse">1、parseNetworkResponse</h6><p><code>Response</code>封装各种类型的返回数据如String，image和Json。下面是实现<code>parseNetworkResponse()</code>的代码范例</p>
 <pre><code>@Override
@@ -642,7 +642,7 @@ MySingleton.getInstance(<span class="keyword">this</span>).addToRequestQueue(jsO
               <div class="comments" id="comments">
                 
                   <div class="ds-thread" data-thread-key="2015/08/15/Transmitting-Network-Data-Using-Volley/"
-                       data-title="网络请求框架：Volley[译]" data-url="http://alexwan1989.com/2015/08/15/Transmitting-Network-Data-Using-Volley/">
+                       data-title="Android:网络请求框架Volley[译]" data-url="http://alexwan1989.com/2015/08/15/Transmitting-Network-Data-Using-Volley/">
                   </div>
                 
               </div>
@@ -738,7 +738,7 @@ MySingleton.getInstance(<span class="keyword">this</span>).addToRequestQueue(jsO
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#一、Volley库的引入"><span class="nav-number">1.</span> <span class="nav-text">一、Volley库的引入</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#二、发送简单的请求"><span class="nav-number">2.</span> <span class="nav-text">二、发送简单的请求</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1、在AndroidManifest中添加网络请求权限"><span class="nav-number">2.1.</span> <span class="nav-text">1、在AndroidManifest中添加网络请求权限</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2、创建RequestQueue"><span class="nav-number">2.2.</span> <span class="nav-text">2、创建RequestQueue</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#3、Volley请求的过程。"><span class="nav-number">2.3.</span> <span class="nav-text">3、Volley请求的过程。</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#4、取消请求"><span class="nav-number">2.4.</span> <span class="nav-text">4、取消请求</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#三、创建请求队列"><span class="nav-number">3.</span> <span class="nav-text">三、创建请求队列</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1、创建缓存和网络对象"><span class="nav-number">3.1.</span> <span class="nav-text">1、创建缓存和网络对象</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2、使用单例设计模式"><span class="nav-number">3.2.</span> <span class="nav-text">2、使用单例设计模式</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#四、创建请求对象"><span class="nav-number">4.</span> <span class="nav-text">四、创建请求对象</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1、请求图片数据"><span class="nav-number">4.1.</span> <span class="nav-text">1、请求图片数据</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2、使用ImageRequest"><span class="nav-number">4.2.</span> <span class="nav-text">2、使用ImageRequest</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#3、使用ImageLoader和NetworkImageView"><span class="nav-number">4.3.</span> <span class="nav-text">3、使用ImageLoader和NetworkImageView</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#4、LRU_Cache例子"><span class="nav-number">4.4.</span> <span class="nav-text">4、LRU Cache例子</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#6、请求JSON数据"><span class="nav-number">4.5.</span> <span class="nav-text">6、请求JSON数据</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#五、实现自定义请求"><span class="nav-number">5.</span> <span class="nav-text">五、实现自定义请求</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1、parseNetworkResponse"><span class="nav-number">5.1.</span> <span class="nav-text">1、parseNetworkResponse</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2、deliverResponse"><span class="nav-number">5.2.</span> <span class="nav-text">2、deliverResponse</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#3、GsonRequest请求范例"><span class="nav-number">5.3.</span> <span class="nav-text">3、GsonRequest请求范例</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#一、Volley库的引入"><span class="nav-number">1.</span> <span class="nav-text">一、Volley库的引入</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#二、发送简单的请求"><span class="nav-number">2.</span> <span class="nav-text">二、发送简单的请求</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1、在AndroidManifest中添加网络请求权限"><span class="nav-number">2.1.</span> <span class="nav-text">1、在AndroidManifest中添加网络请求权限</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2、创建RequestQueue"><span class="nav-number">2.2.</span> <span class="nav-text">2、创建RequestQueue</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#3、Volley请求的过程。"><span class="nav-number">2.3.</span> <span class="nav-text">3、Volley请求的过程。</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#4、取消请求"><span class="nav-number">2.4.</span> <span class="nav-text">4、取消请求</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#三、创建请求队列"><span class="nav-number">3.</span> <span class="nav-text">三、创建请求队列</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1、创建缓存和网络对象"><span class="nav-number">3.1.</span> <span class="nav-text">1、创建缓存和网络对象</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2、使用单例设计模式"><span class="nav-number">3.2.</span> <span class="nav-text">2、使用单例设计模式</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#四、创建请求对象"><span class="nav-number">4.</span> <span class="nav-text">四、创建请求对象</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1、请求图片数据"><span class="nav-number">4.1.</span> <span class="nav-text">1、请求图片数据</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2、使用ImageRequest"><span class="nav-number">4.2.</span> <span class="nav-text">2、使用ImageRequest</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#3、使用ImageLoader和NetworkImageView"><span class="nav-number">4.3.</span> <span class="nav-text">3、使用ImageLoader和NetworkImageView</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#4、LRU_Cache例子"><span class="nav-number">4.4.</span> <span class="nav-text">4、LRU Cache例子</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#6、请求JSON数据"><span class="nav-number">4.5.</span> <span class="nav-text">6、请求JSON数据</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#五、创建自定义请求"><span class="nav-number">5.</span> <span class="nav-text">五、创建自定义请求</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1、parseNetworkResponse"><span class="nav-number">5.1.</span> <span class="nav-text">1、parseNetworkResponse</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2、deliverResponse"><span class="nav-number">5.2.</span> <span class="nav-text">2、deliverResponse</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#3、GsonRequest请求范例"><span class="nav-number">5.3.</span> <span class="nav-text">3、GsonRequest请求范例</span></a></li></ol></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
