@@ -43,7 +43,8 @@ Touch相关的方法：1.dispatchTouchEvent(MotionEvent event)根据Andro">
 <meta property="og:site_name" content="Alexwan’Blog">
 <meta property="og:description" content="一、TouchEvent基本介绍在Android开发时，经常会遇到手势触摸事件的处理。如：View的touch事件，click事件、ViewGroup的touch事件，click事件。了解TouchEvent事件分发机制对于如何去处理这些触摸事件以及什么时候去处理触摸事件有很大帮助。
 Touch相关的方法：1.dispatchTouchEvent(MotionEvent event)根据Andro">
-<meta property="og:updated_time" content="2015-09-09T14:05:38.000Z">
+<meta property="og:image" content="https://github.com/alexwan1989/alexwan1989.github.io/blob/master/images/TouchEvent%E6%B5%81%E7%A8%8B%E5%9B%BE.png?raw=true">
+<meta property="og:updated_time" content="2015-09-09T15:16:33.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android ：TouchEvent事件分发机制">
 <meta name="twitter:description" content="一、TouchEvent基本介绍在Android开发时，经常会遇到手势触摸事件的处理。如：View的touch事件，click事件、ViewGroup的touch事件，click事件。了解TouchEvent事件分发机制对于如何去处理这些触摸事件以及什么时候去处理触摸事件有很大帮助。
@@ -223,11 +224,45 @@ Touch相关的方法：1.dispatchTouchEvent(MotionEvent event)根据Andro">
 </code></pre><p>对，你没有看错就是一句话：<code>return false;</code> 即：默认不拦截</p>
 <a id="more"></a>
 <h6 id="使用Touch的三个类">使用Touch的三个类</h6><p>1.<code>Activity</code><br>    (1)<code>dispatchTouchEvent(MotionEvent event)</code><br>    (2)<code>onTouchEvent(MotionEvent event)</code><br>2.<code>ViewGroup</code><br>    (1)<code>dispatchTouchEvent(MotionEvent event)</code><br>    (2)<code>onInterceptTouchEvent(MotionEvent ev)</code><br>    (3)<code>onTouchEvent(MotionEvent event)</code><br>3.<code>View</code><br>    (1)<code>dispatchTouchEvent(MotionEvent event)</code><br>    (2)<code>onTouchEvent(MotionEvent event)</code></p>
-<h5 id="二、TouchEvent事件分发源码分析">二、TouchEvent事件分发源码分析</h5><p>一张图看懂TouchEvent分发机制</p>
-<pre><code>&lt;div align=<span class="string">"center"</span>&gt;
-    &lt;img src=<span class="string">"https://github.com/alexwan1989/alexwan1989.github.io/blob/master/images/TouchEvent<span class="variable">%E6</span><span class="variable">%B5</span><span class="variable">%81</span><span class="variable">%E7</span><span class="variable">%A8</span><span class="variable">%8B</span><span class="variable">%E5</span><span class="variable">%9B</span><span class="variable">%BE</span>.png?raw=true"</span>&gt;
-&lt;<span class="regexp">/div&gt;</span>
-</code></pre></span>
+<h4 id="二、TouchEvent事件分发源码分析">二、TouchEvent事件分发源码分析</h4><p>一张图看懂TouchEvent分发机制</p>
+<div align="center"><br>    <img src="https://github.com/alexwan1989/alexwan1989.github.io/blob/master/images/TouchEvent%E6%B5%81%E7%A8%8B%E5%9B%BE.png?raw=true" width="400" height="670"><br></div>
+
+<p>根据流程图和Avtivity、ViewGroup、View源码来深入分析TouchEvent的分发机制</p>
+<h5 id="1-Activtiy_分发事件源码">1.Activtiy 分发事件源码</h5><p>TouchEvent的事件从Android硬件的Input系统接收到，传递给Activity调用dispatchTouchEvent(MotionEvent event);任何TouchEvent都是以MotionEvent.ACTION_DOWN为整个TouchEvent起始点。</p>
+<h6 id="（1）dispatchTouchEvent(MotionEvent_ev)">（1）dispatchTouchEvent(MotionEvent ev)</h6><pre><code><span class="comment">/**
+* 处理屏幕的TouchEvent 可以复写这个方法来打断TouchEvent向下分发.
+* @param ev The touch screen event.
+*
+* @return boolean 如果事件被消费了返回True
+*/</span>
+public boolean dispatchTouchEvent<span class="params">(MotionEvent ev)</span> {
+    <span class="keyword">if</span> <span class="params">(ev.getAction<span class="params">()</span> == MotionEvent.ACTION_DOWN)</span> {
+        onUserInteraction<span class="params">()</span>;
+    }
+    <span class="comment">// 将事件向下传递给子View或者ViewGroup </span>
+    <span class="comment">// 如果有子View或ViewGroup调用对应的dispatchTouchEvent方法</span>
+    <span class="comment">// 否则调用Acvity的onTouchEvent方法</span>
+    <span class="keyword">if</span> <span class="params">(getWindow<span class="params">()</span>.superDispatchTouchEvent<span class="params">(ev)</span>)</span> {
+        return <span class="literal">true</span>;
+    }
+    return onTouchEvent<span class="params">(ev)</span>;
+}
+</code></pre><h6 id="（2）onTouchEvent(MotionEvent_event)">（2）onTouchEvent(MotionEvent event)</h6><pre><code><span class="comment">/**
+* 如果任何子View都没有处理TouchEvent则会调用这个方法，用来处理当触控点在Window界面外的情况
+* <span class="doctag">@param</span> event The touch screen event being processed.
+*
+* <span class="doctag">@return</span> Return 如果消费了事件返回true否则false
+*/</span>
+<span class="keyword">public</span> <span class="function"><span class="keyword">boolean</span> <span class="title">onTouchEvent</span><span class="params">(MotionEvent event)</span> </span>{
+    <span class="keyword">if</span> (mWindow.shouldCloseOnTouch(<span class="keyword">this</span>, event)) {
+        finish();
+        <span class="keyword">return</span> <span class="keyword">true</span>;
+    }
+    <span class="keyword">return</span> <span class="keyword">false</span>;
+}
+</code></pre><p>从源码中我们可以知道：Activity从Input系统接收到TouchEvent后调用dispatchTouchEvent，在dispatchTouchEvent方法中去根据是否有子视图，来确定分发事件是传递给子视图，传递给子视图后，接收子视图onTouchEvent是消费事件还是为消费事件最后确定是否执行自身的onTouchEvent方法。</p>
+<h5 id="2-ViewGroup分发事件源码">2.ViewGroup分发事件源码</h5><h4 id="参考资料">参考资料</h4><p>1.<a href="http://blog.csdn.net/guolin_blog/article/details/9097463" target="_blank" rel="external">Android事件分发机制完全解析，带你从源码的角度彻底理解(上)</a><br>2.<a href="http://blog.csdn.net/guolin_blog/article/details/9153747" target="_blank" rel="external">Android事件分发机制完全解析，带你从源码的角度彻底理解(下)</a><br>3.<a href="http://blog.csdn.net/morgan_xww/article/details/9372285/" target="_blank" rel="external">Android TouchEvent事件传递机制</a><br>4.<a href="http://a.codekk.com/blogs/detail/54cfab086c4761e5001b253e" target="_blank" rel="external">公共技术点之 View 事件传递</a></p>
+</span>
       
     </div>
 
@@ -365,7 +400,7 @@ Touch相关的方法：1.dispatchTouchEvent(MotionEvent event)根据Andro">
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#一、TouchEvent基本介绍"><span class="nav-number">1.</span> <span class="nav-text">一、TouchEvent基本介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#Touch相关的方法："><span class="nav-number">1.0.1.</span> <span class="nav-text">Touch相关的方法：</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#使用Touch的三个类"><span class="nav-number">1.0.2.</span> <span class="nav-text">使用Touch的三个类</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#二、TouchEvent事件分发源码分析"><span class="nav-number">1.1.</span> <span class="nav-text">二、TouchEvent事件分发源码分析</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#一、TouchEvent基本介绍"><span class="nav-number">1.</span> <span class="nav-text">一、TouchEvent基本介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#Touch相关的方法："><span class="nav-number">1.0.1.</span> <span class="nav-text">Touch相关的方法：</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#使用Touch的三个类"><span class="nav-number">1.0.2.</span> <span class="nav-text">使用Touch的三个类</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二、TouchEvent事件分发源码分析"><span class="nav-number">2.</span> <span class="nav-text">二、TouchEvent事件分发源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-Activtiy_分发事件源码"><span class="nav-number">2.1.</span> <span class="nav-text">1.Activtiy 分发事件源码</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#（1）dispatchTouchEvent(MotionEvent_ev)"><span class="nav-number">2.1.1.</span> <span class="nav-text">（1）dispatchTouchEvent(MotionEvent ev)</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#（2）onTouchEvent(MotionEvent_event)"><span class="nav-number">2.1.2.</span> <span class="nav-text">（2）onTouchEvent(MotionEvent event)</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-ViewGroup分发事件源码"><span class="nav-number">2.2.</span> <span class="nav-text">2.ViewGroup分发事件源码</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考资料"><span class="nav-number">3.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
