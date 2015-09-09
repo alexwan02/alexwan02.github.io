@@ -46,7 +46,7 @@ dispatchTouchEvent(MotionEvent event)根据Androi">
 Touch相关的方法：
 dispatchTouchEvent(MotionEvent event)根据Androi">
 <meta property="og:image" content="https://github.com/alexwan1989/alexwan1989.github.io/blob/master/images/TouchEvent%E6%B5%81%E7%A8%8B%E5%9B%BE.png?raw=true">
-<meta property="og:updated_time" content="2015-09-09T15:50:35.000Z">
+<meta property="og:updated_time" content="2015-09-09T15:53:34.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android ：TouchEvent事件分发机制">
 <meta name="twitter:description" content="一、TouchEvent基本介绍在Android开发时，经常会遇到手势触摸事件的处理。如：View的touch事件，click事件、ViewGroup的touch事件，click事件。了解TouchEvent事件分发机制对于如何去处理这些触摸事件以及什么时候去处理触摸事件有很大帮助。
@@ -219,7 +219,7 @@ dispatchTouchEvent(MotionEvent event)根据Androi">
 <h4 id="一、TouchEvent基本介绍">一、TouchEvent基本介绍</h4><p>在Android开发时，经常会遇到手势触摸事件的处理。如：View的touch事件，click事件、ViewGroup的touch事件，click事件。了解TouchEvent事件分发机制对于如何去处理这些触摸事件以及什么时候去处理触摸事件有很大帮助。</p>
 <h5 id="Touch相关的方法：">Touch相关的方法：</h5><ol>
 <li><code>dispatchTouchEvent(MotionEvent event)</code><br>根据Android API解释：Pass the touch screen motion event down to the target view, or this view if it is the target. 向下传递touch事件给目标View或者当前View<br>很好理解，这个方法就是用来传递touch事件用的。event事件从Android底层的Input子系统传递过来，在Android Application层dispatchTouchEvent是一切touch事件处理的起始点。</li>
-<li><code>onTouchEvent(MotionEvent event)</code><br>同样看看API是怎么解释的：Implement this method to handle touch screen motion events.If this method is used to detect click actions, it is recommended that the actions be performed by implementing and calling {@link#performClick()}.This will ensure consistent system behavior,including: 1. obeying click sound preferences 2. dispatching OnClickListener calls 3. handling {@link AccessibilityNodeInfo#ACTION_CLICK ACTION_CLICK} when accessibility features are enabled 。<br>大致的意思是：实现这个方法来处理touch屏幕的事件。如果是用来检测click 事件的，建议在action中调用performClick()方法。下面会详细介绍</li>
+<li><code>onTouchEvent(MotionEvent event)</code><br>同样看看API是怎么解释的：Implement this method to handle touch screen motion events.If this method is used to detect click actions, it is recommended that the actions be performed by implementing and calling {@link#performClick()}.This will ensure consistent system behavior,including: obeying click sound preferences、dispatching OnClickListener calls 、handling {@link AccessibilityNodeInfo#ACTION_CLICK ACTION_CLICK} when accessibility features are enabled 。<br>大致的意思是：实现这个方法来处理touch屏幕的事件。如果是用来检测click 事件的，建议在action中调用performClick()方法。下面会详细介绍</li>
 <li><code>onTouch(View v, MotionEvent event);</code><br>API:Called when a touch event is dispatched to a view. This allows listeners to get a chance to respond before the target view.<br>如果当前View被分发touch事件时候会调用这个方法，在touch事件传递给目标View之前有回调来单独处理touch事件。说明onTouch是在dispatchTouchEvent中处理，并回调处理结果（有的情况下）；</li>
 <li><p><code>onInterceptTouchEvent(MotionEvent ev);</code><br>API:原文太长，有愿意看可以在<code>ViewGroup.java</code>查看方法注释。<br><code>onInterceptTouchEvent</code>是ViewGroup中特有方法，用来做什么用的？可以从方法命名上看出来<code>拦截</code>事件。其源码也很简单</p>
 <pre><code><span class="keyword">public</span> <span class="function"><span class="keyword">boolean</span> <span class="title">onInterceptTouchEvent</span><span class="params">(MotionEvent ev)</span> </span>{
@@ -230,7 +230,7 @@ dispatchTouchEvent(MotionEvent event)根据Androi">
 <p>对，你没有看错就是一句话：<code>return false;</code> 即：默认不拦截</p>
 <h5 id="使用Touch的三个类">使用Touch的三个类</h5><ol>
 <li><code>Activity</code>的TouchEvent事件处理方法<br> (1)<code>dispatchTouchEvent(MotionEvent event)</code><br> (2)<code>onTouchEvent(MotionEvent event)</code></li>
-<li><code>ViewGroup</code>的TouchEvent事件处理方法<br> (1)<code>dispatchTouchEvent(MotionEvent event)</code><br> (2)<code>onInterceptTouchEvent(MotionEvent ev)</code><br> (3)onTouchEvent(MotionEvent event)`</li>
+<li><code>ViewGroup</code>的TouchEvent事件处理方法<br> (1)<code>dispatchTouchEvent(MotionEvent event)</code><br> (2)<code>onInterceptTouchEvent(MotionEvent ev)</code><br> (3)<code>onTouchEvent(MotionEvent event)</code></li>
 <li><code>View</code>的TouchEvent事件处理方<br> (1)<code>dispatchTouchEvent(MotionEvent event)</code><br> (2)<code>onTouchEvent(MotionEvent event)</code></li>
 </ol>
 <h4 id="二、TouchEvent事件分发源码分析">二、TouchEvent事件分发源码分析</h4><p>一张图看懂TouchEvent分发机制</p>
