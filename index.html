@@ -235,7 +235,7 @@
 
 <p>根据流程图和Avtivity、ViewGroup、View源码来深入分析TouchEvent的分发机制</p>
 <h5 id="1-Activtiy_分发事件源码">1.Activtiy 分发事件源码</h5><p>TouchEvent的事件从Android硬件的Input系统接收到，传递给Activity调用dispatchTouchEvent(MotionEvent event);任何TouchEvent都是以MotionEvent.ACTION_DOWN为整个TouchEvent起始点。</p>
-<h6 id="（1）dispatchTouchEvent(MotionEvent_ev)">（1）dispatchTouchEvent(MotionEvent ev)</h6><pre><code><span class="comment">/**
+<h6 id="（1）dispatchTouchEvent源码">（1）dispatchTouchEvent源码</h6><pre><code><span class="comment">/**
 * 处理屏幕的TouchEvent 可以复写这个方法来打断TouchEvent向下分发.
 * @param ev The touch screen event.
 *
@@ -253,7 +253,7 @@ public boolean dispatchTouchEvent<span class="params">(MotionEvent ev)</span> {
     }
     return onTouchEvent<span class="params">(ev)</span>;
 }
-</code></pre><h6 id="（2）onTouchEvent(MotionEvent_event)">（2）onTouchEvent(MotionEvent event)</h6><pre><code><span class="comment">/**
+</code></pre><h6 id="（2）onTouchEvent源码">（2）onTouchEvent源码</h6><pre><code><span class="comment">/**
 * 如果任何子View都没有处理TouchEvent则会调用这个方法，用来处理当触控点在Window界面外的情况
 * <span class="doctag">@param</span> event The touch screen event being processed.
 *
