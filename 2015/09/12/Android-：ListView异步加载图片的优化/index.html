@@ -55,7 +55,7 @@
 新手容易因为不注意或者不了解ListView加载Adapter机制而出现这些错误。下面我们查看ListView和Adapter的源码来分析其内部是如何实现以及如何去解决这三个问题。">
 <meta property="og:image" content="http://img.my.csdn.net/uploads/201301/27/1359294305_6777.png">
 <meta property="og:image" content="https://github.com/alexwan1989/alexwan1989.github.io/blob/master/images/ListView%E9%87%8D%E7%94%A8%E6%9C%BA%E5%88%B6.png?raw=true">
-<meta property="og:updated_time" content="2015-09-12T15:48:16.000Z">
+<meta property="og:updated_time" content="2015-09-12T15:50:40.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android ：ListView异步加载图片的优化">
 <meta name="twitter:description" content="在Android开发中我们会选择ListView来加载列表数据。使用ListView时需要注意
@@ -236,13 +236,109 @@
 </ol>
 <p>新手容易因为不注意或者不了解ListView加载Adapter机制而出现这些错误。下面我们查看ListView和Adapter的源码来分析其内部是如何实现以及如何去解决这三个问题。<br><a id="more"></a></p>
 <h4 id="一、ListView重用View机制">一、ListView重用View机制</h4><h5 id="1-源码分析">1.源码分析</h5><p>ListView调用setAdapter(Adapter adapter)方法加载数据。初始时根据屏幕给ListView的高度和每个Adapter的高度计算一次可以加载的Adapter的数量，定义要重用的Item的。然后在ListView上下滑动时，如果一个Item滚出屏幕，另外一个Item会进入屏幕，则进入屏幕的Item会重用滚出屏幕的item的视图。<br>ListView在上下滑动的时候是如何调用adapter的getView方法的呢？分析源码后就会很清晰了</p>
-<div align="center"><br>    <img src="http://img.my.csdn.net/uploads/201301/27/1359294305_6777.png"><br><div><br><br>    // ——ListView 源码——<br>    // ListView 上拉或下拉的时候会调用<br>    View child = makeAndAddView(pos, nextTop, true, mListPadding.left, selected);<br><br>    /<strong><br>    <em>添加View，重用recycle bin对象创建好的或者创建一个新的View
-    </em>/<br>    private View makeAndAddView(int position, int y, boolean flow, int childrenLeft,<br>            boolean selected) {<br>            …<br>        View child;<br>        // 如果仅仅是数据变化<br>        if (!mDataChanged) {<br>            // 如果Adapter数据没有变化<br>            // 检测对应位置的View是否创建<br>            child = mRecycler.getActiveView(position);<br>            if (child != null) {<br>                // 测量Child<br>                setupChild(child, position, y, flow, childrenLeft, selected, true);<br><br>                return child;<br>            }<br>        }<br>        // 如果数据变化 , 则重新创建<br>        child = obtainView(position, mIsScrap);<br><br>        // 测量View的大小和位置<br>        setupChild(child, position, y, flow, childrenLeft, selected, mIsScrap[0]);<br><br>        return child;<br>    }<br><br>    /</strong><br>    <em> 更新Item的View
-    </em>/<br>    private void setupChild(View child, int position, int y, boolean flowDown, int childrenLeft,<br>        boolean selected, boolean recycled) {<br>        …<br>        // 主要设置当前的View各种状态、测量View具体大小、重新绘制<br>    }<br><br>    // ——AbsListView 源码——<br>    /<em>*
-    </em> 根据位置判断是否重用或者创建新的View<br>    */<br>    View obtainView(int position, boolean[] isScrap) {<br>        …<br>        isScrap[0] = false;<br>        …<br>        // 检测当前位置的transientView是否已经临时View<br>        // 根据当前的position和数据size计算出mRecycler对应的index位置的View<br>        final View transientView = mRecycler.getTransientStateView(position);<br>        if (transientView != null) {<br>            final LayoutParams params = (LayoutParams) transientView.getLayoutParams();<br>            …<br>            // 如果ViewType没有变化，只需要重新绑定数据<br>            if (params.viewType == mAdapter.getItemViewType(position)) {<br>                final View updatedView = mAdapter.getView(position, transientView, this);<br><br>                // 如果绑定数据失败，则使用updatedView<br>                if (updatedView != transientView) {<br>                        setItemViewLayoutParams(updatedView, position);<br>                        mRecycler.addScrapView(updatedView, position);<br>                }<br>            }<br>            …<br>            return transientView;<br>        }<br>        …<br>        // 瞬时态transientView，缓存态scrapView<br>        final View scrapView = mRecycler.getScrapView(position);<br>        final View child = mAdapter.getView(position, scrapView, this);<br>        …<br>        return child<br>    }<br><br>    // ——Adapter 源码——<br>    // adapter getView 判断convertView是否为空<br>    View getView(int position, View convertView, ViewGroup parent);<br><br>ListView在上下滑动的时候会调用<code>pullUp()</code>或<code>pullDown()</code>方法，这两个方法都回去调用<code>makeAndAddView()</code>方法来获取新的View，这个新的View可能是创建新的，也可能是重用之前创建好的View.<br>#####2.解决重用问题<br>ListView在初始化的时候，根据屏幕大小和Adapter中View大小来创建Adapter的View个数。之后再去判断是否复用创建好的View。一般我们会在<code>Adapter</code>方法<code>getView</code>中使用如下的代码去判断当前View是否已经存在了，来解决<code>重用convertView</code>的问题。使用<code>ViewHolder</code>来解决<code>重用ViewHolder</code>的子View的问题<br><br>    public View getView(int postion , View convertView , ViewGroup group){<br>        ViewHolder holder;<br>        if(convertView == null ){<br>            holder = new ViewHolder;<br>            convertView.setTag(holder);<br>            //<br>            …<br>        }else{<br>            holder = convertView.getTag();<br>        }<br>        …<br>        // 繁多的业务逻辑<br>        return convertView;<br>    }<br><br>通过以上的代码就可以解决<code>重用convertView</code>和<code>重用ViewHolder</code>两个问题<br><br>附上一张图显示ListView滑动时如何重用之前View<br><br><div align="center"><br>    <img src="https://github.com/alexwan1989/alexwan1989.github.io/blob/master/images/ListView%E9%87%8D%E7%94%A8%E6%9C%BA%E5%88%B6.png?raw=true"><br></div>
+<div align="center"><br>    <img src="http://img.my.csdn.net/uploads/201301/27/1359294305_6777.png"><br></div>
+
+<pre><code><span class="comment">// ----ListView 源码----</span>
+<span class="comment">// ListView 上拉或下拉的时候会调用</span>
+View child = makeAndAddView(pos, nextTop, <span class="keyword">true</span>, mListPadding.left, selected);
+
+<span class="comment">/**
+*添加View，重用recycle bin对象创建好的或者创建一个新的View
+*/</span>
+<span class="keyword">private</span> <span class="function">View <span class="title">makeAndAddView</span><span class="params">(<span class="keyword">int</span> position, <span class="keyword">int</span> y, <span class="keyword">boolean</span> flow, <span class="keyword">int</span> childrenLeft,
+        <span class="keyword">boolean</span> selected)</span> </span>{
+        ...
+    View child;
+    <span class="comment">// 如果仅仅是数据变化</span>
+    <span class="keyword">if</span> (!mDataChanged) {
+        <span class="comment">// 如果Adapter数据没有变化</span>
+        <span class="comment">// 检测对应位置的View是否创建</span>
+        child = mRecycler.getActiveView(position);
+        <span class="keyword">if</span> (child != <span class="keyword">null</span>) {
+            <span class="comment">// 测量Child</span>
+            setupChild(child, position, y, flow, childrenLeft, selected, <span class="keyword">true</span>);
+
+            <span class="keyword">return</span> child;
+        }
+    }
+    <span class="comment">// 如果数据变化 , 则重新创建</span>
+    child = obtainView(position, mIsScrap);
+
+    <span class="comment">// 测量View的大小和位置</span>
+    setupChild(child, position, y, flow, childrenLeft, selected, mIsScrap[<span class="number">0</span>]);
+
+    <span class="keyword">return</span> child;
+}
+
+<span class="comment">/**
+* 更新Item的View
+*/</span>
+<span class="keyword">private</span> <span class="function"><span class="keyword">void</span> <span class="title">setupChild</span><span class="params">(View child, <span class="keyword">int</span> position, <span class="keyword">int</span> y, <span class="keyword">boolean</span> flowDown, <span class="keyword">int</span> childrenLeft,
+    <span class="keyword">boolean</span> selected, <span class="keyword">boolean</span> recycled)</span> </span>{
+    ...
+    <span class="comment">// 主要设置当前的View各种状态、测量View具体大小、重新绘制</span>
+}
+
+<span class="comment">// ----AbsListView 源码----</span>
+<span class="comment">/**
+* 根据位置判断是否重用或者创建新的View
+*/</span>
+<span class="function">View <span class="title">obtainView</span><span class="params">(<span class="keyword">int</span> position, <span class="keyword">boolean</span>[] isScrap)</span> </span>{
+    ...
+    isScrap[<span class="number">0</span>] = <span class="keyword">false</span>;
+    ...
+    <span class="comment">// 检测当前位置的transientView是否已经临时View</span>
+    <span class="comment">// 根据当前的position和数据size计算出mRecycler对应的index位置的View</span>
+    <span class="keyword">final</span> View transientView = mRecycler.getTransientStateView(position);
+    <span class="keyword">if</span> (transientView != <span class="keyword">null</span>) {
+        <span class="keyword">final</span> LayoutParams params = (LayoutParams) transientView.getLayoutParams();
+        ...
+        <span class="comment">// 如果ViewType没有变化，只需要重新绑定数据</span>
+        <span class="keyword">if</span> (params.viewType == mAdapter.getItemViewType(position)) {
+            <span class="keyword">final</span> View updatedView = mAdapter.getView(position, transientView, <span class="keyword">this</span>);
+
+            <span class="comment">// 如果绑定数据失败，则使用updatedView</span>
+            <span class="keyword">if</span> (updatedView != transientView) {
+                    setItemViewLayoutParams(updatedView, position);
+                    mRecycler.addScrapView(updatedView, position);
+            }
+        }
+        ...
+        <span class="keyword">return</span> transientView;
+    }
+    ...
+    <span class="comment">// 瞬时态transientView，缓存态scrapView</span>
+    <span class="keyword">final</span> View scrapView = mRecycler.getScrapView(position);
+    <span class="keyword">final</span> View child = mAdapter.getView(position, scrapView, <span class="keyword">this</span>);
+    ...
+    <span class="keyword">return</span> child
+}
+
+<span class="comment">// ----Adapter 源码----</span>
+<span class="comment">// adapter getView 判断convertView是否为空</span>
+<span class="function">View <span class="title">getView</span><span class="params">(<span class="keyword">int</span> position, View convertView, ViewGroup parent)</span></span>;
+</code></pre><p>ListView在上下滑动的时候会调用<code>pullUp()</code>或<code>pullDown()</code>方法，这两个方法都回去调用<code>makeAndAddView()</code>方法来获取新的View，这个新的View可能是创建新的，也可能是重用之前创建好的View.</p>
+<h5 id="2-解决重用问题">2.解决重用问题</h5><p>ListView在初始化的时候，根据屏幕大小和Adapter中View大小来创建Adapter的View个数。之后再去判断是否复用创建好的View。一般我们会在<code>Adapter</code>方法<code>getView</code>中使用如下的代码去判断当前View是否已经存在了，来解决<code>重用convertView</code>的问题。使用<code>ViewHolder</code>来解决<code>重用ViewHolder</code>的子View的问题</p>
+<pre><code><span class="function"><span class="keyword">public</span> View <span class="title">getView</span>(<span class="params"><span class="keyword">int</span> postion , View convertView , ViewGroup <span class="keyword">group</span></span>)</span>{
+    ViewHolder holder;
+    <span class="keyword">if</span>(convertView == <span class="keyword">null</span> ){
+        holder = <span class="keyword">new</span> ViewHolder;
+        convertView.setTag(holder);
+        <span class="comment">// </span>
+        ...
+    }<span class="keyword">else</span>{
+        holder = convertView.getTag();
+    }
+    ...
+    <span class="comment">// 繁多的业务逻辑</span>
+    <span class="keyword">return</span> convertView;
+}
+</code></pre><p>通过以上的代码就可以解决<code>重用convertView</code>和<code>重用ViewHolder</code>两个问题</p>
+<p>附上一张图显示ListView滑动时如何重用之前View</p>
+<div align="center"><br>    <img src="https://github.com/alexwan1989/alexwan1989.github.io/blob/master/images/ListView%E9%87%8D%E7%94%A8%E6%9C%BA%E5%88%B6.png?raw=true"><br></div>
 
 <h4 id="二、ListView异步加载网络数据优化">二、ListView异步加载网络数据优化</h4><h4 id="参考文章">参考文章</h4><p>1.<a href="http://blog.csdn.net/androiddevelop/article/details/8547077" target="_blank" rel="external">Android ListView初始化简单分析</a><br>2.<a href="http://www.cnblogs.com/xiaowenji/archive/2010/12/08/1900579.html" target="_blank" rel="external">ListView 和 Adapter 的基础</a><br>3.<a href="http://www.cnblogs.com/qiengo/p/3628235.html" target="_blank" rel="external">ListView回收机制相关分析</a><br>4.<a href="http://www.trinea.cn/android/android-listview-display-error-image-when-scroll/" target="_blank" rel="external">Android ListView滑动过程中图片显示重复错位闪烁问题解决</a></p>
-</div></div></span>
+</span>
       
     </div>
 
@@ -355,7 +451,7 @@
               </span>
             
               <span class="links-of-author-item">
-                <a href="http://weibo.com/alexwan1989" target="_blank">weibo</a>
+                <a href="http://weibo.com/u/5184967028" target="_blank">weibo</a>
               </span>
             
               <span class="links-of-author-item">
@@ -380,7 +476,7 @@
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#一、ListView重用View机制"><span class="nav-number">1.</span> <span class="nav-text">一、ListView重用View机制</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-源码分析"><span class="nav-number">1.1.</span> <span class="nav-text">1.源码分析</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二、ListView异步加载网络数据优化"><span class="nav-number">2.</span> <span class="nav-text">二、ListView异步加载网络数据优化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考文章"><span class="nav-number">3.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#一、ListView重用View机制"><span class="nav-number">1.</span> <span class="nav-text">一、ListView重用View机制</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-源码分析"><span class="nav-number">1.1.</span> <span class="nav-text">1.源码分析</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-解决重用问题"><span class="nav-number">1.2.</span> <span class="nav-text">2.解决重用问题</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二、ListView异步加载网络数据优化"><span class="nav-number">2.</span> <span class="nav-text">二、ListView异步加载网络数据优化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考文章"><span class="nav-number">3.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
