@@ -49,7 +49,7 @@
 重用convertView
 重用ViewHolder的子View
 异步加载数据时候导致内容错位闪烁等问题新手容易因为不注意或者不了解ListView的ListView机制而出现这些错误。下面我们查看ListView和Adapter的源码来分析其内部是如何实现以及如何去解决这三个问题。">
-<meta property="og:updated_time" content="2015-09-12T09:36:06.000Z">
+<meta property="og:updated_time" content="2015-09-12T09:38:55.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android ：ListView异步加载图片的优化">
 <meta name="twitter:description" content="在Android开发中我们会选择ListView来加载列表数据。使用ListView时需要注意
@@ -226,7 +226,8 @@
 <li>重用ViewHolder的子View</li>
 <li><p>异步加载数据时候导致内容错位闪烁等问题<br>新手容易因为不注意或者不了解ListView的ListView机制而出现这些错误。下面我们查看ListView和Adapter的源码来分析其内部是如何实现以及如何去解决这三个问题。</p>
 <a id="more"></a>
-<h5 id="一、ListView重用ContentView的机制">一、ListView重用ContentView的机制</h5><p>ListView在上下滑动的时候是如何调用adapter的getView方法的呢？分析源码后就会很清晰了<br> // ListView 源码<br> // ListView 上拉或下拉的时候会调用<br> View child = makeAndAddView(pos, nextTop, true, mListPadding.left, selected);</p>
+<h5 id="一、ListView重用ContentView的机制">一、ListView重用ContentView的机制</h5><p>ListView在上下滑动的时候是如何调用adapter的getView方法的呢？分析源码后就会很清晰了</p>
+<p> // ListView 源码<br> // ListView 上拉或下拉的时候会调用<br> View child = makeAndAddView(pos, nextTop, true, mListPadding.left, selected);</p>
 <p> // 添加View，重用recycle bin对象创建好的或者创建一个新的View<br> private View makeAndAddView(int position, int y, boolean flow, int childrenLeft,</p>
 <pre><code>    <span class="keyword">boolean</span> selected) {
     ...
