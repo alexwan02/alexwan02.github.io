@@ -39,7 +39,9 @@
 
 重用convertView
 重用ViewHolder的子View
-异步加载数据时候导致内容错位闪烁等问题新手容易因为不注意或者不了解ListView的ListView机制而出现这些错误。下面我们查看ListView和Adapter的源码来分析其内部是如何实现以及如何去解决这三个问题。">
+异步加载数据时候导致内容错位闪烁等问题
+
+新手容易因为不注意或者不了解ListView的ListView机制而出现这些错误。下面我们查看ListView和Adapter的源码来分析其内部是如何实现以及如何去解决这三个问题。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android ：ListView异步加载图片的优化">
 <meta property="og:url" content="http://alexwan1989.com/2015/09/12/Android-：ListView异步加载图片的优化/index.html">
@@ -48,15 +50,19 @@
 
 重用convertView
 重用ViewHolder的子View
-异步加载数据时候导致内容错位闪烁等问题新手容易因为不注意或者不了解ListView的ListView机制而出现这些错误。下面我们查看ListView和Adapter的源码来分析其内部是如何实现以及如何去解决这三个问题。">
-<meta property="og:updated_time" content="2015-09-12T09:42:19.000Z">
+异步加载数据时候导致内容错位闪烁等问题
+
+新手容易因为不注意或者不了解ListView的ListView机制而出现这些错误。下面我们查看ListView和Adapter的源码来分析其内部是如何实现以及如何去解决这三个问题。">
+<meta property="og:updated_time" content="2015-09-12T09:44:03.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android ：ListView异步加载图片的优化">
 <meta name="twitter:description" content="在Android开发中我们会选择ListView来加载列表数据。使用ListView时需要注意
 
 重用convertView
 重用ViewHolder的子View
-异步加载数据时候导致内容错位闪烁等问题新手容易因为不注意或者不了解ListView的ListView机制而出现这些错误。下面我们查看ListView和Adapter的源码来分析其内部是如何实现以及如何去解决这三个问题。">
+异步加载数据时候导致内容错位闪烁等问题
+
+新手容易因为不注意或者不了解ListView的ListView机制而出现这些错误。下面我们查看ListView和Adapter的源码来分析其内部是如何实现以及如何去解决这三个问题。">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -224,46 +230,52 @@
 <ol>
 <li>重用convertView</li>
 <li>重用ViewHolder的子View</li>
-<li><p>异步加载数据时候导致内容错位闪烁等问题<br>新手容易因为不注意或者不了解ListView的ListView机制而出现这些错误。下面我们查看ListView和Adapter的源码来分析其内部是如何实现以及如何去解决这三个问题。</p>
-<a id="more"></a>
+<li>异步加载数据时候导致内容错位闪烁等问题</li>
+</ol>
+<p>新手容易因为不注意或者不了解ListView的ListView机制而出现这些错误。下面我们查看ListView和Adapter的源码来分析其内部是如何实现以及如何去解决这三个问题。<br><a id="more"></a></p>
 <h4 id="一、ListView重用ContentView的机制">一、ListView重用ContentView的机制</h4><h5 id="1-源码分析">1.源码分析</h5><p>ListView在上下滑动的时候是如何调用adapter的getView方法的呢？分析源码后就会很清晰了</p>
-<p> // ListView 源码<br> // ListView 上拉或下拉的时候会调用<br> View child = makeAndAddView(pos, nextTop, true, mListPadding.left, selected);<br> // 添加View，重用recycle bin对象创建好的或者创建一个新的View<br> private View makeAndAddView(int position, int y, boolean flow, int childrenLeft,</p>
-<pre><code>    <span class="keyword">boolean</span> selected) {
-    ...
+<pre><code><span class="comment">// ListView 源码</span>
+<span class="comment">// ListView 上拉或下拉的时候会调用</span>
+View child = makeAndAddView(pos, nextTop, <span class="keyword">true</span>, mListPadding.left, selected);
+<span class="comment">// 添加View，重用recycle bin对象创建好的或者创建一个新的View</span>
+<span class="keyword">private</span> <span class="function">View <span class="title">makeAndAddView</span><span class="params">(<span class="keyword">int</span> position, <span class="keyword">int</span> y, <span class="keyword">boolean</span> flow, <span class="keyword">int</span> childrenLeft,
+        <span class="keyword">boolean</span> selected)</span> </span>{
+        ...
 
-<span class="comment">// 根据位置判断是否重用或者创建新的View</span>
-child = obtainView(position, mIsScrap);
+    <span class="comment">// 根据位置判断是否重用或者创建新的View</span>
+    child = obtainView(position, mIsScrap);
 
-<span class="comment">// 测量View的大小和位置</span>
-setupChild(child, position, y, flow, childrenLeft, selected, mIsScrap[<span class="number">0</span>]);
+    <span class="comment">// 测量View的大小和位置</span>
+    setupChild(child, position, y, flow, childrenLeft, selected, mIsScrap[<span class="number">0</span>]);
 
-<span class="keyword">return</span> child;
-</code></pre><p> }<br> View obtainView(int position, boolean[] isScrap) {</p>
-<pre><code><span class="keyword">if</span> <span class="params">(transientView != null)</span> {
-    final LayoutParams params = <span class="params">(LayoutParams)</span> transientView.getLayoutParams<span class="params">()</span>;
-    ...
-    <span class="comment">// 如果ViewType没有变化，只需要重新绑定数据</span>
-    <span class="keyword">if</span> <span class="params">(params.viewType == mAdapter.getItemViewType<span class="params">(position)</span>)</span> {
-        final View updatedView = mAdapter.getView<span class="params">(position, transientView, this)</span>;
+    <span class="keyword">return</span> child;
+}
+<span class="function">View <span class="title">obtainView</span><span class="params">(<span class="keyword">int</span> position, <span class="keyword">boolean</span>[] isScrap)</span> </span>{
+    <span class="keyword">if</span> (transientView != <span class="keyword">null</span>) {
+        <span class="keyword">final</span> LayoutParams params = (LayoutParams) transientView.getLayoutParams();
+        ...
+        <span class="comment">// 如果ViewType没有变化，只需要重新绑定数据</span>
+        <span class="keyword">if</span> (params.viewType == mAdapter.getItemViewType(position)) {
+            <span class="keyword">final</span> View updatedView = mAdapter.getView(position, transientView, <span class="keyword">this</span>);
 
-        <span class="comment">// 如果绑定数据失败，则使用updatedView</span>
-        <span class="keyword">if</span> <span class="params">(updatedView != transientView)</span> {
-                setItemViewLayoutParams<span class="params">(updatedView, position)</span>;
-                mRecycler.addScrapView<span class="params">(updatedView, position)</span>;
+            <span class="comment">// 如果绑定数据失败，则使用updatedView</span>
+            <span class="keyword">if</span> (updatedView != transientView) {
+                    setItemViewLayoutParams(updatedView, position);
+                    mRecycler.addScrapView(updatedView, position);
+            }
         }
+        ...
+        <span class="keyword">return</span> transientView;
     }
     ...
-    return transientView;
+    <span class="keyword">final</span> View scrapView = mRecycler.getScrapView(position);
+    <span class="keyword">final</span> View child = mAdapter.getView(position, scrapView, <span class="keyword">this</span>);
+    ...
+    <span class="keyword">return</span> child
 }
-...
-final View scrapView = mRecycler.getScrapView<span class="params">(position)</span>;
-final View child = mAdapter.getView<span class="params">(position, scrapView, this)</span>;
-...
-return child
-</code></pre><p> }<br> // adapter getView 判断convertView是否为空<br> View getView(int position, View convertView, ViewGroup parent);</p>
-</li>
-</ol>
-<p>ListView在上下滑动的时候会调用<code>pullUp()</code>或<code>pullDown()</code>方法，这两个方法都回去调用<code>makeAndAddView()</code>方法来获取新的View，这个新的View可能是创建新的，也可能是重用之前创建好的View.</p>
+<span class="comment">// adapter getView 判断convertView是否为空</span>
+<span class="function">View <span class="title">getView</span><span class="params">(<span class="keyword">int</span> position, View convertView, ViewGroup parent)</span></span>;
+</code></pre><p>ListView在上下滑动的时候会调用<code>pullUp()</code>或<code>pullDown()</code>方法，这两个方法都回去调用<code>makeAndAddView()</code>方法来获取新的View，这个新的View可能是创建新的，也可能是重用之前创建好的View.</p>
 <h5 id="2-解决重用问题">2.解决重用问题</h5><p>ListView在初始化的时候，根据屏幕大小和Adapter中View大小来创建Adapter的View个数。之后再去判断是否复用创建好的View。一般我们会在<code>Adapter</code>方法<code>getView</code>中使用如下的代码去判断当前View是否已经存在了，来解决<code>重用convertView</code>的问题。使用<code>ViewHolder</code>来解决<code>重用ViewHolder</code>的子View的问题</p>
 <pre><code><span class="function"><span class="keyword">public</span> View <span class="title">getView</span>(<span class="params"><span class="keyword">int</span> postion , View convertView , ViewGroup <span class="keyword">group</span></span>)</span>{
     ViewHolder holder;
