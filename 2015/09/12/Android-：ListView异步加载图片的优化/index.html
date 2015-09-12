@@ -53,7 +53,7 @@
 异步加载数据时候导致内容错位闪烁等问题
 
 新手容易因为不注意或者不了解ListView的ListView机制而出现这些错误。下面我们查看ListView和Adapter的源码来分析其内部是如何实现以及如何去解决这三个问题。">
-<meta property="og:updated_time" content="2015-09-12T09:44:03.000Z">
+<meta property="og:updated_time" content="2015-09-12T09:48:08.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android ：ListView异步加载图片的优化">
 <meta name="twitter:description" content="在Android开发中我们会选择ListView来加载列表数据。使用ListView时需要注意
@@ -234,10 +234,13 @@
 </ol>
 <p>新手容易因为不注意或者不了解ListView的ListView机制而出现这些错误。下面我们查看ListView和Adapter的源码来分析其内部是如何实现以及如何去解决这三个问题。<br><a id="more"></a></p>
 <h4 id="一、ListView重用ContentView的机制">一、ListView重用ContentView的机制</h4><h5 id="1-源码分析">1.源码分析</h5><p>ListView在上下滑动的时候是如何调用adapter的getView方法的呢？分析源码后就会很清晰了</p>
-<pre><code><span class="comment">// ListView 源码</span>
+<pre><code><span class="comment">// ----ListView 源码----</span>
 <span class="comment">// ListView 上拉或下拉的时候会调用</span>
 View child = makeAndAddView(pos, nextTop, <span class="keyword">true</span>, mListPadding.left, selected);
-<span class="comment">// 添加View，重用recycle bin对象创建好的或者创建一个新的View</span>
+
+<span class="comment">/**
+*添加View，重用recycle bin对象创建好的或者创建一个新的View
+*/</span>
 <span class="keyword">private</span> <span class="function">View <span class="title">makeAndAddView</span><span class="params">(<span class="keyword">int</span> position, <span class="keyword">int</span> y, <span class="keyword">boolean</span> flow, <span class="keyword">int</span> childrenLeft,
         <span class="keyword">boolean</span> selected)</span> </span>{
         ...
@@ -250,6 +253,10 @@ View child = makeAndAddView(pos, nextTop, <span class="keyword">true</span>, mLi
 
     <span class="keyword">return</span> child;
 }
+
+<span class="comment">/**
+* 根据位置判断是否重用或者创建新的View
+*/</span>
 <span class="function">View <span class="title">obtainView</span><span class="params">(<span class="keyword">int</span> position, <span class="keyword">boolean</span>[] isScrap)</span> </span>{
     <span class="keyword">if</span> (transientView != <span class="keyword">null</span>) {
         <span class="keyword">final</span> LayoutParams params = (LayoutParams) transientView.getLayoutParams();
@@ -273,6 +280,8 @@ View child = makeAndAddView(pos, nextTop, <span class="keyword">true</span>, mLi
     ...
     <span class="keyword">return</span> child
 }
+
+<span class="comment">// ----Adapter 源码----</span>
 <span class="comment">// adapter getView 判断convertView是否为空</span>
 <span class="function">View <span class="title">getView</span><span class="params">(<span class="keyword">int</span> position, View convertView, ViewGroup parent)</span></span>;
 </code></pre><p>ListView在上下滑动的时候会调用<code>pullUp()</code>或<code>pullDown()</code>方法，这两个方法都回去调用<code>makeAndAddView()</code>方法来获取新的View，这个新的View可能是创建新的，也可能是重用之前创建好的View.</p>
