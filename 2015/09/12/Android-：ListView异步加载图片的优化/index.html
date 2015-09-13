@@ -55,7 +55,7 @@
 使用ListView时应该需要注意这些问题。下面我们结合ListView和Adapter的源码来分析其内部是如何实现以">
 <meta property="og:image" content="http://img.my.csdn.net/uploads/201301/27/1359294305_6777.png">
 <meta property="og:image" content="https://github.com/alexwan1989/alexwan1989.github.io/blob/master/images/ListView%E9%87%8D%E7%94%A8%E6%9C%BA%E5%88%B6.png?raw=true">
-<meta property="og:updated_time" content="2015-09-13T01:27:49.000Z">
+<meta property="og:updated_time" content="2015-09-13T01:35:38.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android ：ListView异步加载图片的优化">
 <meta name="twitter:description" content="在Android开发中我们会选择ListView来加载列表数据。新手容易因为不注意或者不了解ListView加载Adapter机制而出现这些错误。
@@ -235,7 +235,7 @@
 <li>如何解决异步加载数据时候导致内容错位闪烁等问题</li>
 </ol>
 <p>使用ListView时应该需要注意这些问题。下面我们结合ListView和Adapter的源码来分析其内部是如何实现以及如何去解决这三个问题。<br><a id="more"></a></p>
-<h4 id="一、ListView重用View原理">一、ListView重用View原理</h4><h5 id="1-源码分析">1.源码分析</h5><p>ListView调用setAdapter(Adapter adapter)方法加载数据。初始时根据屏幕给ListView的高度和每个Adapter的高度计算一次可以加载的Adapter的数量，定义要重用的Item的。然后在ListView上下滑动时，如果一个Item滚出屏幕，另外一个Item会进入屏幕，则进入屏幕的Item会重用滚出屏幕的item的视图。<br>ListView在上下滑动的时候是如何调用adapter的getView方法的呢？分析源码后就会很清晰了</p>
+<h4 id="一、ListView重用View原理">一、ListView重用View原理</h4><h5 id="1-源码分析">1.源码分析</h5><p>ListView调用setAdapter(Adapter adapter)方法加载数据。初始时根据屏幕给ListView的高度和每个Adapter的高度计算一次可以加载的Adapter的数量，定义要重用的Item的。每个Item在进入屏幕显示时都会调用Adapter中的方法<code>getView(int postion , View converView , ViewGroup group)</code>，在ListView上下滑动时，如果一个Item滚出屏幕，另外一个Item会进入屏幕，由<code>getView()</code>判断进入屏幕的Item是否重用滚出屏幕的item的视图。那么ListView在上下滑动的时候是如何调用adapter的getView方法的呢？接下来我们分析源码实现。<br>ListView结构图：</p>
 <div align="center"><br>    <img src="http://img.my.csdn.net/uploads/201301/27/1359294305_6777.png"><br></div>
 
 <pre><code><span class="comment">// ----ListView 源码----</span>
