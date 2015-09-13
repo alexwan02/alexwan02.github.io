@@ -212,13 +212,13 @@
 
       
         
-          <p>在Android开发中我们会选择ListView来加载列表数据。使用ListView时需要注意</p>
+          <p>在Android开发中我们会选择ListView来加载列表数据。新手容易因为不注意或者不了解ListView加载Adapter机制而出现这些错误。</p>
 <ol>
-<li>重用convertView</li>
-<li>重用ViewHolder的子View</li>
-<li>异步加载数据时候导致内容错位闪烁等问题</li>
+<li>如何重用convertView</li>
+<li>如何使用ViewHolder重用ItemView</li>
+<li>如何解决异步加载数据时候导致内容错位闪烁等问题</li>
 </ol>
-<p>新手容易因为不注意或者不了解ListView加载Adapter机制而出现这些错误。下面我们查看ListView和Adapter的源码来分析其内部是如何实现以及如何去解决这三个问题。<br>
+<p>使用ListView时应该需要注意这些问题。下面我们结合ListView和Adapter的源码来分析其内部是如何实现以及如何去解决这三个问题。<br>
           <div class="post-more-link text-center">
             <a class="btn" href="/2015/09/12/Android-：ListView异步加载图片的优化/#more" rel="contents">
               阅读全文 &raquo;
