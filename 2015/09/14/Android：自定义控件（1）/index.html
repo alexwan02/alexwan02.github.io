@@ -53,7 +53,8 @@
         super(context);
     }
     // 必须要保证至少一个带有AttributeSet的构造函数，用来">
-<meta property="og:updated_time" content="2015-09-19T07:35:22.000Z">
+<meta property="og:image" content="http://img.blog.csdn.net/20141120172919656?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWlnZXN0dWRpbw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta property="og:updated_time" content="2015-09-19T08:30:12.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android：自定义控件（1）">
 <meta name="twitter:description" content="Android开发进阶，Android自定义控件。
@@ -238,7 +239,8 @@
         <span class="keyword">super</span>(context , attrs);
     }
 }
-</code></pre><p><a href="http://codekk.com/blogs/detail/54cfab086c4761e5001b253f" target="_blank" rel="external">Android View绘制流程</a>由以下几步组成：<code>measure()</code>-&gt;<code>onMeasure()</code>-&gt;<code>layout()</code>-&gt;<code>onLayout()</code>-&gt;<code>dispatchDraw()</code>-&gt;<code>draw()</code>-&gt;<code>onDraw()</code>。自定义View使用View提供的onDraw(Canvas canvas)方法来绘制自己View。</p>
+</code></pre><a id="more"></a>
+<p><a href="http://codekk.com/blogs/detail/54cfab086c4761e5001b253f" target="_blank" rel="external">Android View绘制流程</a>由以下几步组成：<code>measure()</code>-&gt;<code>onMeasure()</code>-&gt;<code>layout()</code>-&gt;<code>onLayout()</code>-&gt;<code>dispatchDraw()</code>-&gt;<code>draw()</code>-&gt;<code>onDraw()</code>。自定义View使用View提供的onDraw(Canvas canvas)方法来绘制自己View。</p>
 <pre><code><span class="annotation">@Override</span>
 <span class="keyword">protected</span> <span class="function"><span class="keyword">void</span> <span class="title">onDraw</span><span class="params">(Canvas canvas)</span></span>{
     <span class="keyword">super</span>.onDraw(canvas);
@@ -399,7 +401,79 @@
     <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">native</span> <span class="keyword">void</span> <span class="title">finalizer</span><span class="params">(<span class="keyword">int</span> native_instance)</span></span>;
     <span class="keyword">int</span> native_instance;
 }
-</code></pre></span>
+</code></pre><p>public class<br>Xfermode<br>extends Object<br>java.lang.Object<br>↳    android.graphics.Xfermode<br>    Known Direct Subclasses<br>    <code>AvoidXfermode</code>, <code>PixelXorXfermode</code>, <code>PorterDuffXfermode</code></p>
+<p>1.AvoidXfermode.因为不支持硬件加速在API 16已经过时了。如果在高于API 16的机器上测试，必须显示应用或手机设置中关闭硬件加速。可以在AndroidManifest.xml文件中设置appcation节点下android:hardwareAccelerate属性为false来关闭硬件加速。</p>
+<pre><code>&lt;application
+    android:<span class="variable">allowBackup=</span><span class="string">"true"</span>
+    android:<span class="variable">hardwareAccelerated=</span><span class="string">"false"</span>
+    android:<span class="variable">icon=</span><span class="string">"@drawable/ic_launcher"</span>
+    android:<span class="variable">lable=</span><span class="string">"@string/app_name"</span>
+    android:theme-<span class="string">"@android:style/Theme.Black.NoTitleBar.FullScreen"</span>&gt;
+        ...
+&lt;/application&gt;
+</code></pre><p>AvoidXfermode </p>
+<pre><code><span class="annotation">@Deprecated</span>
+<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AvoidXfermode</span> <span class="keyword">extends</span> <span class="title">Xfermode</span> </span>{
+
+    <span class="comment">// these need to match the enum in SkAvoidXfermode.h on the native side</span>
+    <span class="keyword">public</span> <span class="keyword">enum</span> Mode {
+        AVOID   (<span class="number">0</span>),    <span class="comment">//!&lt; draw everywhere except on the opColor</span>
+        TARGET  (<span class="number">1</span>);    <span class="comment">//!&lt; draw only on top of the opColor</span>
+
+        Mode(<span class="keyword">int</span> nativeInt) {
+            <span class="keyword">this</span>.nativeInt = nativeInt;
+        }
+        <span class="keyword">final</span> <span class="keyword">int</span> nativeInt;
+    } 
+
+    <span class="function"><span class="keyword">public</span> <span class="title">AvoidXfermode</span><span class="params">(<span class="keyword">int</span> opColor, <span class="keyword">int</span> tolerance, Mode mode)</span> </span>{
+        <span class="keyword">if</span> (tolerance &lt; <span class="number">0</span> || tolerance &gt; <span class="number">255</span>) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"tolerance must be 0..255"</span>);
+        }
+        native_instance = nativeCreate(opColor, tolerance, mode.nativeInt);
+    }
+
+    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">native</span> <span class="keyword">long</span> <span class="title">nativeCreate</span><span class="params">(<span class="keyword">int</span> opColor, <span class="keyword">int</span> tolerance,
+    <span class="keyword">int</span> nativeMode)</span></span>;
+}
+</code></pre><p>2.PixelXorXfermode</p>
+<pre><code><span class="annotation">@Deprecated</span>
+<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PixelXorXfermode</span> <span class="keyword">extends</span> <span class="title">Xfermode</span> </span>{
+
+    <span class="function"><span class="keyword">public</span> <span class="title">PixelXorXfermode</span><span class="params">(<span class="keyword">int</span> opColor)</span> </span>{
+        native_instance = nativeCreate(opColor);
+    }
+
+    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">native</span> <span class="keyword">long</span> <span class="title">nativeCreate</span><span class="params">(<span class="keyword">int</span> opColor)</span></span>;
+}
+</code></pre><p>3.PorterDuffXfermode</p>
+<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PorterDuffXfermode</span> <span class="keyword">extends</span> <span class="title">Xfermode</span> </span>{
+    <span class="comment">/**
+    * <span class="doctag">@hide</span>
+    */</span>
+    <span class="keyword">public</span> <span class="keyword">final</span> PorterDuff.Mode mode;
+
+    <span class="comment">/**
+    * Create an xfermode that uses the specified porter-duff mode.
+    *
+    * <span class="doctag">@param</span> mode           The porter-duff mode that is applied
+    */</span>
+    <span class="function"><span class="keyword">public</span> <span class="title">PorterDuffXfermode</span><span class="params">(PorterDuff.Mode mode)</span> </span>{
+        <span class="keyword">this</span>.mode = mode;
+        native_instance = nativeCreateXfermode(mode.nativeInt);
+    }
+
+    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">native</span> <span class="keyword">long</span> <span class="title">nativeCreateXfermode</span><span class="params">(<span class="keyword">int</span> mode)</span></span>;
+}
+</code></pre><div align="center"><br>    <img src="http://img.blog.csdn.net/20141120172919656?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWlnZXN0dWRpbw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center"><br></div>
+
+
+
+
+
+
+
+</span>
       
     </div>
 

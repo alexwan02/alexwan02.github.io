@@ -212,7 +212,7 @@
 
       
         
-          <span itemprop="articleBody"><p>Android开发进阶，Android自定义控件。</p>
+          <p>Android开发进阶，Android自定义控件。</p>
 <h4 id="一、创建一个View">一、创建一个View</h4><pre><code>public <span class="class"><span class="keyword">class</span> <span class="title">CustomView</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">View</span>{</span>
     <span class="comment">// 必要添加的两个构造器</span>
     public <span class="type">CustomView</span>(<span class="type">Context</span> context){
@@ -224,168 +224,12 @@
         <span class="keyword">super</span>(context , attrs);
     }
 }
-</code></pre><p><a href="http://codekk.com/blogs/detail/54cfab086c4761e5001b253f" target="_blank" rel="external">Android View绘制流程</a>由以下几步组成：<code>measure()</code>-&gt;<code>onMeasure()</code>-&gt;<code>layout()</code>-&gt;<code>onLayout()</code>-&gt;<code>dispatchDraw()</code>-&gt;<code>draw()</code>-&gt;<code>onDraw()</code>。自定义View使用View提供的onDraw(Canvas canvas)方法来绘制自己View。</p>
-<pre><code><span class="annotation">@Override</span>
-<span class="keyword">protected</span> <span class="function"><span class="keyword">void</span> <span class="title">onDraw</span><span class="params">(Canvas canvas)</span></span>{
-    <span class="keyword">super</span>.onDraw(canvas);
-}
-</code></pre><p>Canvas可以理解为画布，用来承载View。画布有了，那么笔呢，Android中Paint对象就是我们要的画笔了。</p>
-<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CustomView</span> <span class="keyword">extends</span> <span class="title">View</span> </span>{
-    <span class="keyword">private</span> Paint piant;
-
-    <span class="function"><span class="keyword">public</span> <span class="title">CustomView</span><span class="params">(Context context)</span> </span>{
-        <span class="keyword">this</span>(context , <span class="keyword">null</span>);
-    }
-
-    <span class="function"><span class="keyword">public</span> <span class="title">CustomView</span><span class="params">(Context context, AttributeSet attrs)</span> </span>{
-        <span class="keyword">super</span>(context, attrs);
-        <span class="comment">// 不要在onDraw()方法中初始化画笔</span>
-        <span class="comment">// 因为onDraw()方法是频繁调用的</span>
-        initPaint();
-    }
-    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initPaint</span><span class="params">()</span> </span>{
-        <span class="comment">// 开启抗锯齿</span>
-        Paint paint = <span class="keyword">new</span> Paint(Paint.ANTI_ALIAS_FLAG);
-        <span class="comment">// or Paint paint = new Paint();</span>
-        <span class="comment">// paint.setAntiAlias(true); 同样解决抗锯齿的问题</span>
-    }
-
-    <span class="annotation">@Override</span>
-    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDraw</span><span class="params">(Canvas canvas)</span> </span>{
-        <span class="keyword">super</span>.onDraw(canvas);
-    }
-}
-</code></pre><p>Paint集成所有画笔的属性，Canvas定义画布属性，drawxxx()方法来绘制不同View。如常用的画圆：drawCircle()、画圆弧drawArc()、绘制位图drawBitmap();<br>画圆：</p>
-<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CustomView</span> <span class="keyword">extends</span> <span class="title">View</span> </span>{
-    <span class="keyword">private</span> Paint paint;
-    <span class="keyword">private</span> <span class="keyword">int</span> width , height;
-    <span class="keyword">private</span> <span class="keyword">int</span> top;
-    <span class="keyword">private</span> <span class="keyword">static</span> String TAG = CustomView.class.getName();
-        <span class="function"><span class="keyword">public</span> <span class="title">CustomView</span><span class="params">(Context context)</span> </span>{
-        <span class="keyword">this</span>(context, <span class="keyword">null</span>);
-    }
-
-    <span class="function"><span class="keyword">public</span> <span class="title">CustomView</span><span class="params">(Context context, AttributeSet attrs)</span> </span>{
-        <span class="keyword">super</span>(context, attrs);
-        initPaint();
-        initSize();
-    }
-
-    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initSize</span><span class="params">()</span> </span>{
-        DisplayMetrics dm = <span class="keyword">new</span> DisplayMetrics();
-        <span class="keyword">if</span>(getContext() <span class="keyword">instanceof</span> Activity){
-            ((Activity)getContext()).getWindowManager().getDefaultDisplay().getMetrics(dm);
-        }
-        width = dm.widthPixels;
-        height = dm.heightPixels;
-        Log.d(TAG , <span class="string">"width = "</span> + width + <span class="string">" , height = "</span>+ height);
-    }
-
-    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initPaint</span><span class="params">()</span> </span>{
-        <span class="comment">// 开启抗锯齿</span>
-        paint = <span class="keyword">new</span> Paint(Paint.ANTI_ALIAS_FLAG);
-        <span class="comment">// or Paint paint = new Paint();</span>
-        <span class="comment">// paint.setAntiAlias(true); 同样解决抗锯齿的问题</span>
-        <span class="comment">// 画笔颜色</span>
-        paint.setColor(Color.GRAY);
-        <span class="comment">/**
-        * 画笔三种Style
-        * STROKE ：描边
-        * FILL_AND_STROKE : 描边并填充
-        * FILL ：填充
-        */</span>
-        paint.setStyle(Paint.Style.STROKE);
-        <span class="comment">// 画笔宽度</span>
-        paint.setStrokeWidth(<span class="number">10</span>);
-    }
-
-    <span class="annotation">@Override</span>
-    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDraw</span><span class="params">(Canvas canvas)</span> </span>{
-        <span class="keyword">super</span>.onDraw(canvas);
-        canvas.drawCircle(width / <span class="number">2</span>, height / <span class="number">2</span>, <span class="number">200</span>, paint);
-    }
-}
-</code></pre><p>为了增加趣味性，我们动态改变圆形半径</p>
-<pre><code><span class="keyword">private</span> <span class="function"><span class="keyword">void</span> <span class="title">initPaint</span><span class="params">()</span></span>{
-    ...
-    <span class="keyword">handler</span>.sendEmptyMessageDelayed(<span class="number">1</span>, <span class="number">60</span>);
-}
-
-<span class="keyword">private</span> Handler <span class="keyword">handler</span> = <span class="keyword">new</span> Handler(){
-    <span class="annotation">@Override</span>
-    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span> </span>{
-        <span class="keyword">if</span>(radius &lt;= <span class="number">200</span>){
-            radius += <span class="number">10</span>;
-        }<span class="keyword">else</span>{
-            radius = <span class="number">10</span>;
-        }
-        <span class="comment">// 每500毫秒发送一个消息</span>
-        Log.d(TAG , <span class="string">"radius : "</span> + radius);
-        <span class="comment">// 半径改变后 调用invalidate(); 重新绘制</span>
-        invalidate();
-        <span class="keyword">handler</span>.sendEmptyMessageDelayed(<span class="number">1</span> , <span class="number">60</span>);
-        <span class="keyword">super</span>.handleMessage(msg);
-    }
-};
-</code></pre><h4 id="二、画笔Paint与画布Canvas">二、画笔Paint与画布Canvas</h4><h5 id="1-画笔Paint_下图是Paint设置属性的所有方法">1.画笔Paint 下图是Paint设置属性的所有方法</h5><p>set(Paint)从创建好的画笔拷贝一份<br>setARGB(int a , int r , int g , int b); 设置画笔ARGB值<br>setAlpha(int a); 设置透明度<br>setAntiAlias(boolean aa); 是否开启抗锯齿<br>setColot(int); 颜色<br>setColorFilter(ColorFilter);设置颜色过滤<br>    看看ColorFilter源码</p>
-<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ColorFilter</span> </span>{
-    <span class="comment">/**
-    * Holds the pointer to the native SkColorFilter instance.
-    *
-    * <span class="doctag">@hide</span>
-    */</span>
-    <span class="keyword">public</span> <span class="keyword">long</span> native_instance;
-
-    <span class="annotation">@Override</span>
-    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">finalize</span><span class="params">()</span> <span class="keyword">throws</span> Throwable </span>{
-        <span class="keyword">try</span> {
-            <span class="keyword">super</span>.finalize();
-        } <span class="keyword">finally</span> {
-            destroyFilter(native_instance);
-        }
-    }
-    <span class="function"><span class="keyword">static</span> <span class="keyword">native</span> <span class="keyword">void</span> <span class="title">destroyFilter</span><span class="params">(<span class="keyword">long</span> native_instance)</span></span>;
-}
-</code></pre><p>ColorFilter 三个直接子类 <code>ColorMatrixColorFilter</code>、<code>LightingColorFilter</code>、<code>PoterDuffColorFilter</code></p>
-<p>1.ColorMarixColorFilter</p>
-<pre><code>ColorMatrix colorMatrix = <span class="keyword">new</span> ColorMatrix(<span class="keyword">new</span> <span class="keyword">Float</span>[]{
-        <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>,   <span class="comment">// R</span>
-        <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>,   <span class="comment">// G</span>
-        <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>,   <span class="comment">// B</span>
-        <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>    <span class="comment">// A</span>
-});
-</code></pre><p>范围0.0F - 2.0F, 1为保持原图RGB值，每一行的第五列表示偏移量。色彩偏移可以基于白平衡来理解。我们定义的“白色”（比如：255, 253, 251, 247）和纯白（255, 255, 255, 255）之间的偏移值（0, 2, 4, 8);<br>2.LightingColorFilter</p>
-<pre><code>LightingColorFilter(<span class="keyword">int</span> <span class="keyword">mul</span> , <span class="keyword">int</span> <span class="keyword">add</span>)<span class="comment">;</span>
-</code></pre><p>mul 全称colorMultiply：色彩倍增，add全称 colorAdd色彩添加，两个值均为16进制的色值0xAARRGGBB。<br>当LightingColorFilter(0xffffffff , 0x00000000)的时候原图不会有任何变化。增加红色使用LightingColorFilter(0xffffffff,0x00xx0000)就好，其中xx取值为00-ff。这个方法可以用在点击图片变色的功能上，而无需多准备另一张点击效果的图片。</p>
-<pre><code>setOnClickListerner<span class="list">(<span class="keyword">new</span> OnClickListener<span class="list">()</span>{
-
-    @Override
-    public void onClick<span class="list">(<span class="keyword">View</span> v)</span>{
-        if<span class="list">(<span class="keyword">isClick</span>)</span>{
-            mPaint.setColorFilter<span class="list">(<span class="keyword">null</span>)</span><span class="comment">;</span>
-            isClick = false<span class="comment">;</span>
-        }else{
-            mPaint.setColorFilter<span class="list">(<span class="keyword">new</span> LightingColorFilter<span class="list">(<span class="number">0</span>xffffffff , <span class="number">0</span>x00ffff00)</span>)</span><span class="comment">;</span>
-            isClick = true<span class="comment">;</span>
-        }
-        // 
-        invalidate<span class="list">()</span><span class="comment">;</span>
-    }
-})</span><span class="comment">;</span>
-</code></pre><p>运行后点击图片可变成黄色再次点击变回原色。<br>3.PorterDuffColorFilter</p>
-<pre><code>PorterDuffColorFilter(int <span class="built_in">color</span> , PorterDuff.<span class="built_in">Mode</span> <span class="built_in">mode</span>);
-</code></pre><p>混合模式:color -&gt; 原色 ， Mode -&gt; 原色模式 变暗 、 变亮等等。<br>setXfermode(Xfermode)过度模式，图像混合模式。</p>
-<pre><code><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Xfermode</span></span>{
-    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">finalize</span><span class="params">()</span> throw Throwable</span>{
-    <span class="keyword">try</span>{
-        finalizer(native_instance);
-    }<span class="keyword">final</span>{
-        <span class="keyword">super</span>.finalize();
-    }
-    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">native</span> <span class="keyword">void</span> <span class="title">finalizer</span><span class="params">(<span class="keyword">int</span> native_instance)</span></span>;
-    <span class="keyword">int</span> native_instance;
-}
-</code></pre></span>
+</code></pre>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/09/14/Android：自定义控件（1）/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
