@@ -54,7 +54,7 @@
     }
     // 必须要保证至少一个带有AttributeSet的构造函数，用来">
 <meta property="og:image" content="http://img.blog.csdn.net/20141120172919656?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWlnZXN0dWRpbw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
-<meta property="og:updated_time" content="2015-09-20T04:50:16.000Z">
+<meta property="og:updated_time" content="2015-09-20T08:04:36.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android：自定义控件（1）">
 <meta name="twitter:description" content="Android开发进阶，Android自定义控件。
@@ -240,7 +240,8 @@
     }
 }
 </code></pre><a id="more"></a>
-<p><a href="http://codekk.com/blogs/detail/54cfab086c4761e5001b253f" target="_blank" rel="external">Android View绘制流程</a>由以下几步组成：<code>measure()</code>-&gt;<code>onMeasure()</code>-&gt;<code>layout()</code>-&gt;<code>onLayout()</code>-&gt;<code>dispatchDraw()</code>-&gt;<code>draw()</code>-&gt;<code>onDraw()</code>。自定义View使用View提供的onDraw(Canvas canvas)方法来绘制自己View。</p>
+<p><a href="http://codekk.com/blogs/detail/54cfab086c4761e5001b253f" target="_blank" rel="external">Android的View绘制流程</a></p>
+<p>自定义View使用View提供的onDraw(Canvas canvas)方法来绘制自己View。</p>
 <pre><code><span class="annotation">@Override</span>
 <span class="keyword">protected</span> <span class="function"><span class="keyword">void</span> <span class="title">onDraw</span><span class="params">(Canvas canvas)</span></span>{
     <span class="keyword">super</span>.onDraw(canvas);
