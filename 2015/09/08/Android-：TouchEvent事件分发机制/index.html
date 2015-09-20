@@ -26,7 +26,7 @@
 
 
 
-  <meta name="keywords" content="Hexo,next" />
+  <meta name="keywords" content="Android,TouchEvent," />
 
 
 
@@ -42,7 +42,7 @@
 <meta property="og:site_name" content="Alexwan’Blog">
 <meta property="og:description" content="一、TouchEvent基本介绍在Android开发时，经常会遇到手势触摸事件的处理。如：View的touch事件，click事件、ViewGroup的touch事件，click事件。了解TouchEvent事件分发机制对于如何去处理这些触摸事件以及什么时候去处理触摸事件有很大帮助。    本篇的相关源码版本：android 22。如果不是android 22版本，可能会有些许差别">
 <meta property="og:image" content="https://github.com/alexwan1989/alexwan1989.github.io/blob/master/images/TouchEvent%E6%B5%81%E7%A8%8B%E5%9B%BE.png?raw=true">
-<meta property="og:updated_time" content="2015-09-20T15:01:26.000Z">
+<meta property="og:updated_time" content="2015-09-20T15:04:42.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android ：TouchEvent事件分发机制">
 <meta name="twitter:description" content="一、TouchEvent基本介绍在Android开发时，经常会遇到手势触摸事件的处理。如：View的touch事件，click事件、ViewGroup的touch事件，click事件。了解TouchEvent事件分发机制对于如何去处理这些触摸事件以及什么时候去处理触摸事件有很大帮助。    本篇的相关源码版本：android 22。如果不是android 22版本，可能会有些许差别">
@@ -670,7 +670,7 @@ public boolean dispatchTouchEvent<span class="params">(MotionEvent ev)</span> {
 
     return <span class="literal">false</span>;
 }
-</code></pre><h4 id="参考资料">参考资料</h4><ol>
+</code></pre><h4 id="三、总结">三、总结</h4><h4 id="四、参考资料">四、参考资料</h4><ol>
 <li><a href="http://blog.csdn.net/guolin_blog/article/details/9097463" target="_blank" rel="external">Android事件分发机制完全解析，带你从源码的角度彻底理解(上)</a></li>
 <li><a href="http://blog.csdn.net/guolin_blog/article/details/9153747" target="_blank" rel="external">Android事件分发机制完全解析，带你从源码的角度彻底理解(下)</a></li>
 <li><a href="http://blog.csdn.net/morgan_xww/article/details/9372285/" target="_blank" rel="external">Android TouchEvent事件传递机制</a></li>
@@ -682,6 +682,12 @@ public boolean dispatchTouchEvent<span class="params">(MotionEvent ev)</span> {
     </div>
 
     <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android-TouchEvent/" rel="tag">#Android,TouchEvent</a>
+          
+        </div>
       
 
       
@@ -775,7 +781,7 @@ public boolean dispatchTouchEvent<span class="params">(MotionEvent ev)</span> {
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">1</span>
+              <span class="site-state-item-count">2</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>
@@ -817,7 +823,7 @@ public boolean dispatchTouchEvent<span class="params">(MotionEvent ev)</span> {
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#一、TouchEvent基本介绍"><span class="nav-number">1.</span> <span class="nav-text">一、TouchEvent基本介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Touch相关的方法："><span class="nav-number">1.1.</span> <span class="nav-text">Touch相关的方法：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#使用Touch的三个类"><span class="nav-number">1.2.</span> <span class="nav-text">使用Touch的三个类</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二、TouchEvent事件分发源码分析"><span class="nav-number">2.</span> <span class="nav-text">二、TouchEvent事件分发源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-Activtiy_分发事件源码"><span class="nav-number">2.1.</span> <span class="nav-text">1.Activtiy 分发事件源码</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#dispatchTouchEvent源码"><span class="nav-number">2.1.1.</span> <span class="nav-text">dispatchTouchEvent源码</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#onTouchEvent源码"><span class="nav-number">2.1.2.</span> <span class="nav-text">onTouchEvent源码</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-ViewGroup分发事件源码"><span class="nav-number">2.2.</span> <span class="nav-text">2.ViewGroup分发事件源码</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#dispatchTouchEvent源码-1"><span class="nav-number">2.2.1.</span> <span class="nav-text">dispatchTouchEvent源码</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#onInterceptTouchEvent源码"><span class="nav-number">2.2.2.</span> <span class="nav-text">onInterceptTouchEvent源码</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#onTouchEvent源码-1"><span class="nav-number">2.2.3.</span> <span class="nav-text">onTouchEvent源码</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-View分发事件源码"><span class="nav-number">2.3.</span> <span class="nav-text">3.View分发事件源码</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#dispatchTouchEvent源码-2"><span class="nav-number">2.3.1.</span> <span class="nav-text">dispatchTouchEvent源码</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#onTouchEvent源码分析"><span class="nav-number">2.3.2.</span> <span class="nav-text">onTouchEvent源码分析</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考资料"><span class="nav-number">3.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#一、TouchEvent基本介绍"><span class="nav-number">1.</span> <span class="nav-text">一、TouchEvent基本介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Touch相关的方法："><span class="nav-number">1.1.</span> <span class="nav-text">Touch相关的方法：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#使用Touch的三个类"><span class="nav-number">1.2.</span> <span class="nav-text">使用Touch的三个类</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二、TouchEvent事件分发源码分析"><span class="nav-number">2.</span> <span class="nav-text">二、TouchEvent事件分发源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-Activtiy_分发事件源码"><span class="nav-number">2.1.</span> <span class="nav-text">1.Activtiy 分发事件源码</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#dispatchTouchEvent源码"><span class="nav-number">2.1.1.</span> <span class="nav-text">dispatchTouchEvent源码</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#onTouchEvent源码"><span class="nav-number">2.1.2.</span> <span class="nav-text">onTouchEvent源码</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-ViewGroup分发事件源码"><span class="nav-number">2.2.</span> <span class="nav-text">2.ViewGroup分发事件源码</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#dispatchTouchEvent源码-1"><span class="nav-number">2.2.1.</span> <span class="nav-text">dispatchTouchEvent源码</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#onInterceptTouchEvent源码"><span class="nav-number">2.2.2.</span> <span class="nav-text">onInterceptTouchEvent源码</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#onTouchEvent源码-1"><span class="nav-number">2.2.3.</span> <span class="nav-text">onTouchEvent源码</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-View分发事件源码"><span class="nav-number">2.3.</span> <span class="nav-text">3.View分发事件源码</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#dispatchTouchEvent源码-2"><span class="nav-number">2.3.1.</span> <span class="nav-text">dispatchTouchEvent源码</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#onTouchEvent源码分析"><span class="nav-number">2.3.2.</span> <span class="nav-text">onTouchEvent源码分析</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#三、总结"><span class="nav-number">3.</span> <span class="nav-text">三、总结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#四、参考资料"><span class="nav-number">4.</span> <span class="nav-text">四、参考资料</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
