@@ -42,7 +42,7 @@
 <meta property="og:site_name" content="Alexwan’Blog">
 <meta property="og:description" content="一、TouchEvent基本介绍在Android开发时，经常会遇到手势触摸事件的处理。如：View的touch事件，click事件、ViewGroup的touch事件，click事件。了解TouchEvent事件分发机制对于如何去处理这些触摸事件以及什么时候去处理触摸事件有很大帮助。    本篇的相关源码版本：android 22。如果不是android 22版本，可能会有些许差别">
 <meta property="og:image" content="https://github.com/alexwan1989/alexwan1989.github.io/blob/master/images/TouchEvent%E6%B5%81%E7%A8%8B%E5%9B%BE.png?raw=true">
-<meta property="og:updated_time" content="2015-09-12T16:21:03.000Z">
+<meta property="og:updated_time" content="2015-09-20T15:01:26.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android ：TouchEvent事件分发机制">
 <meta name="twitter:description" content="一、TouchEvent基本介绍在Android开发时，经常会遇到手势触摸事件的处理。如：View的touch事件，click事件、ViewGroup的touch事件，click事件。了解TouchEvent事件分发机制对于如何去处理这些触摸事件以及什么时候去处理触摸事件有很大帮助。    本篇的相关源码版本：android 22。如果不是android 22版本，可能会有些许差别">
@@ -231,7 +231,7 @@
 
 <p>根据流程图和Avtivity、ViewGroup、View源码来深入分析TouchEvent的分发机制</p>
 <h5 id="1-Activtiy_分发事件源码">1.Activtiy 分发事件源码</h5><p>TouchEvent的事件从Android硬件的Input系统接收到，传递给Activity调用dispatchTouchEvent(MotionEvent event);任何TouchEvent都是以MotionEvent.ACTION_DOWN为整个TouchEvent起始点。</p>
-<h6 id="（1）dispatchTouchEvent源码">（1）dispatchTouchEvent源码</h6><pre><code><span class="comment">/**
+<h6 id="dispatchTouchEvent源码">dispatchTouchEvent源码</h6><pre><code><span class="comment">/**
 * 处理屏幕的TouchEvent 可以复写这个方法来打断TouchEvent向下分发.
 * @param ev The touch screen event.
 *
@@ -249,7 +249,7 @@ public boolean dispatchTouchEvent<span class="params">(MotionEvent ev)</span> {
     }
     return onTouchEvent<span class="params">(ev)</span>;
 }
-</code></pre><h6 id="（2）onTouchEvent源码">（2）onTouchEvent源码</h6><pre><code><span class="comment">/**
+</code></pre><h6 id="onTouchEvent源码">onTouchEvent源码</h6><pre><code><span class="comment">/**
 * 如果任何子View都没有处理TouchEvent则会调用这个方法，用来处理当触控点在Window界面外的情况
 * <span class="doctag">@param</span> event The touch screen event being processed.
 *
@@ -263,7 +263,7 @@ public boolean dispatchTouchEvent<span class="params">(MotionEvent ev)</span> {
     <span class="keyword">return</span> <span class="keyword">false</span>;
 }
 </code></pre><p>从源码中我们可以知道：Activity从Input系统接收到TouchEvent后调用dispatchTouchEvent，在dispatchTouchEvent方法中去根据是否有子视图，来确定分发事件是传递给子视图，传递给子视图后，接收子视图onTouchEvent是消费事件还是为消费事件最后确定是否执行自身的onTouchEvent方法。</p>
-<h5 id="2-ViewGroup分发事件源码">2.ViewGroup分发事件源码</h5><h6 id="dispatchTouchEvent源码">dispatchTouchEvent源码</h6><p>dispatchTouchEvent源码比较长，需要很大耐心去看。英语不太好，有的地方还要借助翻译工具，有什么讲的不对地方还请指正哈。</p>
+<h5 id="2-ViewGroup分发事件源码">2.ViewGroup分发事件源码</h5><h6 id="dispatchTouchEvent源码-1">dispatchTouchEvent源码</h6><p>dispatchTouchEvent源码比较长，需要很大耐心去看。英语不太好，有的地方还要借助翻译工具，有什么讲的不对地方还请指正哈。</p>
 <pre><code><span class="annotation">@Override</span>
 <span class="keyword">public</span> <span class="function"><span class="keyword">boolean</span> <span class="title">dispatchTouchEvent</span><span class="params">(MotionEvent ev)</span> </span>{
     <span class="keyword">if</span> (mInputEventConsistencyVerifier != <span class="keyword">null</span>) {
@@ -284,12 +284,14 @@ public boolean dispatchTouchEvent<span class="params">(MotionEvent ev)</span> {
         <span class="keyword">if</span> (actionMasked == MotionEvent.ACTION_DOWN) {
             <span class="comment">// 开始一个新TouchEvent，清空之前所有状态。因为framework可能会因为app切换、ANR或者其他原因</span>
             <span class="comment">// 触发up或cancle事件</span>
+            <span class="comment">// mFirstTouchTarget = null;</span>
             cancelAndClearTouchTargets(ev);
             resetTouchState();
         }
 
         <span class="comment">// 拦截状态检测</span>
         <span class="keyword">final</span> <span class="keyword">boolean</span> intercepted;
+        <span class="comment">// ******mFirstTouchTarget == null表示touch事件未被消费******</span>
         <span class="keyword">if</span> (actionMasked == MotionEvent.ACTION_DOWN
                 || mFirstTouchTarget != <span class="keyword">null</span>) {
             <span class="comment">// 是否允许打断</span>
@@ -302,12 +304,11 @@ public boolean dispatchTouchEvent<span class="params">(MotionEvent ev)</span> {
                 intercepted = <span class="keyword">false</span>;
             }
         } <span class="keyword">else</span> {
-            <span class="comment">// 没有touch目标并且不是down事件，拦截事件的分发</span>
+            <span class="comment">// 当前ViewGroup是touch事件的目标事件，不再向下分发</span>
             intercepted = <span class="keyword">true</span>;
         }
 
-        <span class="comment">// 如果事件被拦截或者已经有一个View事件处理手势</span>
-        <span class="comment">// 则做正常的事件调度</span>
+        <span class="comment">// </span>
         <span class="keyword">if</span> (intercepted || mFirstTouchTarget != <span class="keyword">null</span>) {
             ev.setTargetAccessibilityFocus(<span class="keyword">false</span>);
         }
@@ -316,39 +317,37 @@ public boolean dispatchTouchEvent<span class="params">(MotionEvent ev)</span> {
         <span class="keyword">final</span> <span class="keyword">boolean</span> canceled = resetCancelNextUpFlag(<span class="keyword">this</span>)
                 || actionMasked == MotionEvent.ACTION_CANCEL;
 
-        <span class="comment">// 如果需要的话更新多点触控down事件</span>
+        <span class="comment">// 是否把事件分发给多个子View。</span>
         <span class="keyword">final</span> <span class="keyword">boolean</span> split = (mGroupFlags &amp; FLAG_SPLIT_MOTION_EVENTS) != <span class="number">0</span>;
         TouchTarget newTouchTarget = <span class="keyword">null</span>;
         <span class="keyword">boolean</span> alreadyDispatchedToNewTouchTarget = <span class="keyword">false</span>;
+        <span class="comment">// 不是取消事件并且不拦截</span>
         <span class="keyword">if</span> (!canceled &amp;&amp; !intercepted) {
 
-            <span class="comment">// If the event is targeting accessiiblity focus we give it to the</span>
-            <span class="comment">// view that has accessibility focus and if it does not handle it</span>
-            <span class="comment">// we clear the flag and dispatch the event to all children as usual.</span>
-            <span class="comment">// We are looking up the accessibility focused host to avoid keeping</span>
-            <span class="comment">// state since these events are very rare.</span>
-
+            <span class="comment">// 是否向下查找可以接收Touch事件的View</span>
             View childWithAccessibilityFocus = ev.isTargetAccessibilityFocus()
                     ? findChildWithAccessibilityFocus() : <span class="keyword">null</span>;
 
             <span class="keyword">if</span> (actionMasked == MotionEvent.ACTION_DOWN
                     || (split &amp;&amp; actionMasked == MotionEvent.ACTION_POINTER_DOWN)
                     || actionMasked == MotionEvent.ACTION_HOVER_MOVE) {
-                <span class="comment">// DOWN事件 actionIndex总为</span>
+                <span class="comment">// </span>
                 <span class="keyword">final</span> <span class="keyword">int</span> actionIndex = ev.getActionIndex();
+                <span class="comment">// </span>
                 <span class="keyword">final</span> <span class="keyword">int</span> idBitsToAssign = split ? <span class="number">1</span> &lt;&lt; ev.getPointerId(actionIndex)
                     : TouchTarget.ALL_POINTER_IDS;
 
                 <span class="comment">// 清除之前touch目标的pointer id防止状态不同步</span>
                 removePointersFromTouchTargets(idBitsToAssign);
-
+                <span class="comment">// 子View的数量</span>
                 <span class="keyword">final</span> <span class="keyword">int</span> childrenCount = mChildrenCount;
                 <span class="keyword">if</span> (newTouchTarget == <span class="keyword">null</span> &amp;&amp; childrenCount != <span class="number">0</span>) {
                     <span class="keyword">final</span> <span class="keyword">float</span> x = ev.getX(actionIndex);
                     <span class="keyword">final</span> <span class="keyword">float</span> y = ev.getY(actionIndex);
-                    <span class="comment">// 搜索接收事件的child</span>
-                    <span class="comment">// 从前向后搜索</span>
+                    <span class="comment">// 查找可以响应事件的child</span>
+                    <span class="comment">// 从上向下搜索。后addView()的child在上面，最先响应事件</span>
                     <span class="keyword">final</span> ArrayList&lt;View&gt; preorderedList = buildOrderedChildList();
+                    <span class="comment">// </span>
                     <span class="keyword">final</span> <span class="keyword">boolean</span> customOrder = preorderedList == <span class="keyword">null</span>
                             &amp;&amp; isChildrenDrawingOrderEnabled();
                     <span class="keyword">final</span> View[] children = mChildren;
@@ -361,7 +360,8 @@ public boolean dispatchTouchEvent<span class="params">(MotionEvent ev)</span> {
                         <span class="comment">// If there is a view that has accessibility focus we want it</span>
                         <span class="comment">// to get the event first and if not handled we will perform a</span>
                         <span class="comment">// normal dispatch. We may do a double iteration but this is</span>
-                        <span class="comment">// safer given the timeframe.</span>
+                        <span class="comment">// safer given the timeframe. </span>
+                        <span class="comment">// </span>
                         <span class="keyword">if</span> (childWithAccessibilityFocus != <span class="keyword">null</span>) {
                             <span class="keyword">if</span> (childWithAccessibilityFocus != child) {
                                 <span class="keyword">continue</span>;
@@ -385,6 +385,9 @@ public boolean dispatchTouchEvent<span class="params">(MotionEvent ev)</span> {
                         }
 
                         resetCancelNextUpFlag(child);
+                        <span class="comment">// 递归调用判断事件是否被消费</span>
+                        <span class="comment">// onTouchEvent() 是否消费Touch事件的返回值决定了dispatchTransformedTouchEvent()的返回值</span>
+                        <span class="comment">// 从而决定mFirstTouchTarget是否为null，进而决定ViewGroup是否处理Touch事件</span>
                         <span class="keyword">if</span> (dispatchTransformedTouchEvent(ev, <span class="keyword">false</span>, child, idBitsToAssign)) {
                             <span class="comment">// Child wants to receive touch within its bounds.</span>
                             mLastTouchDownTime = ev.getDownTime();
@@ -479,6 +482,193 @@ public boolean dispatchTouchEvent<span class="params">(MotionEvent ev)</span> {
         mInputEventConsistencyVerifier.onUnhandledEvent(ev, <span class="number">1</span>);
     }
     <span class="keyword">return</span> handled;
+}
+</code></pre><h6 id="onInterceptTouchEvent源码">onInterceptTouchEvent源码</h6><pre><code><span class="keyword">public</span> <span class="function"><span class="keyword">boolean</span> <span class="title">onInterceptTouchEvent</span><span class="params">(MotionEvent ev)</span> </span>{
+    <span class="keyword">return</span> <span class="keyword">false</span>;
+}
+</code></pre><p>ViewGroup的onInterceptTouchEvent方法默认返回值为false，也就是不拦截事件。主要在dispatchTouchEvent源码去判断是否拦截Touch事件，拦截不在分发Touch事件，子View也就不会接收到Touch事件。</p>
+<h6 id="onTouchEvent源码-1">onTouchEvent源码</h6><p>ViewGroup源码中并没有onTouchEvent的处理，因为ViewGroup继承自View，所以ViewGroup的onTouchEvent的源码分析可以通过View的onTouchEvent源码来查看</p>
+<h5 id="3-View分发事件源码">3.View分发事件源码</h5><h6 id="dispatchTouchEvent源码-2">dispatchTouchEvent源码</h6><pre><code>public boolean dispatchTouchEvent(<span class="type">MotionEvent</span> event) {
+    // <span class="type">If</span> the event should be handled by accessibility focus first.
+    <span class="keyword">if</span> (event.isTargetAccessibilityFocus()) {
+        // <span class="type">We</span> don't have focus <span class="keyword">or</span> no virtual descendant has it, <span class="keyword">do</span> <span class="keyword">not</span> handle the event.
+        <span class="keyword">if</span> (!isAccessibilityFocusedViewOrHost()) {
+            <span class="keyword">return</span> <span class="literal">false</span>;
+        }
+        // <span class="type">We</span> have focus <span class="keyword">and</span> got the event, then use normal event dispatch.
+        event.setTargetAccessibilityFocus(<span class="literal">false</span>);
+    }
+    boolean <span class="literal">result</span> = <span class="literal">false</span>;
+
+    <span class="keyword">if</span> (mInputEventConsistencyVerifier != null) {
+        mInputEventConsistencyVerifier.onTouchEvent(event, <span class="number">0</span>);
+    }
+
+    final <span class="type">int</span> actionMasked = event.getActionMasked();
+    <span class="keyword">if</span> (actionMasked == <span class="type">MotionEvent</span>.<span class="type">ACTION_DOWN</span>) {
+        // <span class="type">Defensive</span> cleanup <span class="keyword">for</span> new gesture
+        stopNestedScroll();
+    }
+
+    <span class="keyword">if</span> (onFilterTouchEventForSecurity(event)) {
+        //noinspection <span class="type">SimplifiableIfStatement</span>
+        <span class="type">ListenerInfo</span> li = mListenerInfo;
+        <span class="keyword">if</span> (li != null &amp;&amp; li.mOnTouchListener != null
+                &amp;&amp; (mViewFlags &amp; <span class="type">ENABLED_MASK</span>) == <span class="type">ENABLED</span>
+                &amp;&amp; li.mOnTouchListener.onTouch(this, event)) {
+            <span class="literal">result</span> = <span class="literal">true</span>;
+        }
+
+        <span class="keyword">if</span> (!<span class="literal">result</span> &amp;&amp; onTouchEvent(event)) {
+            <span class="literal">result</span> = <span class="literal">true</span>;
+        }
+    }
+
+    <span class="keyword">if</span> (!<span class="literal">result</span> &amp;&amp; mInputEventConsistencyVerifier != null) {
+        mInputEventConsistencyVerifier.onUnhandledEvent(event, <span class="number">0</span>);
+    }
+
+    // <span class="type">Clean</span> up after nested scrolls <span class="keyword">if</span> this <span class="keyword">is</span> the <span class="keyword">end</span> <span class="keyword">of</span> a gesture;
+    // also cancel it <span class="keyword">if</span> we tried an <span class="type">ACTION_DOWN</span> but we didn't want the rest
+    // <span class="keyword">of</span> the gesture.
+    <span class="keyword">if</span> (actionMasked == <span class="type">MotionEvent</span>.<span class="type">ACTION_UP</span> ||
+            actionMasked == <span class="type">MotionEvent</span>.<span class="type">ACTION_CANCEL</span> ||
+            (actionMasked == <span class="type">MotionEvent</span>.<span class="type">ACTION_DOWN</span> &amp;&amp; !<span class="literal">result</span>)) {
+        stopNestedScroll();
+    }
+
+    <span class="keyword">return</span> <span class="literal">result</span>;
+}
+</code></pre><h6 id="onTouchEvent源码分析">onTouchEvent源码分析</h6><pre><code>public boolean onTouchEvent<span class="params">(MotionEvent event)</span> {
+    final float x = event.getX<span class="params">()</span>;
+    final float y = event.getY<span class="params">()</span>;
+    final int viewFlags = mViewFlags;
+
+    <span class="keyword">if</span> <span class="params">(<span class="params">(viewFlags &amp; ENABLED_MASK)</span> == DISABLED)</span> {
+        <span class="keyword">if</span> <span class="params">(event.getAction<span class="params">()</span> == MotionEvent.ACTION_UP &amp;&amp; <span class="params">(mPrivateFlags &amp; PFLAG_PRESSED)</span> != <span class="number">0</span>)</span> {
+            setPressed<span class="params">(<span class="literal">false</span>)</span>;
+        }
+        <span class="comment">// A disabled view that is clickable still consumes the touch</span>
+        <span class="comment">// events, it just doesn't respond to them.</span>
+        return <span class="params">(<span class="params">(<span class="params">(viewFlags &amp; CLICKABLE)</span> == CLICKABLE ||
+            <span class="params">(viewFlags &amp; LONG_CLICKABLE)</span> == LONG_CLICKABLE)</span>)</span>;
+    }
+
+    <span class="keyword">if</span> <span class="params">(mTouchDelegate != null)</span> {
+        <span class="keyword">if</span> <span class="params">(mTouchDelegate.onTouchEvent<span class="params">(event)</span>)</span> {
+            return <span class="literal">true</span>;
+        }
+    }
+
+    <span class="keyword">if</span> <span class="params">(<span class="params">(<span class="params">(viewFlags &amp; CLICKABLE)</span> == CLICKABLE ||
+        <span class="params">(viewFlags &amp; LONG_CLICKABLE)</span> == LONG_CLICKABLE)</span>)</span> {
+        switch <span class="params">(event.getAction<span class="params">()</span>)</span> {
+            case MotionEvent.ACTION_UP:
+                boolean prepressed = <span class="params">(mPrivateFlags &amp; PFLAG_PREPRESSED)</span> <span class="built_in">!</span>= <span class="number">0</span>;
+                <span class="keyword">if</span> <span class="params">(<span class="params">(mPrivateFlags &amp; PFLAG_PRESSED)</span> != <span class="number">0</span> || prepressed)</span> {
+                    <span class="comment">// take focus if we don't have it already and we should in</span>
+                    <span class="comment">// touch mode.</span>
+                    boolean focusTaken = <span class="literal">false</span>;
+                    <span class="keyword">if</span> <span class="params">(isFocusable<span class="params">()</span> &amp;&amp; isFocusableInTouchMode<span class="params">()</span> &amp;&amp; !isFocused<span class="params">()</span>)</span> {
+                        focusTaken = requestFocus<span class="params">()</span>;
+                    }
+
+                    <span class="keyword">if</span> <span class="params">(prepressed)</span> {
+                        <span class="comment">// The button is being released before we actually</span>
+                        <span class="comment">// showed it as pressed.  Make it show the pressed</span>
+                        <span class="comment">// state now (before scheduling the click) to ensure</span>
+                        <span class="comment">// the user sees it.</span>
+                        setPressed<span class="params">(<span class="literal">true</span>, x, y)</span>;
+                    }
+
+                    <span class="keyword">if</span> <span class="params">(!mHasPerformedLongPress)</span> {
+                        <span class="comment">// This is a tap, so remove the longpress check</span>
+                        removeLongPressCallback<span class="params">()</span>;
+
+                        <span class="comment">// Only perform take click actions if we were in the pressed state</span>
+                        <span class="keyword">if</span> <span class="params">(!focusTaken)</span> {
+                            <span class="comment">// Use a Runnable and post this rather than calling</span>
+                            <span class="comment">// performClick directly. This lets other visual state</span>
+                            <span class="comment">// of the view update before click actions start.</span>
+                            <span class="keyword">if</span> <span class="params">(mPerformClick == null)</span> {
+                                mPerformClick = new PerformClick<span class="params">()</span>;
+                            }
+                            <span class="keyword">if</span> <span class="params">(!post<span class="params">(mPerformClick)</span>)</span> {
+                                performClick<span class="params">()</span>;
+                            }
+                        }
+                    }
+
+                    <span class="keyword">if</span> <span class="params">(mUnsetPressedState == null)</span> {
+                        mUnsetPressedState = new UnsetPressedState<span class="params">()</span>;
+                    }
+
+                    <span class="keyword">if</span> <span class="params">(prepressed)</span> {
+                        postDelayed<span class="params">(mUnsetPressedState,
+                        ViewConfiguration.getPressedStateDuration<span class="params">()</span>)</span>;
+                    } <span class="keyword">else</span> <span class="keyword">if</span> <span class="params">(!post<span class="params">(mUnsetPressedState)</span>)</span> {
+                        <span class="comment">// If the post failed, unpress right now</span>
+                        mUnsetPressedState.run<span class="params">()</span>;
+                    }
+
+                    removeTapCallback<span class="params">()</span>;
+                }
+                break;
+
+            case MotionEvent.ACTION_DOWN:
+                mHasPerformedLongPress = <span class="literal">false</span>;
+
+                <span class="keyword">if</span> <span class="params">(performButtonActionOnTouchDown<span class="params">(event)</span>)</span> {
+                    break;
+                }
+
+                <span class="comment">// Walk up the hierarchy to determine if we're inside a scrolling container.</span>
+                boolean isInScrollingContainer = isInScrollingContainer<span class="params">()</span>;
+
+                <span class="comment">// For views inside a scrolling container, delay the pressed feedback for</span>
+                <span class="comment">// a short period in case this is a scroll.</span>
+                <span class="keyword">if</span> <span class="params">(isInScrollingContainer)</span> {
+                    mPrivateFlags |= PFLAG_PREPRESSED;
+                    <span class="keyword">if</span> <span class="params">(mPendingCheckForTap == null)</span> {
+                        mPendingCheckForTap = new CheckForTap<span class="params">()</span>;
+                    }
+                    mPendingCheckForTap.x = event.getX<span class="params">()</span>;
+                    mPendingCheckForTap.y = event.getY<span class="params">()</span>;
+                    postDelayed<span class="params">(mPendingCheckForTap, ViewConfiguration.getTapTimeout<span class="params">()</span>)</span>;
+                } <span class="keyword">else</span> {
+                    <span class="comment">// Not inside a scrolling container, so show the feedback right away</span>
+                    setPressed<span class="params">(<span class="literal">true</span>, x, y)</span>;
+                    checkForLongClick<span class="params">(<span class="number">0</span>)</span>;
+                }
+                break;
+
+            case MotionEvent.ACTION_CANCEL:
+                setPressed<span class="params">(<span class="literal">false</span>)</span>;
+                removeTapCallback<span class="params">()</span>;
+                removeLongPressCallback<span class="params">()</span>;
+                break;
+
+            case MotionEvent.ACTION_MOVE:
+                drawableHotspotChanged<span class="params">(x, y)</span>;
+
+                <span class="comment">// Be lenient about moving outside of buttons</span>
+                <span class="keyword">if</span> <span class="params">(!pointInView<span class="params">(x, y, mTouchSlop)</span>)</span> {
+                    <span class="comment">// Outside button</span>
+                    removeTapCallback<span class="params">()</span>;
+                    <span class="keyword">if</span> <span class="params">(<span class="params">(mPrivateFlags &amp; PFLAG_PRESSED)</span> != <span class="number">0</span>)</span> {
+                        <span class="comment">// Remove any future long press/tap checks</span>
+                        removeLongPressCallback<span class="params">()</span>;
+
+                        setPressed<span class="params">(<span class="literal">false</span>)</span>;
+                    }
+                }
+                break;
+            }
+
+        return <span class="literal">true</span>;
+    }
+
+    return <span class="literal">false</span>;
 }
 </code></pre><h4 id="参考资料">参考资料</h4><ol>
 <li><a href="http://blog.csdn.net/guolin_blog/article/details/9097463" target="_blank" rel="external">Android事件分发机制完全解析，带你从源码的角度彻底理解(上)</a></li>
@@ -627,7 +817,7 @@ public boolean dispatchTouchEvent<span class="params">(MotionEvent ev)</span> {
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#一、TouchEvent基本介绍"><span class="nav-number">1.</span> <span class="nav-text">一、TouchEvent基本介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Touch相关的方法："><span class="nav-number">1.1.</span> <span class="nav-text">Touch相关的方法：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#使用Touch的三个类"><span class="nav-number">1.2.</span> <span class="nav-text">使用Touch的三个类</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二、TouchEvent事件分发源码分析"><span class="nav-number">2.</span> <span class="nav-text">二、TouchEvent事件分发源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-Activtiy_分发事件源码"><span class="nav-number">2.1.</span> <span class="nav-text">1.Activtiy 分发事件源码</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#（1）dispatchTouchEvent源码"><span class="nav-number">2.1.1.</span> <span class="nav-text">（1）dispatchTouchEvent源码</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#（2）onTouchEvent源码"><span class="nav-number">2.1.2.</span> <span class="nav-text">（2）onTouchEvent源码</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-ViewGroup分发事件源码"><span class="nav-number">2.2.</span> <span class="nav-text">2.ViewGroup分发事件源码</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#dispatchTouchEvent源码"><span class="nav-number">2.2.1.</span> <span class="nav-text">dispatchTouchEvent源码</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考资料"><span class="nav-number">3.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#一、TouchEvent基本介绍"><span class="nav-number">1.</span> <span class="nav-text">一、TouchEvent基本介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Touch相关的方法："><span class="nav-number">1.1.</span> <span class="nav-text">Touch相关的方法：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#使用Touch的三个类"><span class="nav-number">1.2.</span> <span class="nav-text">使用Touch的三个类</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二、TouchEvent事件分发源码分析"><span class="nav-number">2.</span> <span class="nav-text">二、TouchEvent事件分发源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-Activtiy_分发事件源码"><span class="nav-number">2.1.</span> <span class="nav-text">1.Activtiy 分发事件源码</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#dispatchTouchEvent源码"><span class="nav-number">2.1.1.</span> <span class="nav-text">dispatchTouchEvent源码</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#onTouchEvent源码"><span class="nav-number">2.1.2.</span> <span class="nav-text">onTouchEvent源码</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-ViewGroup分发事件源码"><span class="nav-number">2.2.</span> <span class="nav-text">2.ViewGroup分发事件源码</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#dispatchTouchEvent源码-1"><span class="nav-number">2.2.1.</span> <span class="nav-text">dispatchTouchEvent源码</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#onInterceptTouchEvent源码"><span class="nav-number">2.2.2.</span> <span class="nav-text">onInterceptTouchEvent源码</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#onTouchEvent源码-1"><span class="nav-number">2.2.3.</span> <span class="nav-text">onTouchEvent源码</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-View分发事件源码"><span class="nav-number">2.3.</span> <span class="nav-text">3.View分发事件源码</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#dispatchTouchEvent源码-2"><span class="nav-number">2.3.1.</span> <span class="nav-text">dispatchTouchEvent源码</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#onTouchEvent源码分析"><span class="nav-number">2.3.2.</span> <span class="nav-text">onTouchEvent源码分析</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考资料"><span class="nav-number">3.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
