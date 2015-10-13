@@ -41,7 +41,8 @@
 <meta property="og:url" content="http://alexwan1989.com/2015/07/27/Android-Bitmap的高效加载与处理/index.html">
 <meta property="og:site_name" content="Alexwan’Blog">
 <meta property="og:description" content="一、高效加载大图图形有不同的形状与大小。在大多数情况下它们的实际大小都比需要呈现的尺寸大很多。系统的图库应用显示那些我们使用相机拍摄的照片，但是那些图片的分辨率通常都比设备屏幕的分辨率要高很多。考虑到应用是在有限的内存下工作，我们只需要在内存中加载一个低分辨率的照片即可。为了更便于显示，这个分辨率的照片应该是与其对应的UI控件大小相适配。加载超过屏幕分辨率的高分辨率照片不仅对显示没有任何的提升，还">
-<meta property="og:updated_time" content="2015-09-20T15:10:22.000Z">
+<meta property="og:image" content="http://imglf1.nosdn.127.net/img/QzBKdmx1SE1HLzN5d0c3MVpNYmJ3RFpiY1ROdUhiWThLdDZtZlp5QVVXbGFkTUxSeVM1Sm1nPT0.jpg?imageView&thumbnail=1680x0&quality=96&stripmeta=0&type=jpg">
+<meta property="og:updated_time" content="2015-10-13T14:53:29.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android-Bitmap的高效加载与处理">
 <meta name="twitter:description" content="一、高效加载大图图形有不同的形状与大小。在大多数情况下它们的实际大小都比需要呈现的尺寸大很多。系统的图库应用显示那些我们使用相机拍摄的照片，但是那些图片的分辨率通常都比设备屏幕的分辨率要高很多。考虑到应用是在有限的内存下工作，我们只需要在内存中加载一个低分辨率的照片即可。为了更便于显示，这个分辨率的照片应该是与其对应的UI控件大小相适配。加载超过屏幕分辨率的高分辨率照片不仅对显示没有任何的提升，还">
@@ -208,7 +209,9 @@
       
 
       
-        <span itemprop="articleBody"><h4 id="一、高效加载大图">一、高效加载大图</h4><p>图形有不同的形状与大小。在大多数情况下它们的实际大小都比需要呈现的尺寸大很多。系统的图库应用显示那些我们使用相机拍摄的照片，但是那些图片的分辨率通常都比设备屏幕的分辨率要高很多。<br>考虑到应用是在有限的内存下工作，我们只需要在内存中加载一个低分辨率的照片即可。为了更便于显示，这个分辨率的照片应该是与其对应的UI控件大小相适配。加载超过屏幕分辨率的高分辨率照片不仅对显示没有任何的提升，还会占用内存资源，此外在快速滑动图片时容易产生额外的效率问题。<br>那么，如何加载缩小版本的图片来避免超出程序的内存限制<br><a id="more"></a></p>
+        <span itemprop="articleBody"><div align="center"><br><img src="http://imglf1.nosdn.127.net/img/QzBKdmx1SE1HLzN5d0c3MVpNYmJ3RFpiY1ROdUhiWThLdDZtZlp5QVVXbGFkTUxSeVM1Sm1nPT0.jpg?imageView&thumbnail=1680x0&quality=96&stripmeta=0&type=jpg" width="100%" height="270px"><br></div>
+
+<h4 id="一、高效加载大图">一、高效加载大图</h4><p>图形有不同的形状与大小。在大多数情况下它们的实际大小都比需要呈现的尺寸大很多。系统的图库应用显示那些我们使用相机拍摄的照片，但是那些图片的分辨率通常都比设备屏幕的分辨率要高很多。<br>考虑到应用是在有限的内存下工作，我们只需要在内存中加载一个低分辨率的照片即可。为了更便于显示，这个分辨率的照片应该是与其对应的UI控件大小相适配。加载超过屏幕分辨率的高分辨率照片不仅对显示没有任何的提升，还会占用内存资源，此外在快速滑动图片时容易产生额外的效率问题。<br>那么，如何加载缩小版本的图片来避免超出程序的内存限制<br><a id="more"></a></p>
 <h5 id="（1）读取位图的尺寸和类型">（1）读取位图的尺寸和类型</h5><p>为了避免java.lang.OutOfMemory的异常，我们需要在真正解析图片的之前获取图片的尺寸<br>BitmapFactory提供了一些解码（decode）的方法（decodeByteArray(),decodeFile(),decodeResource()）等，用来从不同的资源中创建一个Bitmap。我们应该根据图片的数据源来选择合适的解码方法。这些方法在构造位图的时候会尝试分配内存，因此容易导致OOM。每一种解码方法会同辉BimapFactory.Options设置一些附加的标记，以此来指定解码选项。设置inJustDecodeBounds属性为ture可以在解码的时候避免内存的分配，它会返回一个null的Bitmap，但是可以获取到outWidth，outHeight与outMimeType属性。你可以在构造Bitmap之前优先读取图片的尺寸和类型。</p>
 <pre><code>BitmapFactory.<span class="keyword">Options</span> <span class="keyword">options</span> = <span class="keyword">new</span> BitmapFactory.<span class="keyword">Options</span>();
 <span class="keyword">options</span>.inJustDecodeBounds = <span class="keyword">true</span>;
