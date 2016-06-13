@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://yoursite.com/page/3/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hexo">
+<meta name="twitter:description">
+  
+    <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  
+
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-Android架构：MVP设计模式" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/01/10/Android架构：MVP设计模式/" class="article-date">
+  <time datetime="2016-01-09T16:17:32.000Z" itemprop="datePublished">2016-01-10</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/01/10/Android架构：MVP设计模式/">Android架构：MVP设计模式</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="http://www.jianshu.com/p/7567ed0d1853?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=writer_share&amp;utm_source=weibo" target="_blank" rel="external">[译]Android开发中的MVP架构
+</a></p>
+<p><a href="http://kymjs.com/code/2015/11/09/01/?hmsr=toutiao.io&amp;utm_medium=toutiao.io&amp;utm_source=toutiao.io" target="_blank" rel="external">用MVP架构开发Android应用</a></p>
+<p><a href="https://github.com/alexwan1989/android-tech-frontier/blob/master/androidweekly%2F%E4%B8%80%E7%A7%8D%E5%9C%A8android%E4%B8%AD%E5%AE%9E%E7%8E%B0MVP%E6%A8%A1%E5%BC%8F%E7%9A%84%E6%96%B0%E6%80%9D%E8%B7%AF%2Freadme.md" target="_blank" rel="external">一种在android中实现MVP模式的新思路</a></p>
+<h3 id="u4E00_u3001MVP_u662F_u4EC0_u4E48"><a href="#u4E00_u3001MVP_u662F_u4EC0_u4E48" class="headerlink" title="一、MVP是什么"></a>一、MVP是什么</h3><p>MVP代表Model，View和Presenter</p>
+<ol>
+<li>View层负责处理用户事件和视图部分的展示。在Android中，它可能是Activity或者Fragment类。</li>
+<li>Model层负责访问数据。数据可以是远端的Server API，本地数据库或者SharedPreference等。</li>
+<li>Presenter层是连接（或适配）View和Model的桥梁。</li>
+</ol>
+<p><strong>核心</strong></p>
+<p>高层接口不能，不应该，并且必须不了解底层接口的细节，是（面向）抽象的，并且是细节隐藏的。</p>
+<h3 id="u4E8C_u3001_u5206_u5C42"><a href="#u4E8C_u3001_u5206_u5C42" class="headerlink" title="二、分层"></a>二、分层</h3><h4 id="1-View/UI_Thread"><a href="#1-View/UI_Thread" class="headerlink" title="1.View/UI Thread"></a>1.View/UI Thread</h4><ol>
+<li>所有的细节所在</li>
+<li>如数据库细节，Web框架细节，等等</li>
+</ol>
+<h4 id="2-Presenter/Adapter_Controllers"><a href="#2-Presenter/Adapter_Controllers" class="headerlink" title="2.Presenter/Adapter Controllers"></a>2.Presenter/Adapter Controllers</h4><ol>
+<li>将Use Case和Entity中的数据转换成格式最方便的数据</li>
+<li>外部系统，如数据库或网页能够方便的使用这些数据</li>
+<li>完全包含GUI的MVC架构</li>
+</ol>
+<h4 id="3-UserCase/Business_Logic"><a href="#3-UserCase/Business_Logic" class="headerlink" title="3.UserCase/Business Logic"></a>3.UserCase/Business Logic</h4><ol>
+<li>包含特定于应用程序的业务规则</li>
+<li>精心编排流入Entity或从Entity流出的数据</li>
+<li>指挥Entity直接使用项目范围内的业务规则，从而实现Use Case的目标</li>
+</ol>
+<h4 id="4-Entity/Data_28eg-_Json_uFF0CSQL_29"><a href="#4-Entity/Data_28eg-_Json_uFF0CSQL_29" class="headerlink" title="4.Entity/Data(eg. Json，SQL)"></a>4.Entity/Data(eg. Json，SQL)</h4><ol>
+<li>可以是一个持有方法函数的对象</li>
+<li>可以是一组数据结构或方法函数</li>
+<li>它并不重要，能在项目中被不同应用程序使用即可</li>
+</ol>
+<p>这些模式的动机都是一样的。那就是如何避免复杂混乱的代码，让执行单元测试变得容易，创造高质量应用程序。</p>
+<h3 id="u4E09_u3001_u5B9E_u73B0"><a href="#u4E09_u3001_u5B9E_u73B0" class="headerlink" title="三、实现"></a>三、实现</h3><h4 id="1-AndroidMVP"><a href="#1-AndroidMVP" class="headerlink" title="1.AndroidMVP"></a>1.<a href="https://github.com/antoniolg/androidmvp" target="_blank" rel="external">AndroidMVP</a></h4><p>(1).首先需要定义一个View层接口，让View实现类Activity(Fragment)实现<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">LoginView</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">showProgress</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">hideProgress</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setUsernameError</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setPasswordError</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>(2).定义一个Presenter实现接口，让Presenter实现类实现；Presenter中通过构造时传入的视图层对象操作View</p>
+<p><code>LoginPresenter</code><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">LoginPresenter</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">validateCredentials</span><span class="params">(String username, String password)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">onDestroy</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>LoginPresenterImpl</code><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoginPresenterImpl</span> <span class="keyword">implements</span> <span class="title">LoginPresenter</span>, <span class="title">OnLoginFinishedListener</span> </span>&#123;	</span><br><span class="line">    <span class="keyword">private</span> LoginView loginView;</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LoginPresenterImpl</span><span class="params">(LoginView loginView)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.loginView = loginView;</span><br><span class="line">        <span class="keyword">this</span>.loginInteractor = <span class="keyword">new</span> LoginInteractorImpl();</span><br><span class="line">    &#125;</span><br><span class="line">	</span><br><span class="line">    <span class="annotation">@Override</span> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">validateCredentials</span><span class="params">(String username, String password)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (loginView != <span class="keyword">null</span>) &#123;</span><br><span class="line">            loginView.showProgress();</span><br><span class="line">        &#125;</span><br><span class="line">        loginInteractor.login(username, password, <span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">	</span><br><span class="line">    <span class="annotation">@Override</span> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onDestroy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        loginView = <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>(3).在View实现类Activity(Fragment)中包含Presenter对象，并在Presenter创建的时候传一个View对象<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">A</span> <span class="keyword">extends</span> <span class="title">Activity</span> <span class="keyword">implements</span> <span class="title">LoginView</span>, <span class="title">OnClickListener</span> </span>&#123;</span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        <span class="comment">// 省略初始化控件</span></span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        presenter = <span class="keyword">new</span> LoginPresenterImpl(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//...省略众多接口方法</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="2-_Activity_u548CFragment"><a href="#2-_Activity_u548CFragment" class="headerlink" title="2. Activity和Fragment"></a>2. Activity和Fragment</h4><p>Activity 有一个很复杂的生命周期(fragment的生命周期可能会更复杂), 而这些生命周期很有可能对你项目的业务逻辑有非常重大的影响. Activity 可以获取上下文环境和多种android系统服务. Activity中发送Intent，启动Service和执行FragmentTransisitons等。而这些特性在我看来绝不应该是视图层应该涉及的领域(视图的功能就是现实数据和从用户那里获取输入数据，在理想的情况下，视图应该避免业务逻辑).Activity和Fragment不适合作为View</p>
+<ol>
+<li>Activity和Fragment作为presenters</li>
+</ol>
+<p>(1). 去除所有的view</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">IBaseView</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">(LayoutInflater inflater , ViewGroup viewGroup)</span></span>;</span><br><span class="line">    <span class="function">View <span class="title">getView</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>(2). 创建一个presenter基类 (Activity)<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">BasePresenterActivity</span>&lt;<span class="title">V</span> <span class="keyword">extends</span> <span class="title">IBaseView</span>&gt; <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line">    <span class="keyword">protected</span> V view;</span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            view = getViewClass().newInstance();</span><br><span class="line">            view.init(getLayoutInflater(), <span class="keyword">null</span>);</span><br><span class="line">            setContentView(view.getView());</span><br><span class="line">            onBindView();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InstantiationException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IllegalAccessException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onResume</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onResume();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDestroy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        onDestroyView();</span><br><span class="line">        view = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">super</span>.onDestroy();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * 获取View对应的Class</span><br><span class="line">     * <span class="doctag">@return</span> View类</span><br><span class="line">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> Class&lt;V&gt; <span class="title">getViewClass</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * 绑定View</span><br><span class="line">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onBindView</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * 清除View</span><br><span class="line">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDestroyView</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>(3). 创建一个基本的presenter(Fragment)<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">BasePresenterFragment</span>&lt;<span class="title">V</span> <span class="keyword">extends</span> <span class="title">IBaseView</span>&gt; <span class="keyword">extends</span> <span class="title">Fragment</span> </span>&#123;</span><br><span class="line">    <span class="keyword">protected</span> V view;</span><br><span class="line">    <span class="keyword">protected</span> TabLayout tabLayout;</span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> View <span class="title">onCreateView</span><span class="params">(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        View view = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">this</span>.view = getViewClass().newInstance();</span><br><span class="line">            <span class="keyword">this</span>.view.init(inflater , container);</span><br><span class="line">            view = <span class="keyword">this</span>.view.getView();</span><br><span class="line">            onBindView();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (java.lang.InstantiationException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IllegalAccessException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> view;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onDestroyView</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        onDestroyVU();</span><br><span class="line">        <span class="keyword">this</span>.view = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">super</span>.onDestroyView();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDestroyVU</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onBindView</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">setTabLayout</span><span class="params">(TabLayout tabLayout)</span></span>&#123;&#125;;</span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> Class&lt;V&gt; <span class="title">getViewClass</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>(4). 使用<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span><br><span class="line">* MainActivityView</span><br><span class="line">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">IMainActivityView</span> <span class="keyword">implements</span> <span class="title">IBaseView</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> View mView;</span><br><span class="line">    <span class="annotation">@Bind</span>(R.id.tool_bar)</span><br><span class="line">    Toolbar mToolbar;</span><br><span class="line">    <span class="annotation">@Bind</span>(R.id.drawer_layout)</span><br><span class="line">    DrawerLayout mDrawerLayout;</span><br><span class="line">    <span class="annotation">@Bind</span>(R.id.root_layout)</span><br><span class="line">    CoordinatorLayout mRootLayout;</span><br><span class="line">    ActionBarDrawerToggle drawerToggle;</span><br><span class="line">    <span class="annotation">@Bind</span>(R.id.navigation)</span><br><span class="line">    NavigationView navigationView;</span><br><span class="line">    <span class="annotation">@Bind</span>(R.id.tab_layout)</span><br><span class="line">    TabLayout tabLayout;</span><br><span class="line">    <span class="annotation">@Bind</span>(R.id.fab_btn)</span><br><span class="line">    FloatingActionButton fabBtn;</span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(LayoutInflater inflater, ViewGroup viewGroup)</span> </span>&#123;</span><br><span class="line">        mView = inflater.inflate(R.layout.activity_main, viewGroup, <span class="keyword">false</span>);</span><br><span class="line">        ButterKnife.bind(<span class="keyword">this</span>, mView);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> View <span class="title">getView</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> mView;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * 初始化界面</span><br><span class="line">     *</span><br><span class="line">     * <span class="doctag">@param</span> activity activity</span><br><span class="line">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initViews</span><span class="params">(<span class="keyword">final</span> MainActivity activity)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// toolbar</span></span><br><span class="line">        activity.setSupportActionBar(mToolbar);</span><br><span class="line">        ActionBar actionBar = activity.getSupportActionBar();</span><br><span class="line">        <span class="keyword">if</span> (actionBar != <span class="keyword">null</span>) &#123;</span><br><span class="line">            actionBar.setDisplayShowHomeEnabled(<span class="keyword">true</span>);</span><br><span class="line">            actionBar.setDisplayShowTitleEnabled(<span class="keyword">true</span>);</span><br><span class="line">            actionBar.setDisplayHomeAsUpEnabled(<span class="keyword">true</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// drawer toggle</span></span><br><span class="line">        <span class="keyword">this</span>.drawerToggle = <span class="keyword">new</span> ActionBarDrawerToggle(activity, mDrawerLayout, R.string.tool_name, R.string.tool_name);</span><br><span class="line">        drawerToggle.setDrawerIndicatorEnabled(<span class="keyword">true</span>);</span><br><span class="line">        mDrawerLayout.setDrawerListener(drawerToggle);</span><br><span class="line">        navigationView.setCheckedItem(R.id.main_frame);</span><br><span class="line">        <span class="comment">// fragment</span></span><br><span class="line">        <span class="keyword">final</span> HomeFragment homeFragment = <span class="keyword">new</span> HomeFragment();</span><br><span class="line">        homeFragment.setTabLayout(tabLayout);</span><br><span class="line">        <span class="keyword">final</span> SettingFragment settingFragment = <span class="keyword">new</span> SettingFragment();</span><br><span class="line">        <span class="keyword">final</span> FragmentTransaction transaction = activity.getSupportFragmentManager().beginTransaction();</span><br><span class="line">        transaction.replace(R.id.frame_layout , homeFragment).commit();</span><br><span class="line">        <span class="comment">// navigation</span></span><br><span class="line">        navigationView.setNavigationItemSelectedListener(<span class="keyword">new</span> OnNavigationItemSelectedListener() &#123;</span><br><span class="line">            <span class="annotation">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onNavigationItemSelected</span><span class="params">(MenuItem item)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">int</span> id = item.getItemId();</span><br><span class="line">                mDrawerLayout.closeDrawers();</span><br><span class="line">                navigationView.setCheckedItem(id);</span><br><span class="line">                FragmentTransaction transaction = activity.getSupportFragmentManager().beginTransaction();</span><br><span class="line">                <span class="keyword">switch</span> (id) &#123;</span><br><span class="line">                    <span class="keyword">case</span> R.id.main_frame:</span><br><span class="line">                        tabLayout.setVisibility(View.VISIBLE);</span><br><span class="line">                        transaction.replace(R.id.frame_layout , homeFragment).commit();</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    <span class="keyword">case</span> R.id.message_frame:</span><br><span class="line">                        tabLayout.setVisibility(View.GONE);</span><br><span class="line">                        transaction.replace(R.id.frame_layout , settingFragment).commit();</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    <span class="keyword">case</span> R.id.search_frame:</span><br><span class="line">                        tabLayout.setVisibility(View.GONE);</span><br><span class="line">                        transaction.replace(R.id.frame_layout , settingFragment).commit();</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    <span class="keyword">default</span>:</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onPostCreate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        drawerToggle.syncState();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onConfigurationChanged</span><span class="params">(Configuration newConfig)</span> </span>&#123;</span><br><span class="line">        drawerToggle.onConfigurationChanged(newConfig);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onOptionsItemSelected</span><span class="params">(MenuItem item)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> drawerToggle.onOptionsItemSelected(item);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>MainActivity继承封装View接口的BasePresenterActivity，实现Presenter具体业务逻辑<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">BasePresenterActivity</span>&lt;<span class="title">IMainActivityView</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> FragmentTransaction transaction;</span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onBindView</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onBindView();</span><br><span class="line">        view.initViews(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDestroyView</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onDestroyView();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onPostCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onPostCreate(savedInstanceState);</span><br><span class="line">        view.onPostCreate();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onConfigurationChanged</span><span class="params">(Configuration newConfig)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onConfigurationChanged(newConfig);</span><br><span class="line">        view.onConfigurationChanged(newConfig);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onCreateOptionsMenu</span><span class="params">(Menu menu)</span> </span>&#123;</span><br><span class="line">        getMenuInflater().inflate(R.menu.navigation_menu , menu);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.onCreateOptionsMenu(menu);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onOptionsItemSelected</span><span class="params">(MenuItem item)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(view.onOptionsItemSelected(item))</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        <span class="keyword">int</span> id = item.getItemId();</span><br><span class="line">        <span class="keyword">switch</span> (id)&#123;</span><br><span class="line">            <span class="keyword">case</span> R.id.main_frame:</span><br><span class="line">                transaction.add(<span class="keyword">new</span> HomeFragment() , <span class="string">"home_fragment"</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> R.id.oauth_frame:</span><br><span class="line">                Intent intent = <span class="keyword">new</span> Intent(MainActivity.<span class="keyword">this</span>, WBAuthActivity.class);</span><br><span class="line">                MainActivity.<span class="keyword">this</span>.startActivity(intent);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.onOptionsItemSelected(item);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> Class&lt;IMainActivityView&gt; <span class="title">getViewClass</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> IMainActivityView.class;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>Code：<a href="https://github.com/wangwei1121/iweibo" target="_blank" rel="external">Github</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/01/10/Android架构：MVP设计模式/" data-id="cipdnp2he000zvx22tr9qdzsb" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Java设计模式（一）：观察者模式" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/01/10/Java设计模式（一）：观察者模式/" class="article-date">
+  <time datetime="2016-01-09T16:04:20.000Z" itemprop="datePublished">2016-01-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Java设计模式/">Java设计模式</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/01/10/Java设计模式（一）：观察者模式/">Java设计模式（一）：观察者模式</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="u89C2_u5BDF_u8005_u6A21_u5F0F"><a href="#u89C2_u5BDF_u8005_u6A21_u5F0F" class="headerlink" title="观察者模式"></a>观察者模式</h3><p>###</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/01/10/Java设计模式（一）：观察者模式/" data-id="cipdnp2gq000cvx22ik4cxw2y" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java设计模式/">Java设计模式</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Android依赖注入框架-Dagger2笔记（一）" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/01/09/Android依赖注入框架-Dagger2笔记（一）/" class="article-date">
+  <time datetime="2016-01-09T15:56:25.000Z" itemprop="datePublished">2016-01-09</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/01/09/Android依赖注入框架-Dagger2笔记（一）/">Android依赖注入框架:Dagger2笔记（一）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="Dagger2"><a href="#Dagger2" class="headerlink" title="Dagger2"></a>Dagger2</h3><h3 id="Using_Dagger"><a href="#Using_Dagger" class="headerlink" title="Using Dagger"></a>Using Dagger</h3><p>建造咖啡机模型</p>
+<p>### </p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/01/09/Android依赖注入框架-Dagger2笔记（一）/" data-id="cipdnp2hj0013vx22zw202efg" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Android开发艺术探索笔记(一)" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/01/09/Android开发艺术探索笔记(一)/" class="article-date">
+  <time datetime="2016-01-09T03:27:37.000Z" itemprop="datePublished">2016-01-09</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/01/09/Android开发艺术探索笔记(一)/">Android开发艺术探索读书笔记(一)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="Android_u7684IPC"><a href="#Android_u7684IPC" class="headerlink" title="Android的IPC"></a>Android的IPC</h3>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/01/09/Android开发艺术探索笔记(一)/" data-id="cipdnp2hg0011vx22xdhbz5pc" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
+    </nav>
+  
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Android源码学习系列/">Android源码学习系列</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java设计模式/">Java设计模式</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/RxJava/">RxJava</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java设计模式/">Java设计模式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RxJava/">RxJava</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/android/">android</a><span class="tag-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Java设计模式/" style="font-size: 10px;">Java设计模式</a> <a href="/tags/RxJava/" style="font-size: 10px;">RxJava</a> <a href="/tags/android/" style="font-size: 20px;">android</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a><span class="archive-list-count">14</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/06/13/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2016/06/05/Android：Activity启动过程/">Android：Activity启动过程</a>
+          </li>
+        
+          <li>
+            <a href="/2016/05/17/RxJava读书笔记(一)/">RxJava读书笔记(一)</a>
+          </li>
+        
+          <li>
+            <a href="/2016/04/18/Android：NDK开发（二）/">Android NDK开发（二）：使用Android Studio开发进行NDK开发</a>
+          </li>
+        
+          <li>
+            <a href="/2016/04/12/Android：NDK开发（一）/">Android：NDK开发（一）</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+  </div>
+</body>
+</html>
