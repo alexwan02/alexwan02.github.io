@@ -14,16 +14,16 @@
     
         <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta name="description">
+    <meta name="description" content="普通的View以及派生类都是共享同一个surface的，所有的绘制都必须在UI线程中执行。而SurfaceVAiew比较特殊，并不与其他普通View共享Surface，而是在内部持有了一个独立的surface。SurfaceView负责管理这个Surface的格式，尺寸以及显示位置。由于UI线程还要同事处理其他交互逻辑，因此对View的更新速度和帧率无法保证，而SurfaceView由于持有一个独">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="Android：SurfaceView基础与原理">
 <meta property="og:url" content="http://blog.alexwan1989.com/2016/09/06/Android：SurfaceView基础与原理/index.html">
 <meta property="og:site_name" content="Alexwan Studio">
-<meta property="og:description">
-<meta property="og:updated_time" content="2016-09-18T09:32:54.000Z">
+<meta property="og:description" content="普通的View以及派生类都是共享同一个surface的，所有的绘制都必须在UI线程中执行。而SurfaceVAiew比较特殊，并不与其他普通View共享Surface，而是在内部持有了一个独立的surface。SurfaceView负责管理这个Surface的格式，尺寸以及显示位置。由于UI线程还要同事处理其他交互逻辑，因此对View的更新速度和帧率无法保证，而SurfaceView由于持有一个独">
+<meta property="og:updated_time" content="2016-09-19T01:28:18.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android：SurfaceView基础与原理">
-<meta name="twitter:description">
+<meta name="twitter:description" content="普通的View以及派生类都是共享同一个surface的，所有的绘制都必须在UI线程中执行。而SurfaceVAiew比较特殊，并不与其他普通View共享Surface，而是在内部持有了一个独立的surface。SurfaceView负责管理这个Surface的格式，尺寸以及显示位置。由于UI线程还要同事处理其他交互逻辑，因此对View的更新速度和帧率无法保证，而SurfaceView由于持有一个独">
     
     
     
@@ -235,7 +235,8 @@
     
     <div class="post-content markdown" itemprop="articleBody">
         <div class="main-content-wrap">
-            
+            <p>普通的View以及派生类都是共享同一个surface的，所有的绘制都必须在UI线程中执行。而SurfaceVAiew比较特殊，并不与其他普通View共享Surface，而是在内部持有了一个独立的surface。SurfaceView负责管理这个Surface的格式，尺寸以及显示位置。由于UI线程还要同事处理其他交互逻辑，因此对View的更新速度和帧率无法保证，而SurfaceView由于持有一个独立Surface，可以在独立线程中进行绘制，提供更高的帧率。自定义相机的预览图像由于</p>
+
             
                 
 
@@ -249,7 +250,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--disabled">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/09/19/Android：DFM弹幕开发之基本配置/"  data-tooltip="Android：DFM弹幕开发之基本配置">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
@@ -331,7 +332,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--disabled">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/09/19/Android：DFM弹幕开发之基本配置/"  data-tooltip="Android：DFM弹幕开发之基本配置">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
