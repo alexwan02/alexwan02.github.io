@@ -211,24 +211,20 @@
 <section class="postShorten-group main-content-wrap">
     
         
-            
-                
-            
         
-        
-            <article class="postShorten postShorten--thumbnailimg" itemscope itemType="http://schema.org/BlogPosting">
+                <article class="postShorten" itemscope itemType="http://schema.org/BlogPosting">
         
             <div class="postShorten-wrap">
                 <div class="postShorten-header">
                     <h1 class="postShorten-title" itemprop="headline">
                         
-                                <a class="link-unstyled" href="/2016/11/14/Android：Jenkins-Continuous-Integration搭建/">Android：Jenkins Continuous Integration搭建</a>
+                                <a class="link-unstyled" href="/2017/04/24/深入理解OkHttp3的Interceptors/">(无标题)</a>
                         
                     </h1>
                     <div class="postShorten-meta">
-    <time itemprop="datePublished" content="Mon Nov 14 2016 10:21:22 GMT+0800">
+    <time itemprop="datePublished" content="Mon Apr 24 2017 10:10:16 GMT+0800">
 	
-		    Nov 14, 2016
+		    Apr 24, 2017
     	
     </time>
     
@@ -237,21 +233,15 @@
                 <div class="postShorten-excerpt" itemprop="articleBody">
                     
                         <p>
-                            Jenkins介绍
-一、安装Jenkins二、安装插件三、系统环境变量配置四、系统工具配置五、创建项目六、Gradle脚本七、运行八、高级集成单元测试多渠道打包九、遇到的问题
-Android SDK
-Gradle 版本问题
-Gradle 运行目录
-Windows中中文问题
-签名文件
-local.properties文件
-Git 仓库配置
+                            深入理解OkHttp3的Interceptors
+Version : okhttp:3.6.0
 
-<br>
+Interceptors是OkHttp3整个框架的核心，包含了请求监控、请求重写、调用重试等机制。它主要使用责任链模式，解决请求与请求处理之间的耦合。
+1.1 责任链模式将接收对象放入链中，按照链中顺序让多个对象处理请求。请求者不用知道具体是由谁处理。解决请求与接收之间的耦合，提高灵活性。责任链负责对<br>
                     
                     
                         
-                            <a href="/2016/11/14/Android：Jenkins-Continuous-Integration搭建/" class="postShorten-excerpt_link link ">Continue reading</a>
+                            <a href="/2017/04/24/深入理解OkHttp3的Interceptors/" class="postShorten-excerpt_link link ">Continue reading</a>
                             
                         
                     
@@ -261,10 +251,45 @@ Git 仓库配置
                 </div>
             </div>
             
-                <div class="postShorten-thumbnailimg">
-                    <img alt="" itemprop="image" src="http://res.cloudinary.com/dmfz9aun7/image/upload/v1479090839/android/jenkins/android_ci_jenkins_logo.png"/>
+        </article>
+    
+        
+        
+                <article class="postShorten" itemscope itemType="http://schema.org/BlogPosting">
+        
+            <div class="postShorten-wrap">
+                <div class="postShorten-header">
+                    <h1 class="postShorten-title" itemprop="headline">
+                        
+                                <a class="link-unstyled" href="/2017/04/24/深入理解OkHttp3的DiskLruCache/">(无标题)</a>
+                        
+                    </h1>
+                    <div class="postShorten-meta">
+    <time itemprop="datePublished" content="Mon Apr 24 2017 10:10:16 GMT+0800">
+	
+		    Apr 24, 2017
+    	
+    </time>
+    
+</div>
                 </div>
-                
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    
+                        <p>
+                            [TOC]磁盘缓存是将网络资源先保存到系统分配出的内存空间中，当内存中的资源容量达到某个限度时，在将内存中的资源保存的磁盘中。这样做可以有效减少磁盘的读写操作。
+OkHttp3的网络缓存主要实现由DiskLruCache这个类来实现。缓存保存在应用指定的内部缓存文件夹中，在调用磁盘缓存时，DisLruCache读取缓存文件快照到内存。涉及到缓存的读写任务都由类DiskLruCache.Edit.j<br>
+                    
+                    
+                        
+                            <a href="/2017/04/24/深入理解OkHttp3的DiskLruCache/" class="postShorten-excerpt_link link ">Continue reading</a>
+                            
+                        
+                    
+                    
+                        </p>
+                    
+                </div>
+            </div>
             
         </article>
     
@@ -1145,45 +1170,6 @@ Picasso 可以极大减少Andr<br>
             
         </article>
     
-        
-        
-                <article class="postShorten" itemscope itemType="http://schema.org/BlogPosting">
-        
-            <div class="postShorten-wrap">
-                <div class="postShorten-header">
-                    <h1 class="postShorten-title" itemprop="headline">
-                        
-                                <a class="link-unstyled" href="/2016/01/28/RxJava读书笔记（三）/">RxJava读书笔记（三）</a>
-                        
-                    </h1>
-                    <div class="postShorten-meta">
-    <time itemprop="datePublished" content="Thu Jan 28 2016 11:13:59 GMT+0800">
-	
-		    Jan 28, 2016
-    	
-    </time>
-    
-</div>
-                </div>
-                <div class="postShorten-excerpt" itemprop="articleBody">
-                    
-                        <p>
-                            <br>
-                    
-                    
-                        
-                            <a href="/2016/01/28/RxJava读书笔记（三）/" class="postShorten-excerpt_link link ">Continue reading</a>
-                            
-                        
-                    
-                    
-                        </p>
-                    
-                </div>
-            </div>
-            
-        </article>
-    
     <div class="pagination-bar">
     <ul class="pagination">
         
@@ -1204,7 +1190,7 @@ Picasso 可以极大减少Andr<br>
 
                 <footer id="footer" class="main-content-wrap">
     <span class="copyrights">
-        Copyrights &copy; 2016 alexwan. All Rights Reserved.
+        Copyrights &copy; 2017 alexwan. All Rights Reserved.
     </span>
 </footer>
 
