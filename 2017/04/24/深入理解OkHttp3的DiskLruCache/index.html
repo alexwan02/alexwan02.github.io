@@ -6,7 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Alexwan Studio">
-    <title>深入理解OkHttp3的DiskLruCache - Alexwan Studio</title>
+    <title>深入理解OkHttp3的DiskLruCache（2） - Alexwan Studio</title>
     <meta name="author" content="alexwan">
     
         <link rel="icon" href="/assets/images/https://cdn.discordapp.com/icons/102860784329052160/109fd014c718f40110c4a182f105ca71.jpg">
@@ -17,15 +17,15 @@
     <meta name="description" content="磁盘缓存是将网络资源先保存到系统分配出的内存空间中，当内存中的资源容量达到某个限度时，在将内存中的资源保存的磁盘中。这样做可以有效减少磁盘的读写操作。
 OkHttp3的网络缓存主要实现由DiskLruCache这个类来实现。缓存保存在应用指定的内部缓存文件夹中，在调用磁盘缓存时，DisLruCache读取缓存文件快照到内存。涉及到缓存的读写任务都由类DiskLruCache.Edit.java完成">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="深入理解OkHttp3的DiskLruCache">
+<meta property="og:title" content="深入理解OkHttp3的DiskLruCache（2）">
 <meta property="og:url" content="http://blog.alexwan1989.com/2017/04/24/深入理解OkHttp3的DiskLruCache/index.html">
 <meta property="og:site_name" content="Alexwan Studio">
 <meta property="og:description" content="磁盘缓存是将网络资源先保存到系统分配出的内存空间中，当内存中的资源容量达到某个限度时，在将内存中的资源保存的磁盘中。这样做可以有效减少磁盘的读写操作。
 OkHttp3的网络缓存主要实现由DiskLruCache这个类来实现。缓存保存在应用指定的内部缓存文件夹中，在调用磁盘缓存时，DisLruCache读取缓存文件快照到内存。涉及到缓存的读写任务都由类DiskLruCache.Edit.java完成">
 <meta property="og:image" content="http://res.cloudinary.com/dmfz9aun7/image/upload/v1490865300/wechat/OkHttpCache.jpg">
-<meta property="og:updated_time" content="2017-04-24T02:14:27.000Z">
+<meta property="og:updated_time" content="2017-04-24T09:39:53.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="深入理解OkHttp3的DiskLruCache">
+<meta name="twitter:title" content="深入理解OkHttp3的DiskLruCache（2）">
 <meta name="twitter:description" content="磁盘缓存是将网络资源先保存到系统分配出的内存空间中，当内存中的资源容量达到某个限度时，在将内存中的资源保存的磁盘中。这样做可以有效减少磁盘的读写操作。
 OkHttp3的网络缓存主要实现由DiskLruCache这个类来实现。缓存保存在应用指定的内部缓存文件夹中，在调用磁盘缓存时，DisLruCache读取缓存文件快照到内存。涉及到缓存的读写任务都由类DiskLruCache.Edit.java完成">
     
@@ -219,7 +219,7 @@ OkHttp3的网络缓存主要实现由DiskLruCache这个类来实现。缓存保�
         <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title" itemprop="headline">
-            深入理解OkHttp3的DiskLruCache
+            深入理解OkHttp3的DiskLruCache（2）
         </h1>
     
     <div class="post-meta">
@@ -317,7 +317,7 @@ OkHttp3的网络缓存主要实现由DiskLruCache这个类来实现。缓存保�
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/04/24/深入理解OkHttp3的Interceptors/"  data-tooltip="深入理解OkHttp3的Interceptors">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/04/24/深入理解OkHttp3的Connections/"  data-tooltip="深入理解OkHttp3的Connections（3）">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
@@ -325,7 +325,7 @@ OkHttp3的网络缓存主要实现由DiskLruCache这个类来实现。缓存保�
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/09/19/Android：DFM弹幕开发之基本配置/" data-tooltip="Android：DFM弹幕开发之基本配置">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/04/23/深入理解OkHttp3的Interceptors/" data-tooltip="深入理解OkHttp3的Interceptors（1）">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
                     <i class="fa fa-angle-right"></i>
@@ -352,7 +352,7 @@ OkHttp3的网络缓存主要实现由DiskLruCache这个类来实现。缓存保�
         </li>
 
          <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至新浪微博" href="http://www.jiathis.com/send/?webid=tsina&amp;appkey=&amp;uid=1850331&amp;url=http://blog.alexwan1989.com/2017/04/24/深入理解OkHttp3的DiskLruCache/&amp;title=深入理解OkHttp3的DiskLruCache">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至新浪微博" href="http://www.jiathis.com/send/?webid=tsina&amp;appkey=&amp;uid=1850331&amp;url=http://blog.alexwan1989.com/2017/04/24/深入理解OkHttp3的DiskLruCache/&amp;title=深入理解OkHttp3的DiskLruCache（2）">
                 <i class="fa fa-weibo"></i>
             </a>
         </li>
@@ -399,7 +399,7 @@ OkHttp3的网络缓存主要实现由DiskLruCache这个类来实现。缓存保�
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/04/24/深入理解OkHttp3的Interceptors/"  data-tooltip="深入理解OkHttp3的Interceptors">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/04/24/深入理解OkHttp3的Connections/"  data-tooltip="深入理解OkHttp3的Connections（3）">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
@@ -407,7 +407,7 @@ OkHttp3的网络缓存主要实现由DiskLruCache这个类来实现。缓存保�
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/09/19/Android：DFM弹幕开发之基本配置/" data-tooltip="Android：DFM弹幕开发之基本配置">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/04/23/深入理解OkHttp3的Interceptors/" data-tooltip="深入理解OkHttp3的Interceptors（1）">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
                     <i class="fa fa-angle-right"></i>
@@ -434,7 +434,7 @@ OkHttp3的网络缓存主要实现由DiskLruCache这个类来实现。缓存保�
         </li>
 
          <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至新浪微博" href="http://www.jiathis.com/send/?webid=tsina&amp;appkey=&amp;uid=1850331&amp;url=http://blog.alexwan1989.com/2017/04/24/深入理解OkHttp3的DiskLruCache/&amp;title=深入理解OkHttp3的DiskLruCache">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至新浪微博" href="http://www.jiathis.com/send/?webid=tsina&amp;appkey=&amp;uid=1850331&amp;url=http://blog.alexwan1989.com/2017/04/24/深入理解OkHttp3的DiskLruCache/&amp;title=深入理解OkHttp3的DiskLruCache（2）">
                 <i class="fa fa-weibo"></i>
             </a>
         </li>
