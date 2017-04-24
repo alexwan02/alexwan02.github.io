@@ -6,7 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Alexwan Studio">
-    <title> - Alexwan Studio</title>
+    <title>深入理解OkHttp3的Interceptors - Alexwan Studio</title>
     <meta name="author" content="alexwan">
     
         <link rel="icon" href="/assets/images/https://cdn.discordapp.com/icons/102860784329052160/109fd014c718f40110c4a182f105ca71.jpg">
@@ -14,31 +14,28 @@
     
         <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta name="description" content="深入理解OkHttp3的Interceptors
-Version : okhttp:3.6.0
+    <meta name="description" content="Version : okhttp:3.6.0
 
 Interceptors是OkHttp3整个框架的核心，包含了请求监控、请求重写、调用重试等机制。它主要使用责任链模式，解决请求与请求处理之间的耦合。
-1.1 责任链模式将接收对象放入链中，按照链中顺序让多个对象处理请求。请求者不用知道具体是由谁处理。解决请求与接收之间的耦合，提高灵活性。责任链负责对">
+1.1 责任链模式将接收对象放入链中，按照链中顺序让多个对象处理请求。请求者不用知道具体是由谁处理。解决请求与接收之间的耦合，提高灵活性。责任链负责对请求参数的解析，所有的扩展都是针对链中节点进行扩展">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="Alexwan Studio">
+<meta property="og:title" content="深入理解OkHttp3的Interceptors">
 <meta property="og:url" content="http://blog.alexwan1989.com/2017/04/24/深入理解OkHttp3的Interceptors/index.html">
 <meta property="og:site_name" content="Alexwan Studio">
-<meta property="og:description" content="深入理解OkHttp3的Interceptors
-Version : okhttp:3.6.0
+<meta property="og:description" content="Version : okhttp:3.6.0
 
 Interceptors是OkHttp3整个框架的核心，包含了请求监控、请求重写、调用重试等机制。它主要使用责任链模式，解决请求与请求处理之间的耦合。
-1.1 责任链模式将接收对象放入链中，按照链中顺序让多个对象处理请求。请求者不用知道具体是由谁处理。解决请求与接收之间的耦合，提高灵活性。责任链负责对">
+1.1 责任链模式将接收对象放入链中，按照链中顺序让多个对象处理请求。请求者不用知道具体是由谁处理。解决请求与接收之间的耦合，提高灵活性。责任链负责对请求参数的解析，所有的扩展都是针对链中节点进行扩展">
 <meta property="og:image" content="https://raw.githubusercontent.com/wiki/square/okhttp/interceptors@2x.png">
 <meta property="og:image" content="http://res.cloudinary.com/dmfz9aun7/image/upload/v1492487313/wechat/Interceptors_uml.jpg">
 <meta property="og:image" content="http://res.cloudinary.com/dmfz9aun7/image/upload/v1492482119/wechat/OkHttp3_Interceptor.jpg">
-<meta property="og:updated_time" content="2017-04-24T02:09:58.000Z">
+<meta property="og:updated_time" content="2017-04-24T02:14:59.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Alexwan Studio">
-<meta name="twitter:description" content="深入理解OkHttp3的Interceptors
-Version : okhttp:3.6.0
+<meta name="twitter:title" content="深入理解OkHttp3的Interceptors">
+<meta name="twitter:description" content="Version : okhttp:3.6.0
 
 Interceptors是OkHttp3整个框架的核心，包含了请求监控、请求重写、调用重试等机制。它主要使用责任链模式，解决请求与请求处理之间的耦合。
-1.1 责任链模式将接收对象放入链中，按照链中顺序让多个对象处理请求。请求者不用知道具体是由谁处理。解决请求与接收之间的耦合，提高灵活性。责任链负责对">
+1.1 责任链模式将接收对象放入链中，按照链中顺序让多个对象处理请求。请求者不用知道具体是由谁处理。解决请求与接收之间的耦合，提高灵活性。责任链负责对请求参数的解析，所有的扩展都是针对链中节点进行扩展">
     
     
     
@@ -230,22 +227,28 @@ Interceptors是OkHttp3整个框架的核心，包含了请求监控、请求重�
         <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title" itemprop="headline">
-            (无标题)
+            深入理解OkHttp3的Interceptors
         </h1>
     
     <div class="post-meta">
-    <time itemprop="datePublished" content="Mon Apr 24 2017 10:10:16 GMT+0800">
+    <time itemprop="datePublished" content="Mon Apr 24 2017 10:14:09 GMT+0800">
 	
 		    Apr 24, 2017
     	
     </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/okhttp3/">okhttp3</a>
+
+
     
 </div>
 </div>
     
     <div class="post-content markdown" itemprop="articleBody">
         <div class="main-content-wrap">
-            <h1 id="u6DF1_u5165_u7406_u89E3OkHttp3_u7684Interceptors"><a href="#u6DF1_u5165_u7406_u89E3OkHttp3_u7684Interceptors" class="headerlink" title="深入理解OkHttp3的Interceptors"></a>深入理解OkHttp3的Interceptors</h1><blockquote>
+            <blockquote>
 <p>Version : okhttp:3.6.0</p>
 </blockquote>
 <p><code>Interceptors</code>是OkHttp3整个框架的核心，包含了请求监控、请求重写、调用重试等机制。它主要使用责任链模式，解决请求与请求处理之间的耦合。<br><img src="https://raw.githubusercontent.com/wiki/square/okhttp/interceptors@2x.png" alt="img"></p>
@@ -297,6 +300,13 @@ Interceptors是OkHttp3整个框架的核心，包含了请求监控、请求重�
     </div>
     <div class="post-footer main-content-wrap">
         
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/okhttp3-android/">okhttp3 android</a>
+
+            </div>
+        
         <div class="post-actions-wrap">
     <nav>
         <ul class="post-actions post-action-nav">
@@ -310,7 +320,7 @@ Interceptors是OkHttp3整个框架的核心，包含了请求监控、请求重�
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/04/24/深入理解OkHttp3的DiskLruCache/" data-tooltip="(无标题)">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/04/24/深入理解OkHttp3的DiskLruCache/" data-tooltip="深入理解OkHttp3的DiskLruCache">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
                     <i class="fa fa-angle-right"></i>
@@ -337,7 +347,7 @@ Interceptors是OkHttp3整个框架的核心，包含了请求监控、请求重�
         </li>
 
          <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至新浪微博" href="http://www.jiathis.com/send/?webid=tsina&amp;appkey=&amp;uid=1850331&amp;url=http://blog.alexwan1989.com/2017/04/24/深入理解OkHttp3的Interceptors/&amp;title=">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至新浪微博" href="http://www.jiathis.com/send/?webid=tsina&amp;appkey=&amp;uid=1850331&amp;url=http://blog.alexwan1989.com/2017/04/24/深入理解OkHttp3的Interceptors/&amp;title=深入理解OkHttp3的Interceptors">
                 <i class="fa fa-weibo"></i>
             </a>
         </li>
@@ -392,7 +402,7 @@ Interceptors是OkHttp3整个框架的核心，包含了请求监控、请求重�
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/04/24/深入理解OkHttp3的DiskLruCache/" data-tooltip="(无标题)">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/04/24/深入理解OkHttp3的DiskLruCache/" data-tooltip="深入理解OkHttp3的DiskLruCache">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
                     <i class="fa fa-angle-right"></i>
@@ -419,7 +429,7 @@ Interceptors是OkHttp3整个框架的核心，包含了请求监控、请求重�
         </li>
 
          <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至新浪微博" href="http://www.jiathis.com/send/?webid=tsina&amp;appkey=&amp;uid=1850331&amp;url=http://blog.alexwan1989.com/2017/04/24/深入理解OkHttp3的Interceptors/&amp;title=">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至新浪微博" href="http://www.jiathis.com/send/?webid=tsina&amp;appkey=&amp;uid=1850331&amp;url=http://blog.alexwan1989.com/2017/04/24/深入理解OkHttp3的Interceptors/&amp;title=深入理解OkHttp3的Interceptors">
                 <i class="fa fa-weibo"></i>
             </a>
         </li>

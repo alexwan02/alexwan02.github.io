@@ -6,7 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Alexwan Studio">
-    <title> - Alexwan Studio</title>
+    <title>深入理解OkHttp3的DiskLruCache - Alexwan Studio</title>
     <meta name="author" content="alexwan">
     
         <link rel="icon" href="/assets/images/https://cdn.discordapp.com/icons/102860784329052160/109fd014c718f40110c4a182f105ca71.jpg">
@@ -14,20 +14,20 @@
     
         <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta name="description" content="[TOC]磁盘缓存是将网络资源先保存到系统分配出的内存空间中，当内存中的资源容量达到某个限度时，在将内存中的资源保存的磁盘中。这样做可以有效减少磁盘的读写操作。
-OkHttp3的网络缓存主要实现由DiskLruCache这个类来实现。缓存保存在应用指定的内部缓存文件夹中，在调用磁盘缓存时，DisLruCache读取缓存文件快照到内存。涉及到缓存的读写任务都由类DiskLruCache.Edit.j">
+    <meta name="description" content="磁盘缓存是将网络资源先保存到系统分配出的内存空间中，当内存中的资源容量达到某个限度时，在将内存中的资源保存的磁盘中。这样做可以有效减少磁盘的读写操作。
+OkHttp3的网络缓存主要实现由DiskLruCache这个类来实现。缓存保存在应用指定的内部缓存文件夹中，在调用磁盘缓存时，DisLruCache读取缓存文件快照到内存。涉及到缓存的读写任务都由类DiskLruCache.Edit.java完成">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="Alexwan Studio">
+<meta property="og:title" content="深入理解OkHttp3的DiskLruCache">
 <meta property="og:url" content="http://blog.alexwan1989.com/2017/04/24/深入理解OkHttp3的DiskLruCache/index.html">
 <meta property="og:site_name" content="Alexwan Studio">
-<meta property="og:description" content="[TOC]磁盘缓存是将网络资源先保存到系统分配出的内存空间中，当内存中的资源容量达到某个限度时，在将内存中的资源保存的磁盘中。这样做可以有效减少磁盘的读写操作。
-OkHttp3的网络缓存主要实现由DiskLruCache这个类来实现。缓存保存在应用指定的内部缓存文件夹中，在调用磁盘缓存时，DisLruCache读取缓存文件快照到内存。涉及到缓存的读写任务都由类DiskLruCache.Edit.j">
+<meta property="og:description" content="磁盘缓存是将网络资源先保存到系统分配出的内存空间中，当内存中的资源容量达到某个限度时，在将内存中的资源保存的磁盘中。这样做可以有效减少磁盘的读写操作。
+OkHttp3的网络缓存主要实现由DiskLruCache这个类来实现。缓存保存在应用指定的内部缓存文件夹中，在调用磁盘缓存时，DisLruCache读取缓存文件快照到内存。涉及到缓存的读写任务都由类DiskLruCache.Edit.java完成">
 <meta property="og:image" content="http://res.cloudinary.com/dmfz9aun7/image/upload/v1490865300/wechat/OkHttpCache.jpg">
-<meta property="og:updated_time" content="2017-04-24T02:09:52.000Z">
+<meta property="og:updated_time" content="2017-04-24T02:14:27.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Alexwan Studio">
-<meta name="twitter:description" content="[TOC]磁盘缓存是将网络资源先保存到系统分配出的内存空间中，当内存中的资源容量达到某个限度时，在将内存中的资源保存的磁盘中。这样做可以有效减少磁盘的读写操作。
-OkHttp3的网络缓存主要实现由DiskLruCache这个类来实现。缓存保存在应用指定的内部缓存文件夹中，在调用磁盘缓存时，DisLruCache读取缓存文件快照到内存。涉及到缓存的读写任务都由类DiskLruCache.Edit.j">
+<meta name="twitter:title" content="深入理解OkHttp3的DiskLruCache">
+<meta name="twitter:description" content="磁盘缓存是将网络资源先保存到系统分配出的内存空间中，当内存中的资源容量达到某个限度时，在将内存中的资源保存的磁盘中。这样做可以有效减少磁盘的读写操作。
+OkHttp3的网络缓存主要实现由DiskLruCache这个类来实现。缓存保存在应用指定的内部缓存文件夹中，在调用磁盘缓存时，DisLruCache读取缓存文件快照到内存。涉及到缓存的读写任务都由类DiskLruCache.Edit.java完成">
     
     
     
@@ -219,22 +219,28 @@ OkHttp3的网络缓存主要实现由DiskLruCache这个类来实现。缓存保�
         <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title" itemprop="headline">
-            (无标题)
+            深入理解OkHttp3的DiskLruCache
         </h1>
     
     <div class="post-meta">
-    <time itemprop="datePublished" content="Mon Apr 24 2017 10:10:16 GMT+0800">
+    <time itemprop="datePublished" content="Mon Apr 24 2017 10:14:09 GMT+0800">
 	
 		    Apr 24, 2017
     	
     </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/okhttp3/">okhttp3</a>
+
+
     
 </div>
 </div>
     
     <div class="post-content markdown" itemprop="articleBody">
         <div class="main-content-wrap">
-            <p>[TOC]<br>磁盘缓存是将网络资源先保存到系统分配出的内存空间中，当内存中的资源容量达到某个限度时，在将内存中的资源保存的磁盘中。这样做可以有效减少磁盘的读写操作。</p>
+            <p>磁盘缓存是将网络资源先保存到系统分配出的内存空间中，当内存中的资源容量达到某个限度时，在将内存中的资源保存的磁盘中。这样做可以有效减少磁盘的读写操作。</p>
 <p>OkHttp3的网络缓存主要实现由<code>DiskLruCache</code>这个类来实现。缓存保存在应用指定的内部缓存文件夹中，在调用磁盘缓存时，<code>DisLruCache</code>读取缓存文件快照到内存。涉及到缓存的读写任务都由类<code>DiskLruCache.Edit.java</code>完成。</p>
 <h1 id="1-__u7F13_u5B58_u6587_u4EF6_u683C_u5F0F"><a href="#1-__u7F13_u5B58_u6587_u4EF6_u683C_u5F0F" class="headerlink" title="1. 缓存文件格式"></a>1. 缓存文件格式</h1><h2 id="1-1__u7F13_u5B58_u65E5_u5FD7_u6587_u4EF6"><a href="#1-1__u7F13_u5B58_u65E5_u5FD7_u6587_u4EF6" class="headerlink" title="1.1 缓存日志文件"></a>1.1 缓存日志文件</h2><p>OkHttp3的缓存数据保存在名为<code>journal</code>的文件中。<br>标准的<code>journal</code>文件格式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">libcore.io.DiskLruCache&#10;1&#10;100&#10;2&#10;&#10;CLEAN 3400330d1dfc7f3f7f4b8d4d803dfcf6 832 21054&#10;DIRTY 335c4c6028171cfddfbaae1a9c313c52&#10;CLEAN 335c4c6028171cfddfbaae1a9c313c52 3934 2342&#10;REMOVE 335c4c6028171cfddfbaae1a9c313c52&#10;DIRTY 1ab96a171faeeee38496d8b330771a7a&#10;CLEAN 1ab96a171faeeee38496d8b330771a7a 1600 234&#10;READ 335c4c6028171cfddfbaae1a9c313c52&#10;READ 3400330d1dfc7f3f7f4b8d4d803dfcf6&#10;...</span><br></pre></td></tr></table></figure></p>
 <p>前五行是文件头部，分别是区分文件格式的++MAGIC数++（固定为<code>libcore.io.DiskLruCache</code>）、++缓存版本++、++应用版本++、++Key对应Value值个数++和一个++空白行++。<br>之后的每行都对应一个Cache实体的状态记录。由++状态++、++键值++和++可选择具体状态值++组成。</p>
@@ -299,12 +305,19 @@ OkHttp3的网络缓存主要实现由DiskLruCache这个类来实现。缓存保�
     </div>
     <div class="post-footer main-content-wrap">
         
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/okhttp3-android/">okhttp3 android</a>
+
+            </div>
+        
         <div class="post-actions-wrap">
     <nav>
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/04/24/深入理解OkHttp3的Interceptors/"  data-tooltip="(无标题)">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/04/24/深入理解OkHttp3的Interceptors/"  data-tooltip="深入理解OkHttp3的Interceptors">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
@@ -339,7 +352,7 @@ OkHttp3的网络缓存主要实现由DiskLruCache这个类来实现。缓存保�
         </li>
 
          <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至新浪微博" href="http://www.jiathis.com/send/?webid=tsina&amp;appkey=&amp;uid=1850331&amp;url=http://blog.alexwan1989.com/2017/04/24/深入理解OkHttp3的DiskLruCache/&amp;title=">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至新浪微博" href="http://www.jiathis.com/send/?webid=tsina&amp;appkey=&amp;uid=1850331&amp;url=http://blog.alexwan1989.com/2017/04/24/深入理解OkHttp3的DiskLruCache/&amp;title=深入理解OkHttp3的DiskLruCache">
                 <i class="fa fa-weibo"></i>
             </a>
         </li>
@@ -386,7 +399,7 @@ OkHttp3的网络缓存主要实现由DiskLruCache这个类来实现。缓存保�
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/04/24/深入理解OkHttp3的Interceptors/"  data-tooltip="(无标题)">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/04/24/深入理解OkHttp3的Interceptors/"  data-tooltip="深入理解OkHttp3的Interceptors">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
@@ -421,7 +434,7 @@ OkHttp3的网络缓存主要实现由DiskLruCache这个类来实现。缓存保�
         </li>
 
          <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至新浪微博" href="http://www.jiathis.com/send/?webid=tsina&amp;appkey=&amp;uid=1850331&amp;url=http://blog.alexwan1989.com/2017/04/24/深入理解OkHttp3的DiskLruCache/&amp;title=">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至新浪微博" href="http://www.jiathis.com/send/?webid=tsina&amp;appkey=&amp;uid=1850331&amp;url=http://blog.alexwan1989.com/2017/04/24/深入理解OkHttp3的DiskLruCache/&amp;title=深入理解OkHttp3的DiskLruCache">
                 <i class="fa fa-weibo"></i>
             </a>
         </li>

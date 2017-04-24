@@ -218,26 +218,32 @@
                 <div class="postShorten-header">
                     <h1 class="postShorten-title" itemprop="headline">
                         
-                                <a class="link-unstyled" href="/2017/04/24/深入理解OkHttp3的Interceptors/">(无标题)</a>
+                                <a class="link-unstyled" href="/2017/04/24/深入理解OkHttp3的Interceptors/">深入理解OkHttp3的Interceptors</a>
                         
                     </h1>
                     <div class="postShorten-meta">
-    <time itemprop="datePublished" content="Mon Apr 24 2017 10:10:16 GMT+0800">
+    <time itemprop="datePublished" content="Mon Apr 24 2017 10:14:09 GMT+0800">
 	
 		    Apr 24, 2017
     	
     </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/okhttp3/">okhttp3</a>
+
+
     
 </div>
                 </div>
                 <div class="postShorten-excerpt" itemprop="articleBody">
                     
                         <p>
-                            深入理解OkHttp3的Interceptors
+                            
 Version : okhttp:3.6.0
 
 Interceptors是OkHttp3整个框架的核心，包含了请求监控、请求重写、调用重试等机制。它主要使用责任链模式，解决请求与请求处理之间的耦合。
-1.1 责任链模式将接收对象放入链中，按照链中顺序让多个对象处理请求。请求者不用知道具体是由谁处理。解决请求与接收之间的耦合，提高灵活性。责任链负责对<br>
+1.1 责任链模式将接收对象放入链中，按照链中顺序让多个对象处理请求。请求者不用知道具体是由谁处理。解决请求与接收之间的耦合，提高灵活性。责任链负责对请求参数的解析，所有的扩展都是针对链中节点进行扩<br>
                     
                     
                         
@@ -261,23 +267,29 @@ Interceptors是OkHttp3整个框架的核心，包含了请求监控、请求重�
                 <div class="postShorten-header">
                     <h1 class="postShorten-title" itemprop="headline">
                         
-                                <a class="link-unstyled" href="/2017/04/24/深入理解OkHttp3的DiskLruCache/">(无标题)</a>
+                                <a class="link-unstyled" href="/2017/04/24/深入理解OkHttp3的DiskLruCache/">深入理解OkHttp3的DiskLruCache</a>
                         
                     </h1>
                     <div class="postShorten-meta">
-    <time itemprop="datePublished" content="Mon Apr 24 2017 10:10:16 GMT+0800">
+    <time itemprop="datePublished" content="Mon Apr 24 2017 10:14:09 GMT+0800">
 	
 		    Apr 24, 2017
     	
     </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/okhttp3/">okhttp3</a>
+
+
     
 </div>
                 </div>
                 <div class="postShorten-excerpt" itemprop="articleBody">
                     
                         <p>
-                            [TOC]磁盘缓存是将网络资源先保存到系统分配出的内存空间中，当内存中的资源容量达到某个限度时，在将内存中的资源保存的磁盘中。这样做可以有效减少磁盘的读写操作。
-OkHttp3的网络缓存主要实现由DiskLruCache这个类来实现。缓存保存在应用指定的内部缓存文件夹中，在调用磁盘缓存时，DisLruCache读取缓存文件快照到内存。涉及到缓存的读写任务都由类DiskLruCache.Edit.j<br>
+                            磁盘缓存是将网络资源先保存到系统分配出的内存空间中，当内存中的资源容量达到某个限度时，在将内存中的资源保存的磁盘中。这样做可以有效减少磁盘的读写操作。
+OkHttp3的网络缓存主要实现由DiskLruCache这个类来实现。缓存保存在应用指定的内部缓存文件夹中，在调用磁盘缓存时，DisLruCache读取缓存文件快照到内存。涉及到缓存的读写任务都由类DiskLruCache.Edit.java完成<br>
                     
                     
                         
