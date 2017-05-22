@@ -1,0 +1,531 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+    
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Alexwan Studio">
+    <title>React-Native基础（4）：组件引用Ref - Alexwan Studio</title>
+    <meta name="author" content="alexwan">
+    
+        <link rel="icon" href="/assets/images/https://cdn.discordapp.com/icons/102860784329052160/109fd014c718f40110c4a182f105ca71.jpg">
+    
+    
+        <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="在典型的React数据流中，父组件与子组件的唯一交互方式就是通过Props。修改子组件，就需要使用新的Prop来重新渲染。但是在有些情况，需要在数据流之外，直接来执行子组件的修改操作。React提供了使用Ref方式来解决直接修改子组件或子DOM元素的问题。
+
+添加Ref到DOM元素ref是React组件一个特殊属性，使用回调函数作为属性，函数的接收组件的基本DOM元素作为它的参数。1&amp;lt;Com">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="React-Native基础（4）：组件引用Ref">
+<meta property="og:url" content="http://blog.alexwan1989.com/2017/05/22/React-Native基础（4）：组件引用Ref/index.html">
+<meta property="og:site_name" content="Alexwan Studio">
+<meta property="og:description" content="在典型的React数据流中，父组件与子组件的唯一交互方式就是通过Props。修改子组件，就需要使用新的Prop来重新渲染。但是在有些情况，需要在数据流之外，直接来执行子组件的修改操作。React提供了使用Ref方式来解决直接修改子组件或子DOM元素的问题。
+
+添加Ref到DOM元素ref是React组件一个特殊属性，使用回调函数作为属性，函数的接收组件的基本DOM元素作为它的参数。1&amp;lt;Com">
+<meta property="og:updated_time" content="2017-05-22T07:58:46.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="React-Native基础（4）：组件引用Ref">
+<meta name="twitter:description" content="在典型的React数据流中，父组件与子组件的唯一交互方式就是通过Props。修改子组件，就需要使用新的Prop来重新渲染。但是在有些情况，需要在数据流之外，直接来执行子组件的修改操作。React提供了使用Ref方式来解决直接修改子组件或子DOM元素的问题。
+
+添加Ref到DOM元素ref是React组件一个特殊属性，使用回调函数作为属性，函数的接收组件的基本DOM元素作为它的参数。1&amp;lt;Com">
+    
+    
+    
+        <meta property="og:image" content="/assets/images/http://res.cloudinary.com/dmfz9aun7/image/upload/v1467081842/android/3397490934332211.jpg"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style.min.css" type="text/css">
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-74386866-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+</head>
+
+    <body>
+        <div id="blog">
+            <header id="header" data-behavior="1">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/ ">Alexwan Studio</a>
+    </h1>
+    
+        
+            <a  class="header-right-icon st-search-show-outputs"
+                href="/#search">
+        
+                <i class="fa fa-lg fa-search"></i>
+            </a>
+    
+</header>
+            <nav id="sidebar" data-behavior="1">
+    
+        <div class="sidebar-profile">
+            <a href="/#about">
+                
+                    <!-- use remote images as avatar-->
+                    <img class="sidebar-profile-picture" src="http://res.cloudinary.com/dmfz9aun7/image/upload/v1467081842/android/3397490934332211.jpg"/>
+                
+            </a>
+            <span class="sidebar-profile-name">alexwan</span>
+        </div>
+    
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/ "
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">主页</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-categories"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">分类</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-tags"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">标签</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-archives"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-bars"></i>
+                    <span class="sidebar-button-desc">归档</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link st-search-show-outputs"
+                         href="/#search"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-search"></i>
+                    <span class="sidebar-button-desc">搜索</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/#about"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">关于</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://github.com/alexwan02" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-github-square"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="http://stackoverflow.com/users/4919743/alexwan1989" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-stack-overflow"></i>
+                    <span class="sidebar-button-desc">Stack Overflow</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://alexwan0312@gmail.com" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
+                    <span class="sidebar-button-desc">Mail</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/atom.xml"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+
+            
+            <div id="main" data-behavior="1"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            React-Native基础（4）：组件引用Ref
+        </h1>
+    
+    <div class="post-meta">
+    <time itemprop="datePublished" content="Mon May 22 2017 15:58:44 GMT+0800">
+	
+		    May 22, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/react-native/">react-native</a>
+
+
+    
+</div>
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <p>在典型的React数据流中，父组件与子组件的唯一交互方式就是通过Props。修改子组件，就需要使用新的Prop来重新渲染。但是在有些情况，需要在数据流之外，直接来执行子组件的修改操作。React提供了使用Ref方式来解决直接修改子组件或子DOM元素的问题。</p>
+<ul>
+<li>添加Ref到DOM元素<br><code>ref</code>是React组件一个特殊属性，使用<code>回调函数</code>作为属性，函数的接收组件的基本DOM元素作为它的参数。<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Component ref=&#123;(el) =&gt; <span class="keyword">this</span>.el = el &#125;/&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>定义的回调函数会在组件加载和卸载时立即调用。<br>在组件卸载时函数中元素的值为<code>null</code>。<br>一个简单的例子<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CustomTextInput</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span></span>&#123;</span><br><span class="line">   constructor(props)&#123;</span><br><span class="line">       <span class="keyword">super</span>(props);</span><br><span class="line">       <span class="keyword">this</span>.focus = <span class="keyword">this</span>.focus.bind(<span class="keyword">this</span>);</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line">   focus()&#123;</span><br><span class="line">       <span class="comment">// 获取文字焦点</span></span><br><span class="line">       <span class="keyword">this</span>.textInput.focus();</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line">   render()&#123;</span><br><span class="line">       <span class="comment">// 使用ref回调函数存储text input 元素的引用</span></span><br><span class="line">       <span class="keyword">return</span> (</span><br><span class="line">        <span class="xml"><span class="tag">&lt;<span class="title">div</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="title">input</span> </span><br><span class="line">            <span class="attribute">type</span>=<span class="value">"text"</span> </span><br><span class="line">            <span class="attribute">ref</span>=<span class="value">&#123;(input)</span> =&gt;</span> &#123; this.textInput = input; &#125;&#125; /&gt;</span><br><span class="line">          <span class="tag">&lt;<span class="title">input</span></span><br><span class="line">            <span class="attribute">type</span>=<span class="value">"button"</span></span><br><span class="line">            <span class="attribute">value</span>=<span class="value">"Focus the text input"</span></span><br><span class="line">            <span class="attribute">onClick</span>=<span class="value">&#123;this.focus&#125;</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br><span class="line">       )</span>;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// es6 箭头函数</span></span><br><span class="line">ref=&#123;input =&gt; <span class="keyword">this</span>.textInput = input&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>添加Ref到Class组件</li>
+</ul>
+<p>当为组件添加Ref回调函数，回调函数将使用自定义的组件作为它的参数。<br>例如：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AutoFocusTextInput</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span></span>&#123;</span><br><span class="line">    constructor(props)&#123;</span><br><span class="line">        <span class="keyword">this</span>.textInput.focus();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    render()&#123;</span><br><span class="line">        <span class="keyword">return</span>(</span><br><span class="line">          <span class="xml"><span class="tag">&lt;<span class="title">CustomTextInput</span></span><br><span class="line">            <span class="attribute">ref</span>=<span class="value">&#123;</span> (<span class="attribute">input</span>) =&gt;</span> &#123;this.textInput = input; &#125;&#125;</span><br><span class="line">            /&gt;</span><br><span class="line">        )</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这个方式只能用于以<code>class</code>方式声明的<code>CustomTextInput</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CustomTextInput</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Ref和函数组件</li>
+</ul>
+<p>因为函数式组件没有组件实例，所以不能够通过上面的方式来给函数组件添加ref。<br>通过两种方式来解决</p>
+<pre><code>1. 将函数组件转为Class组件。
+2. 在函数组件内部使用`ref`，这种方式同样适应于class组件。
+</code></pre><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">CustomTextInput</span>(<span class="params">props</span>)</span>&#123;</span><br><span class="line">    <span class="comment">// 需要声明引用的textInput</span></span><br><span class="line">    <span class="keyword">let</span> textInput = <span class="literal">null</span>;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">handleClick</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        textInput.focus();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      <span class="xml"><span class="tag">&lt;<span class="title">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="title">input</span> </span><br><span class="line">          <span class="attribute">text</span>=<span class="value">"text"</span></span><br><span class="line">          <span class="attribute">ref</span>=<span class="value">&#123;</span> (<span class="attribute">input</span>) =&gt;</span> &#123; textInput = input; &#125;&#125;</span><br><span class="line">          /&gt;</span><br><span class="line">        <span class="tag">&lt;<span class="title">input</span> </span><br><span class="line">          <span class="attribute">text</span>=<span class="value">"button"</span></span><br><span class="line">          <span class="attribute">value</span>=<span class="value">"Focus the text input"</span></span><br><span class="line">          <span class="attribute">onClick</span>=<span class="value">&#123;</span> <span class="attribute">handleClick</span> &#125;</span><br><span class="line">          /&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br><span class="line">    )</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>暴露DOM的Ref给父组件</li>
+</ul>
+<p>在极少情况下，父组件需要访问子组件。因为破坏了组件的封装性，这种做法并不推荐，但是有时对于触发焦点和测量子DOM节点的位置或大小会有用。如果给子组件添加ref时，也并不是理想解决方案，因为ref回调函数的参数是子组件，而不是DOM节点元素，并且不适用函数式组件。<br>因此，在这些情况建议暴露子组件的特殊属性，子组件使用任意名称（如：<code>inputRef</code>）的函数类型的Prop，并把这个属性添加大DOM节点元素中，作为<code>ref</code>属性。就可以通过中间组件将父组件的ref函数传递给子组件中的DOM节点<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">CustomTextInput</span>(<span class="params">props</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="xml"><span class="tag">&lt;<span class="title">div</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="title">input</span> <span class="attribute">ref</span>=<span class="value">&#123;props.inputRef&#125;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br><span class="line">  )</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Parent</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span></span>&#123;</span><br><span class="line">    render (</span><br><span class="line">      <span class="keyword">return</span> (</span><br><span class="line">        <span class="xml"><span class="tag">&lt;<span class="title">CustomTextInput</span></span><br><span class="line">          <span class="attribute">inputRef</span>=<span class="value">&#123;el</span> =&gt;</span> this.inputElement = el&#125;</span><br><span class="line">          /&gt;</span><br><span class="line">      )</span>;</span><br><span class="line">    )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>上面代码中父组件使用<code>inputRef</code>属性将ref回调函数传递给中间组件<code>CustomTextInput</code>，<code>CustomTextInput</code>又将函数传给<code>&lt;input /&gt;</code>的ref属性。最终父组件获取到对<code>&lt;input /&gt;</code>的引用。这种形式不仅适用于Class组件，同样也适用于函数组件。<br>这种形式的另一个好处就是：对于深层的DOM节点同样有效。假设父组件不需要DOM节点引用，但是祖父组件想要获取子组件中DOM节点元素的引用，可以通过让祖父组件指定inputRef属性，传递给父组件，父组件再把<code>inputRef</code>转给<code>CustomTextInput</code>。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">CustomTextInput</span>(<span class="params">props</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="xml"><span class="tag">&lt;<span class="title">div</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="title">input</span> <span class="attribute">ref</span>=<span class="value">&#123;props.inputRef&#125;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br><span class="line">  )</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Parent</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span></span>&#123;</span><br><span class="line">    render (</span><br><span class="line">      <span class="keyword">return</span> (</span><br><span class="line">        <span class="xml"><span class="tag">&lt;<span class="title">div</span>&gt;</span></span><br><span class="line">          My input: <span class="tag">&lt;<span class="title">CustomTextInput</span> <span class="attribute">inputRef</span>=<span class="value">&#123;props.inputRef&#125;</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="title">div</span>&gt;</span></span><br><span class="line">      )</span>;</span><br><span class="line">    )</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">GrandParent</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span></span>&#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      <span class="xml"><span class="tag">&lt;<span class="title">Parent</span></span><br><span class="line">        <span class="attribute">inputRef</span>=<span class="value">&#123;el</span> =&gt;</span> this.inputElement = el&#125;</span><br><span class="line">      /&gt;</span><br><span class="line">    )</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>综合考虑下，不建议暴露DOM节点。 因为破坏了组件的封装，而且需要子节点添加额外的属性。</p>
+</blockquote>
+<ul>
+<li>说明</li>
+</ul>
+<p>如果<code>ref</code>以内联函数形式定义，在更新时会被调用两次</p>
+<pre><code>- 第一次为函数的参数为null，第二次为DOM元素
+</code></pre><p>因为每次render时，都要创建一个新的函数实例，建议通过组件bind函数来定义ref回调函数。</p>
+<ul>
+<li><p>适应场景</p>
+<ol>
+<li>管理输入焦点，文字选择或者媒体播放时；</li>
+<li>触发必要的动画时；</li>
+<li>与第三方DOM库交互时；</li>
+</ol>
+</li>
+</ul>
+<p>避免使用在可用声明方式的情景下。如：通过定义<code>isOpen</code>的方式，避免暴露<code>Dialog</code>的<code>open</code>和<code>close</code>的方法。</p>
+<ul>
+<li>避免过度使用</li>
+</ul>
+<p>在使用<code>ref</code>时，一定要经过慎重思考，尤其是拥有State状态的组件。首先考虑使用Props</p>
+<p><a href="https://facebook.github.io/react/docs/refs-and-the-dom.html" target="_blank" rel="external">Refs and the DOM</a></p>
+
+            
+                
+
+            
+        </div>
+    </div>
+    <div class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/react-native/">react-native</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/05/18/React-Native基础（2）：聊聊Props和State/" data-tooltip="React-Native基础（2）：聊聊Props与States">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至Google+" href="https://plus.google.com/share?url=http://blog.alexwan1989.com/2017/05/22/React-Native基础（4）：组件引用Ref/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+       
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至Twitter" href="https://twitter.com/intent/tweet?text=http://blog.alexwan1989.com/2017/05/22/React-Native基础（4）：组件引用Ref/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+
+         <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至新浪微博" href="http://www.jiathis.com/send/?webid=tsina&amp;appkey=&amp;uid=1850331&amp;url=http://blog.alexwan1989.com/2017/05/22/React-Native基础（4）：组件引用Ref/&amp;title=React-Native基础（4）：组件引用Ref">
+                <i class="fa fa-weibo"></i>
+            </a>
+        </li>
+
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+            <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2017 alexwan. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="1">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/05/18/React-Native基础（2）：聊聊Props和State/" data-tooltip="React-Native基础（2）：聊聊Props与States">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至Google+" href="https://plus.google.com/share?url=http://blog.alexwan1989.com/2017/05/22/React-Native基础（4）：组件引用Ref/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+       
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至Twitter" href="https://twitter.com/intent/tweet?text=http://blog.alexwan1989.com/2017/05/22/React-Native基础（4）：组件引用Ref/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+
+         <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至新浪微博" href="http://www.jiathis.com/send/?webid=tsina&amp;appkey=&amp;uid=1850331&amp;url=http://blog.alexwan1989.com/2017/05/22/React-Native基础（4）：组件引用Ref/&amp;title=React-Native基础（4）：组件引用Ref">
+                <i class="fa fa-weibo"></i>
+            </a>
+        </li>
+
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="1">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://blog.alexwan1989.com/2017/05/22/React-Native基础（4）：组件引用Ref/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://blog.alexwan1989.com/2017/05/22/React-Native基础（4）：组件引用Ref/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://blog.alexwan1989.com/2017/05/22/React-Native基础（4）：组件引用Ref/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        <div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <!-- use remote images as avatar-->
+            <img id="about-card-picture" src="http://res.cloudinary.com/dmfz9aun7/image/upload/v1467081842/android/3397490934332211.jpg"/>
+        
+            <h4 id="about-card-name">alexwan</h4>
+        
+            <h5 id="about-card-bio"><p>无限大な梦のあとの 何もない世の中じゃ!</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Android Developer</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                China ShangHai
+            </h5>
+        
+    </div>
+</div>
+
+        <div id="cover" style="background-image:url('http://res.cloudinary.com/dmfz9aun7/image/upload/v1465302627/hexo/re_zero_kara_hajimeru_isekai_seikatsu_99.jpg');"></div>
+
+    </body>
+    <!--SCRIPTS-->
+<script src="/assets/js/script.min.js" type="text/javascript"></script>
+<!--SCRIPTS END-->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'alexwan';
+        (function() {
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+
+
+
+</html>
