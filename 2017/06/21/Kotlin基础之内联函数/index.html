@@ -1,0 +1,507 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+    
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Alexwan Studio">
+    <title>Kotlin基础之内联函数 - Alexwan Studio</title>
+    <meta name="author" content="alexwan">
+    
+        <link rel="icon" href="/assets/images/https://cdn.discordapp.com/icons/102860784329052160/109fd014c718f40110c4a182f105ca71.jpg">
+    
+    
+        <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="内联函数使用高阶函数会给运行时带来一些坏处：每个函数都是一个对象，捕获闭包（如：访问函数体内的变量），内存分配（函数对象或Class），虚拟调用引入的运行过载。使用内联Lambda表达式在多数情况下可以消除这种过载。比如下面的函数就是这种情况下的很好的例子，lock()函数可以很容易地在调用点进行内联扩展。1lock(l)&amp;#123; foo() &amp;#125;
+编译能够产生下面的代码，而不是创建一">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Kotlin基础之内联函数">
+<meta property="og:url" content="http://blog.alexwan1989.com/2017/06/21/Kotlin基础之内联函数/index.html">
+<meta property="og:site_name" content="Alexwan Studio">
+<meta property="og:description" content="内联函数使用高阶函数会给运行时带来一些坏处：每个函数都是一个对象，捕获闭包（如：访问函数体内的变量），内存分配（函数对象或Class），虚拟调用引入的运行过载。使用内联Lambda表达式在多数情况下可以消除这种过载。比如下面的函数就是这种情况下的很好的例子，lock()函数可以很容易地在调用点进行内联扩展。1lock(l)&amp;#123; foo() &amp;#125;
+编译能够产生下面的代码，而不是创建一">
+<meta property="og:updated_time" content="2017-06-21T10:50:23.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kotlin基础之内联函数">
+<meta name="twitter:description" content="内联函数使用高阶函数会给运行时带来一些坏处：每个函数都是一个对象，捕获闭包（如：访问函数体内的变量），内存分配（函数对象或Class），虚拟调用引入的运行过载。使用内联Lambda表达式在多数情况下可以消除这种过载。比如下面的函数就是这种情况下的很好的例子，lock()函数可以很容易地在调用点进行内联扩展。1lock(l)&amp;#123; foo() &amp;#125;
+编译能够产生下面的代码，而不是创建一">
+    
+    
+    
+        <meta property="og:image" content="/assets/images/http://res.cloudinary.com/dmfz9aun7/image/upload/v1467081842/android/3397490934332211.jpg"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style.min.css" type="text/css">
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-74386866-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+</head>
+
+    <body>
+        <div id="blog">
+            <header id="header" data-behavior="1">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/ ">Alexwan Studio</a>
+    </h1>
+    
+        
+            <a  class="header-right-icon st-search-show-outputs"
+                href="/#search">
+        
+                <i class="fa fa-lg fa-search"></i>
+            </a>
+    
+</header>
+            <nav id="sidebar" data-behavior="1">
+    
+        <div class="sidebar-profile">
+            <a href="/#about">
+                
+                    <!-- use remote images as avatar-->
+                    <img class="sidebar-profile-picture" src="http://res.cloudinary.com/dmfz9aun7/image/upload/v1467081842/android/3397490934332211.jpg"/>
+                
+            </a>
+            <span class="sidebar-profile-name">alexwan</span>
+        </div>
+    
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/ "
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">主页</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-categories"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">分类</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-tags"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">标签</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-archives"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-bars"></i>
+                    <span class="sidebar-button-desc">归档</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link st-search-show-outputs"
+                         href="/#search"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-search"></i>
+                    <span class="sidebar-button-desc">搜索</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/#about"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">关于</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://github.com/alexwan02" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-github-square"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="http://stackoverflow.com/users/4919743/alexwan1989" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-stack-overflow"></i>
+                    <span class="sidebar-button-desc">Stack Overflow</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://alexwan0312@gmail.com" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
+                    <span class="sidebar-button-desc">Mail</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/atom.xml"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+
+            
+            <div id="main" data-behavior="1"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            Kotlin基础之内联函数
+        </h1>
+    
+    <div class="post-meta">
+    <time itemprop="datePublished" content="Wed Jun 21 2017 15:53:18 GMT+0800">
+	
+		    Jun 21, 2017
+    	
+    </time>
+    
+</div>
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <h2 id="u5185_u8054_u51FD_u6570"><a href="#u5185_u8054_u51FD_u6570" class="headerlink" title="内联函数"></a>内联函数</h2><p>使用<a href="https://kotlinlang.org/docs/reference/lambdas.html" target="_blank" rel="external"><code>高阶函数</code></a>会给运行时带来一些坏处：每个函数都是一个对象，捕获闭包（如：访问函数体内的变量），内存分配（函数对象或Class），虚拟调用引入的运行过载。<br>使用内联Lambda表达式在多数情况下可以消除这种过载。比如下面的函数就是这种情况下的很好的例子，<code>lock()</code>函数可以很容易地在调用点进行内联扩展。<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lock(l)&#123; foo() &#125;</span><br></pre></td></tr></table></figure></p>
+<p>编译能够产生下面的代码，而不是创建一个函数对象参数，生成调用。<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">l.lock()</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    foo()</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">finally</span> &#123;</span><br><span class="line">    l.unlock()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>也是我们一开始想要的。<br>为了让编译器能够这样执行，需要用<code>inline</code>修饰符来标记<code>lock</code>函数<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> lock<span class="type">&lt;T&gt;</span><span class="params">(lock: <span class="typename">Lock , body: (</span>)</span> -&gt; T): T&#123;</span></span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>inline</code>修饰符既影响函数对象本身，也影响传入的Lambda参数：两者都会被内联到调用点。</p>
+<p>编译预处理器对内联函数进行扩展，省去了参数压栈、生成汇编语言的CALL调用、返回参数、执行return等过程，从而提高了运行速度。<br>使用内联函数的优点，在函数被内联后编译器就可以通过上下文相关的优化技术对结果代码执行更深入的优化。<br>内联不是万能药，它以代码膨胀为代价，仅仅省去了函数调用的开销，从而提高程序的执行效率。</p>
+<blockquote>
+<p>函数调用开销并不包括执行函数体所需要的开销，而是仅指参数压栈、跳转、退栈和返回等操作。如果执行函数体内代码的时间比函数调用的开销大得多，那么内联函数的效率收益会笑很多。另一方面每一处内联函数的调用都要拷贝代码，将使程序的总代码增大、消耗更多的内存空间。</p>
+</blockquote>
+<h2 id="noinline"><a href="#noinline" class="headerlink" title="noinline"></a>noinline</h2><p>如果只需要在内联函数中内联部分Lambda表达式，可以使用<code>noinline</code>来标记不需要内联的参数。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> <span class="title">foo</span><span class="params">(inlined: <span class="typename">(</span>)</span> -&gt; Unit, noinline notInlined: <span class="params">()</span> -&gt; Unit) &#123;</span></span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>内联Lambda只能在内联函数中调用或作为内联参数，但<code>noinline</code>的Lambda可随意使用。</p>
+<blockquote>
+<p>没有内联函数参数和<a href="https://kotlinlang.org/docs/reference/inline-functions.html#reified-type-parameters" target="_blank" rel="external"><code>reified type parameters</code></a>的内联函数，编译器会发出警告，因为内联这样的函数不见得有好处。</p>
+</blockquote>
+<h2 id="u975E_u5C40_u90E8_u8FD4_u56DE"><a href="#u975E_u5C40_u90E8_u8FD4_u56DE" class="headerlink" title="非局部返回"></a>非局部返回</h2><p>在Kotlin中可以使用正常、无条件的<code>return</code>退出有名和匿名函数，也意味需要使用一个标签来退出Lambda，在Lambda中禁止使用赤裸<code>return</code>语句，因为Lambda不能够使闭合函数返回。<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">foo</span><span class="params">()</span>&#123;</span></span><br><span class="line">    ordinaryFunction&#123;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> <span class="comment">// ERROR: can not make `foo` return here</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果Lambda传入内联函数，则返回也是被内联，所以允许<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">foo</span><span class="params">()</span>&#123;</span></span><br><span class="line">    inlineFunction &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="comment">// OK: the lambda is inlined</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这样的return（位于在Lambda中，但能够退出闭合函数）被称为非局部返回。Kotlin使用这种构造在有循环条件的闭合内联函数中<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">hasZeros</span><span class="params">(ints: <span class="typename">List&lt;Int&gt;</span>)</span>: Boolean&#123;</span></span><br><span class="line">    ints.forEach&#123;</span><br><span class="line">        <span class="keyword">if</span>(it == <span class="number">0</span>) <span class="keyword">return</span> <span class="literal">true</span> <span class="comment">// returns from hasZeros</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>一些内联函数可能不是从函数体中直接调用传入的Lambda参数，而是从其他的执行上下文，如本地对象或嵌套函数。在这些情况下，non-local 控制流则不允许出现在Lambda中。使用<code>crossinline</code>修饰符来标记。</p>
+</blockquote>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> <span class="title">f</span><span class="params">(crossinline body: <span class="typename">(</span>)</span> -&gt; Unit) &#123;</span></span><br><span class="line">    <span class="variable"><span class="keyword">val</span> f</span> = <span class="keyword">object</span>: Runnable &#123;</span><br><span class="line">        <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">run</span><span class="params">()</span> = <span class="title">body</span><span class="params">()</span></span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>尚未在内联Lambda中支持break 和 continue 操作，Kotlin计划支持</p>
+</blockquote>
+<h2 id="u5177_u4F53_u5316_u7C7B_u578B_u53C2_u6570"><a href="#u5177_u4F53_u5316_u7C7B_u578B_u53C2_u6570" class="headerlink" title="具体化类型参数"></a>具体化类型参数</h2><p>有时需要访问传入函数中参数的类型</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="type">&lt;T&gt;</span> TreeNode.<span class="title">findParentOfType</span><span class="params">(clazz: <span class="typename">Class&lt;T&gt;</span>)</span>: T? &#123;</span></span><br><span class="line">    <span class="variable"><span class="keyword">var</span> p</span> = parent</span><br><span class="line">    <span class="keyword">while</span> (p != <span class="literal">null</span> &amp;&amp; !clazz.isInstance(p)) &#123;</span><br><span class="line">        p = p.parent</span><br><span class="line">    &#125;</span><br><span class="line">    @Suppress(<span class="string">"UNCHECKED_CAST"</span>)</span><br><span class="line">    <span class="keyword">return</span> p <span class="keyword">as</span> T?</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在上述代码中，沿着树结构，使用反射来检查节点是否有指定类型。可以执行，但是调用点，并不优美<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">treeNode.findParentOfType(MyTreeNode::<span class="class"><span class="keyword">class</span>.<span class="title">java</span>)</span></span><br></pre></td></tr></table></figure></p>
+<p>实际上想要只是简单给函数传入一个类型，如：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">treeNode.findParentOfType<span class="type">&lt;MyTreeNode&gt;</span>()</span><br></pre></td></tr></table></figure></p>
+<p>内联函数支持具体化参数类型，因此可以这样写：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;<span class="keyword">reified</span> T&gt;</span> TreeNode.<span class="title">findParentOfType</span><span class="params">()</span>: T? &#123;</span></span><br><span class="line">    <span class="variable"><span class="keyword">var</span> p</span> = parent</span><br><span class="line">    <span class="keyword">while</span> (p != <span class="literal">null</span> &amp;&amp; p !<span class="keyword">is</span> T) &#123;</span><br><span class="line">        p = p.parent</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> p <span class="keyword">as</span> T?</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>使用<code>reified</code>修饰符限制参数类型，可以在内联函数中访问，就像是普通的Class。因为函数是内联的，不在需要反射，像<code>!is</code>和<code>as</code>的普通操作符执行。也可以像上述说的那样调用<code>myTree.findParentOfType&lt;MyTreeNodeType&gt;()</code></p>
+<p>尽管反射在很多情况不需要，仍需要使用它来具体话参数类型。<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;<span class="keyword">reified</span> T&gt;</span> <span class="title">membersOf</span><span class="params">()</span> = T::<span class="keyword">class</span>.members</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">(s: <span class="typename">Array&lt;String&gt;</span>)</span> &#123;</span></span><br><span class="line">    println(membersOf<span class="type">&lt;StringBuilder&gt;</span>().joinToString(<span class="string">"\n"</span>))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>普通函数（未标记为内联）不可以有<code>reified</code>参数。不具有运行时表示的类型，不能用作具体化参数。<br>更多底层信息，参阅<a href="https://github.com/JetBrains/kotlin/blob/master/spec-docs/reified-type-parameters.md" target="_blank" rel="external"><code>spec document</code></a></p>
+<h2 id="u5185_u8054_u5C5E_u6027"><a href="#u5185_u8054_u5C5E_u6027" class="headerlink" title="内联属性"></a>内联属性</h2><p><code>inline</code>修饰符可以用在没有<code>Backing Filed</code>属性的访问函数。可以注解单独属性的访问函数。<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable"><span class="keyword">val</span> foo</span>: Foo</span><br><span class="line">    <span class="keyword">inline</span> <span class="keyword">get</span>() = Foo()</span><br><span class="line"></span><br><span class="line"><span class="variable"><span class="keyword">var</span> bar</span>: Bar</span><br><span class="line">    <span class="keyword">get</span>() = ...</span><br><span class="line">    <span class="keyword">inline</span> <span class="keyword">set</span>(v) &#123; ... &#125;</span><br></pre></td></tr></table></figure></p>
+<p>甚至可以注解整个属性，让属性访问函数都变为内联函数<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">inline</span> <span class="variable"><span class="keyword">var</span> bar</span>: Bar</span><br><span class="line">    <span class="keyword">get</span>() = ...</span><br><span class="line">    <span class="keyword">set</span>(v) &#123; ... &#125;</span><br></pre></td></tr></table></figure></p>
+<p>在调用时，内联访问函数与常规内联函数一样调用。</p>
+
+            
+                
+
+            
+        </div>
+    </div>
+    <div class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/kotlin/">kotlin</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/06/21/Kotlin基础之高阶函数与Lambdas/" data-tooltip="Kotlin基础之高阶函数与Lambdas">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至Google+" href="https://plus.google.com/share?url=http://blog.alexwan1989.com/2017/06/21/Kotlin基础之内联函数/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+       
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至Twitter" href="https://twitter.com/intent/tweet?text=http://blog.alexwan1989.com/2017/06/21/Kotlin基础之内联函数/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+
+         <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至新浪微博" href="http://www.jiathis.com/send/?webid=tsina&amp;appkey=&amp;uid=1850331&amp;url=http://blog.alexwan1989.com/2017/06/21/Kotlin基础之内联函数/&amp;title=Kotlin基础之内联函数">
+                <i class="fa fa-weibo"></i>
+            </a>
+        </li>
+
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+            <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2017 alexwan. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="1">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/06/21/Kotlin基础之高阶函数与Lambdas/" data-tooltip="Kotlin基础之高阶函数与Lambdas">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至Google+" href="https://plus.google.com/share?url=http://blog.alexwan1989.com/2017/06/21/Kotlin基础之内联函数/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+       
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至Twitter" href="https://twitter.com/intent/tweet?text=http://blog.alexwan1989.com/2017/06/21/Kotlin基础之内联函数/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+
+         <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至新浪微博" href="http://www.jiathis.com/send/?webid=tsina&amp;appkey=&amp;uid=1850331&amp;url=http://blog.alexwan1989.com/2017/06/21/Kotlin基础之内联函数/&amp;title=Kotlin基础之内联函数">
+                <i class="fa fa-weibo"></i>
+            </a>
+        </li>
+
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="1">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://blog.alexwan1989.com/2017/06/21/Kotlin基础之内联函数/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://blog.alexwan1989.com/2017/06/21/Kotlin基础之内联函数/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://blog.alexwan1989.com/2017/06/21/Kotlin基础之内联函数/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        <div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <!-- use remote images as avatar-->
+            <img id="about-card-picture" src="http://res.cloudinary.com/dmfz9aun7/image/upload/v1467081842/android/3397490934332211.jpg"/>
+        
+            <h4 id="about-card-name">alexwan</h4>
+        
+            <h5 id="about-card-bio"><p>无限大な梦のあとの 何もない世の中じゃ!</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Android Developer</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                China ShangHai
+            </h5>
+        
+    </div>
+</div>
+
+        <div id="cover" style="background-image:url('http://res.cloudinary.com/dmfz9aun7/image/upload/v1465302627/hexo/re_zero_kara_hajimeru_isekai_seikatsu_99.jpg');"></div>
+
+    </body>
+    <!--SCRIPTS-->
+<script src="/assets/js/script.min.js" type="text/javascript"></script>
+<!--SCRIPTS END-->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'alexwan';
+        (function() {
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+
+
+
+</html>
