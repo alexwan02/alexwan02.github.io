@@ -1,0 +1,548 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+    
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Alexwan Studio">
+    <title>Kotlin基础之高阶函数与Lambdas - Alexwan Studio</title>
+    <meta name="author" content="alexwan">
+    
+        <link rel="icon" href="/assets/images/https://cdn.discordapp.com/icons/102860784329052160/109fd014c718f40110c4a182f105ca71.jpg">
+    
+    
+        <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="高阶函数在数学和计算机科学中，高阶函数是至少满足下列一个条件的函数：
+
+接受一个或多个函数作为输入
+输出一个函数定义一个高阶函数，参数为Lock类型对象和一个函数。函数执行时获取锁，运行函数参数，执行结束释放锁。
+
+123456789fun &amp;lt;T&amp;gt; lock(lock: Lock , body: () -&amp;gt; T)&amp;#123;  lock.lock()  try&amp;#123;">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Kotlin基础之高阶函数与Lambdas">
+<meta property="og:url" content="http://blog.alexwan1989.com/2017/06/21/Kotlin基础之高阶函数与Lambdas/index.html">
+<meta property="og:site_name" content="Alexwan Studio">
+<meta property="og:description" content="高阶函数在数学和计算机科学中，高阶函数是至少满足下列一个条件的函数：
+
+接受一个或多个函数作为输入
+输出一个函数定义一个高阶函数，参数为Lock类型对象和一个函数。函数执行时获取锁，运行函数参数，执行结束释放锁。
+
+123456789fun &amp;lt;T&amp;gt; lock(lock: Lock , body: () -&amp;gt; T)&amp;#123;  lock.lock()  try&amp;#123;">
+<meta property="og:updated_time" content="2017-06-21T07:53:21.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kotlin基础之高阶函数与Lambdas">
+<meta name="twitter:description" content="高阶函数在数学和计算机科学中，高阶函数是至少满足下列一个条件的函数：
+
+接受一个或多个函数作为输入
+输出一个函数定义一个高阶函数，参数为Lock类型对象和一个函数。函数执行时获取锁，运行函数参数，执行结束释放锁。
+
+123456789fun &amp;lt;T&amp;gt; lock(lock: Lock , body: () -&amp;gt; T)&amp;#123;  lock.lock()  try&amp;#123;">
+    
+    
+    
+        <meta property="og:image" content="/assets/images/http://res.cloudinary.com/dmfz9aun7/image/upload/v1467081842/android/3397490934332211.jpg"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style.min.css" type="text/css">
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-74386866-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+</head>
+
+    <body>
+        <div id="blog">
+            <header id="header" data-behavior="1">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/ ">Alexwan Studio</a>
+    </h1>
+    
+        
+            <a  class="header-right-icon st-search-show-outputs"
+                href="/#search">
+        
+                <i class="fa fa-lg fa-search"></i>
+            </a>
+    
+</header>
+            <nav id="sidebar" data-behavior="1">
+    
+        <div class="sidebar-profile">
+            <a href="/#about">
+                
+                    <!-- use remote images as avatar-->
+                    <img class="sidebar-profile-picture" src="http://res.cloudinary.com/dmfz9aun7/image/upload/v1467081842/android/3397490934332211.jpg"/>
+                
+            </a>
+            <span class="sidebar-profile-name">alexwan</span>
+        </div>
+    
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/ "
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">主页</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-categories"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">分类</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-tags"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">标签</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-archives"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-bars"></i>
+                    <span class="sidebar-button-desc">归档</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link st-search-show-outputs"
+                         href="/#search"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-search"></i>
+                    <span class="sidebar-button-desc">搜索</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/#about"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">关于</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://github.com/alexwan02" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-github-square"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="http://stackoverflow.com/users/4919743/alexwan1989" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-stack-overflow"></i>
+                    <span class="sidebar-button-desc">Stack Overflow</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://alexwan0312@gmail.com" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
+                    <span class="sidebar-button-desc">Mail</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/atom.xml"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+
+            
+            <div id="main" data-behavior="1"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            Kotlin基础之高阶函数与Lambdas
+        </h1>
+    
+    <div class="post-meta">
+    <time itemprop="datePublished" content="Wed Jun 21 2017 15:53:18 GMT+0800">
+	
+		    Jun 21, 2017
+    	
+    </time>
+    
+</div>
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <h2 id="u9AD8_u9636_u51FD_u6570"><a href="#u9AD8_u9636_u51FD_u6570" class="headerlink" title="高阶函数"></a>高阶函数</h2><p>在数学和计算机科学中，高阶函数是至少满足下列一个条件的函数：</p>
+<ul>
+<li>接受一个或多个函数作为输入</li>
+<li>输出一个函数<br>定义一个高阶函数，参数为Lock类型对象和一个函数。函数执行时获取锁，运行函数参数，执行结束释放锁。</li>
+</ul>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="type">&lt;T&gt;</span> <span class="title">lock</span><span class="params">(lock: <span class="typename">Lock , body: (</span>)</span> -&gt; T)&#123;</span></span><br><span class="line">  lock.lock()</span><br><span class="line">  <span class="keyword">try</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> body()</span><br><span class="line">  &#125; </span><br><span class="line">  finaly&#123;</span><br><span class="line">    lock.unlock()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>body</code>为函数类型对象：<code>() -&gt; T</code>。表示无参函数，并且返回值类型为T。</p>
+<p>调用<code>lock</code>函数，可以传入另外一个函数作为参数（参考<a href="https://kotlinlang.org/docs/reference/reflection.html#function-references" target="_blank" rel="external"><code>函数引用</code></a>）</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">toBeSynchronized</span><span class="params">()</span> = sharedResource.<span class="title">operation</span><span class="params">()</span></span></span><br><span class="line"><span class="variable"><span class="keyword">val</span> result</span> = lock(lock, ::toBeSynchronized)</span><br></pre></td></tr></table></figure>
+<p>更加方便的方式是传入<a href="https://kotlinlang.org/docs/reference/lambdas.html#lambda-expressions-and-anonymous-functions" target="_blank" rel="external"><code>lambda表达式</code></a><br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable"><span class="keyword">val</span> result</span> = lock(lock, &#123; sharedResource.operation() &#125;)</span><br></pre></td></tr></table></figure></p>
+<p>Lambda表达式</p>
+<ul>
+<li>Lambda表达式要用花括号包裹</li>
+<li>参数在<code>-&gt;</code> 之前声明（参数可能省略）</li>
+<li>执行内容跟在 <code>-&gt;</code> 之后（如果提供的话）</li>
+</ul>
+<p>在Kotlin中，如果函数最后参数为函数类型，可以在括号外部传入Lambda表达式作为指定的参数</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lock (lock) &#123; sharedResource.operation() &#125;</span><br></pre></td></tr></table></figure>
+<p>高阶函数的另外一个例子：<code>map()</code></p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="type">&lt;T, R&gt;</span> List<span class="type">&lt;T&gt;</span>.<span class="title">map</span><span class="params">(transform: <span class="typename">(T</span>)</span> -&gt; R): List<span class="type">&lt;R&gt;</span> &#123;</span></span><br><span class="line">    <span class="variable"><span class="keyword">val</span> result</span> = arrayListOf<span class="type">&lt;R&gt;</span>()</span><br><span class="line">    <span class="keyword">for</span> (item <span class="keyword">in</span> this)</span><br><span class="line">        result.add(transform(item))</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>map 调用<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable"><span class="keyword">val</span> doubled</span> = inits.map&#123; value &gt; value * <span class="number">2</span>&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>如果lambda是函数调用的唯一参数，花括号可以完全省略。</p>
+</blockquote>
+<h3 id="it__3A__u5355_u4E2A_u53C2_u6570_u7684_u9690_u5F0F_u540D_u79F0"><a href="#it__3A__u5355_u4E2A_u53C2_u6570_u7684_u9690_u5F0F_u540D_u79F0" class="headerlink" title="it : 单个参数的隐式名称"></a>it : 单个参数的隐式名称</h3><p>如果函数只有一个参数，则可以忽略声明函数参数（与<code>-&gt;</code>一起），用<code>it</code>来替代：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ints.map&#123; it * <span class="number">2</span>&#125;</span><br></pre></td></tr></table></figure></p>
+<p>因此可以写成查询表达式形式的代码<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">strings.filter &#123; it.length == <span class="number">5</span> &#125;</span><br><span class="line">       .sortBy &#123; it &#125;</span><br><span class="line">       .map &#123; it.toUpperCase() &#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="u4E0B_u5212_u7EBF_u66FF_u4EE3_u672A_u4F7F_u7528_u7684_u53C2_u6570"><a href="#u4E0B_u5212_u7EBF_u66FF_u4EE3_u672A_u4F7F_u7528_u7684_u53C2_u6570" class="headerlink" title="下划线替代未使用的参数"></a>下划线替代未使用的参数</h3><p>如果lambda参数未使用，可以使用下划线来替代<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">map.forEach &#123; _, value -&gt; println(<span class="string">"$value!"</span>) &#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="Lambdas_u4E2D_u7684_u89E3_u6784_uFF08since_1-1_uFF09"><a href="#Lambdas_u4E2D_u7684_u89E3_u6784_uFF08since_1-1_uFF09" class="headerlink" title="Lambdas中的解构（since 1.1）"></a>Lambdas中的解构（since 1.1）</h3><p>Lambdas解构参考<a href="https://kotlinlang.org/docs/reference/multi-declarations.html#destructuring-in-lambdas-since-11" target="_blank" rel="external"><code>解构声明</code></a></p>
+<h2 id="u5185_u8054_u51FD_u6570"><a href="#u5185_u8054_u51FD_u6570" class="headerlink" title="内联函数"></a>内联函数</h2><p>有时可使用内联函数来提升高阶函数性能，<a href="https://kotlinlang.org/docs/reference/inline-functions.html" target="_blank" rel="external"><code>内联函数</code></a></p>
+<h2 id="Lambda_u8868_u8FBE_u5F0F_u548C_u533F_u540D_u51FD_u6570"><a href="#Lambda_u8868_u8FBE_u5F0F_u548C_u533F_u540D_u51FD_u6570" class="headerlink" title="Lambda表达式和匿名函数"></a>Lambda表达式和匿名函数</h2><p>Lambda表达式和匿名函数都是<code>函数常量</code>。用表达式作为参数，无须额外声明函数。<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">max(strings, &#123; a, b -&gt; a.length <span class="type">&lt; b.length &#125;)</span></span><br></pre></td></tr></table></figure></p>
+<p>函数<code>max</code>是一个高阶函数，第二个参数是函数类型的值。等同于<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">compare</span><span class="params">(a: <span class="typename">String, b: String</span>)</span>: Boolean = a.length <span class="type">&lt; b.length</span></span></span><br></pre></td></tr></table></figure></p>
+<h3 id="u51FD_u6570_u7C7B_u578B"><a href="#u51FD_u6570_u7C7B_u578B" class="headerlink" title="函数类型"></a>函数类型</h3><p>对于接受函数作为参数的高阶函数，要给参数执行函数类型。例如上面的<code>max</code>函数的定义<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="type">&lt;T&gt;</span> <span class="title">max</span><span class="params">(collection: <span class="typename">Collection&lt;T&gt;, less: (T, T</span>)</span> -&gt; Boolean): T? &#123;</span></span><br><span class="line">    <span class="variable"><span class="keyword">var</span> max</span>: T? = <span class="literal">null</span></span><br><span class="line">    <span class="keyword">for</span> (it <span class="keyword">in</span> collection)</span><br><span class="line">        <span class="keyword">if</span> (max == <span class="literal">null</span> || less(max, it))</span><br><span class="line">            max = it</span><br><span class="line">    <span class="keyword">return</span> max</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>参数<code>less</code>的类型就是<code>(T, T) -&gt; Boolean</code>。即：比较两个T类型的变量的大小的函数，如果第一个比第二个小则返回<code>true</code></p>
+<p>在代码中，<code>less</code>用作函数，调用时传入两个T类型的参数。</p>
+<p>这个函数类型也可以有具名参数<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable"><span class="keyword">val</span> compare</span>: (x: T, y: T) -&gt; <span class="typename">Int</span> = ...</span><br></pre></td></tr></table></figure></p>
+<h3 id="Lambda_u8868_u8FBE_u5F0F_u7684_u8BED_u6CD5"><a href="#Lambda_u8868_u8FBE_u5F0F_u7684_u8BED_u6CD5" class="headerlink" title="Lambda表达式的语法"></a>Lambda表达式的语法</h3><p>Lambda表达式的完整语法形式,比如函数类型常量<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable"><span class="keyword">val</span> sum</span> = &#123; x: <span class="typename">Int</span>, y: <span class="typename">Int</span> -&gt; x + y &#125;</span><br></pre></td></tr></table></figure></p>
+<p>Lambda表达式总以花括号包裹。完整语法形式中：</p>
+<ul>
+<li>参数在圆括号中声明，参数类型可选</li>
+<li>表达式体在<code>-&gt;</code> 符号之后。</li>
+<li>如果返回类型不是<code>Unit</code>，表达式体中最后（可能为单个）的表达式被视为返回值。</li>
+</ul>
+<p>如果忽略所有可选注解，则Lambda表达式为<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable"><span class="keyword">val</span> sum</span>: (<span class="typename">Int</span>, <span class="typename">Int</span>) -&gt; <span class="typename">Int</span> = &#123; x, y -&gt; x + y &#125;</span><br></pre></td></tr></table></figure></p>
+<p>有单独一个参数的Lambda表达式很常见。如果Kotlin能够识别函数签名，则允许不声明这个唯一的参数，使用参数隐式声明<code>it</code><br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ints.filter &#123; it &gt; <span class="number">0</span> &#125; <span class="comment">//  常量类型为'(it: Int) -&gt; Boolean'</span></span><br></pre></td></tr></table></figure></p>
+<p>Kotlin使用<a href="https://kotlinlang.org/docs/reference/returns.html#return-at-labels" target="_blank" rel="external"><code>qualified return</code></a>语法，显式指定返回值类型。否则，隐式使用返回最后一个表达式的值。因此下面两段代码效果相同。<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">ints.filter &#123;</span><br><span class="line">    <span class="variable"><span class="keyword">val</span> shouldFilter</span> = it &gt; <span class="number">0</span> </span><br><span class="line">    shouldFilter</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ints.filter &#123;</span><br><span class="line">    <span class="variable"><span class="keyword">val</span> shouldFilter</span> = it &gt; <span class="number">0</span> </span><br><span class="line">    <span class="keyword">return</span>@filter shouldFilter</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>如果函数以另外一个函数作为最后一个参数，lambda表达式则可以在参数列表外使用。参考<a href="https://kotlinlang.org/docs/reference/grammar.html#callSuffix" target="_blank" rel="external"><code>callSuffix</code></a>语法</p>
+</blockquote>
+<h3 id="u533F_u540D_u51FD_u6570"><a href="#u533F_u540D_u51FD_u6570" class="headerlink" title="匿名函数"></a>匿名函数</h3><p>上面Lambda表达式语法中，没有讲到关于Kotlin指定函数的返回类型能力。在多数情况中，没有必要执行函数返回类型，因为Kotlin可以自动推断。但是如果需要显式指定类型，可以通过<code>匿名函数</code>来实现。<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">fun</span><span class="params">(x: <span class="typename">Int, y: Int</span>)</span>: Int = x + y</span></span><br></pre></td></tr></table></figure></p>
+<p>匿名函数与常规函数声明看起来非常相似，除了忽略了函数名。函数体可以是表达式，也可以是代码块<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">fun</span><span class="params">(x: <span class="typename">Int, y: Int</span>)</span>: Int &#123;</span></span><br><span class="line">    <span class="keyword">return</span> x + y</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>指定参数和返回值类型方式与常规函数相同，如果根据上下文可以推断出类型，可以省略参数类型。<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ints.filter(<span class="function"><span class="title">fun</span><span class="params">(item)</span> = item &gt; 0)</span></span><br></pre></td></tr></table></figure></p>
+<p>返回值类型推断与正常函数相同：带有表达式体的匿名函数返回类型自动推断；带有代码块的匿名函数返回类型要显式指定（或默认为<code>Unit</code>）。</p>
+<blockquote>
+<p>匿名函数总要用括号传参。在括号外传参的方式只适应于Lambda表达式</p>
+</blockquote>
+<p>Lambda表达式和匿名表达式一个不同点是：非局部返回行为，即没有标签的返回声明语句从声明有<code>fun</code>关键字的函数中返回。<br>所以Lambda表达式中的返回语句会从封闭函数中返回，而匿名函数的返回语句返回匿名函数本身。</p>
+<h3 id="u95ED_u5305"><a href="#u95ED_u5305" class="headerlink" title="闭包"></a>闭包</h3><p>闭包（Closure），又称词法闭包（Lexical Closure）或函数闭包（function closures），是引用了自由变量的函数。这个被引用的自由变量将和这个函数一同存在，即使已经离开了创造它的环境也不例外。</p>
+<p>Kotlin中Lambda表达式与匿名函数（<a href="https://kotlinlang.org/docs/reference/functions.html#local-functions" target="_blank" rel="external"><code>本地函数</code></a>、<a href="https://kotlinlang.org/docs/reference/object-declarations.html#object-expressions" target="_blank" rel="external"><code>对象表达式</code></a>亦同）可以访问它的闭包，如外部作用域中声明的变量。与Java不同，可以修改闭包中的变量。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable"><span class="keyword">var</span> sum</span> = <span class="number">0</span></span><br><span class="line">ints.filter &#123; it &gt; <span class="number">0</span> &#125;.forEach &#123;</span><br><span class="line">    sum += it</span><br><span class="line">&#125;</span><br><span class="line">print(sum)</span><br></pre></td></tr></table></figure>
+<h3 id="u5E26_u6709_u63A5_u6536_u8005_u7684_u51FD_u6570_u5E38_u91CF"><a href="#u5E26_u6709_u63A5_u6536_u8005_u7684_u51FD_u6570_u5E38_u91CF" class="headerlink" title="带有接收者的函数常量"></a>带有接收者的函数常量</h3><p>Kotlin可以调用带有接收者的函数常量。在函数常量的函数体中，可以不使用任何额外限定符，调用接收者的方法，这与扩展函数相似：允许访问函数体内部接收者的成员。其中一个例子<a href="https://kotlinlang.org/docs/reference/type-safe-builders.html" target="_blank" rel="external"><code>Type-safe Groovy-style builders.</code></a></p>
+<p>这种函数常量类型实际是带有接收者的函数类型<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sum : <span class="typename">Int</span>.(other: <span class="typename">Int</span>) -&gt; <span class="typename">Int</span></span><br></pre></td></tr></table></figure></p>
+<p>如果函数常量是接收者的一个方法，则可以直接调用。<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span>sum(<span class="number">2</span>)</span><br></pre></td></tr></table></figure></p>
+<p>匿名函数语法可以直接指定函数常量接收者类型。可以声明带有接收者的函数类型变量，并在之后调用。<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable"><span class="keyword">val</span> sum</span> = <span class="function"><span class="keyword">fun</span> Int.<span class="params">(other: <span class="typename">Int</span>)</span>: Int = this + other</span></span><br></pre></td></tr></table></figure></p>
+<p>当可以从上下文中推断接收者类型时，Lambda表达式可以用作带有接收者的函数常量。<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HTML</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">body</span><span class="params">()</span>&#123;...&#125;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">html</span><span class="params">(init: <span class="typename">HTML.(</span>)</span> -&gt; Unit): Unit&#123;</span></span><br><span class="line">    <span class="variable"><span class="keyword">val</span> html</span> = HTML() <span class="comment">// create the receiver object</span></span><br><span class="line">    html.init()</span><br><span class="line">    <span class="keyword">return</span> html</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">html &#123;    <span class="comment">// lambda with receiver begins here</span></span><br><span class="line">   body() <span class="comment">// calling a method on the receiver object </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+            
+                
+
+            
+        </div>
+    </div>
+    <div class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/kotlin/">kotlin</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/06/21/Kotlin基础之函数/" data-tooltip="Kotlin基础之函数">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至Google+" href="https://plus.google.com/share?url=http://blog.alexwan1989.com/2017/06/21/Kotlin基础之高阶函数与Lambdas/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+       
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至Twitter" href="https://twitter.com/intent/tweet?text=http://blog.alexwan1989.com/2017/06/21/Kotlin基础之高阶函数与Lambdas/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+
+         <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至新浪微博" href="http://www.jiathis.com/send/?webid=tsina&amp;appkey=&amp;uid=1850331&amp;url=http://blog.alexwan1989.com/2017/06/21/Kotlin基础之高阶函数与Lambdas/&amp;title=Kotlin基础之高阶函数与Lambdas">
+                <i class="fa fa-weibo"></i>
+            </a>
+        </li>
+
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+            <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2017 alexwan. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="1">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/06/21/Kotlin基础之函数/" data-tooltip="Kotlin基础之函数">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至Google+" href="https://plus.google.com/share?url=http://blog.alexwan1989.com/2017/06/21/Kotlin基础之高阶函数与Lambdas/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+       
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至Twitter" href="https://twitter.com/intent/tweet?text=http://blog.alexwan1989.com/2017/06/21/Kotlin基础之高阶函数与Lambdas/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+
+         <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至新浪微博" href="http://www.jiathis.com/send/?webid=tsina&amp;appkey=&amp;uid=1850331&amp;url=http://blog.alexwan1989.com/2017/06/21/Kotlin基础之高阶函数与Lambdas/&amp;title=Kotlin基础之高阶函数与Lambdas">
+                <i class="fa fa-weibo"></i>
+            </a>
+        </li>
+
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="1">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://blog.alexwan1989.com/2017/06/21/Kotlin基础之高阶函数与Lambdas/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://blog.alexwan1989.com/2017/06/21/Kotlin基础之高阶函数与Lambdas/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://blog.alexwan1989.com/2017/06/21/Kotlin基础之高阶函数与Lambdas/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        <div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <!-- use remote images as avatar-->
+            <img id="about-card-picture" src="http://res.cloudinary.com/dmfz9aun7/image/upload/v1467081842/android/3397490934332211.jpg"/>
+        
+            <h4 id="about-card-name">alexwan</h4>
+        
+            <h5 id="about-card-bio"><p>无限大な梦のあとの 何もない世の中じゃ!</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Android Developer</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                China ShangHai
+            </h5>
+        
+    </div>
+</div>
+
+        <div id="cover" style="background-image:url('http://res.cloudinary.com/dmfz9aun7/image/upload/v1465302627/hexo/re_zero_kara_hajimeru_isekai_seikatsu_99.jpg');"></div>
+
+    </body>
+    <!--SCRIPTS-->
+<script src="/assets/js/script.min.js" type="text/javascript"></script>
+<!--SCRIPTS END-->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'alexwan';
+        (function() {
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+
+
+
+</html>
