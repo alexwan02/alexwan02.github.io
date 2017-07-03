@@ -1,0 +1,612 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+    
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Alexwan Studio">
+    <title>Kotlin基础之基础类型与包 - Alexwan Studio</title>
+    <meta name="author" content="alexwan">
+    
+        <link rel="icon" href="/assets/images/https://cdn.discordapp.com/icons/102860784329052160/109fd014c718f40110c4a182f105ca71.jpg">
+    
+    
+        <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="基础类型在Kotlin中，一切皆对象从这种意义上来说，我们可以调用任何变量的属性和方法。有些内嵌类型的实现是经过优化的，但是对于开发者而言看上就是普通的类。这些类型有：数值类型，字符类型，boolean类型，数组类型
+数值类型Kotlin使用类似Java的方式处理数值类型，但是与Java不是完全相同。如：不支持数值的隐式扩大转换或在某些情况中字面常量会些许不同。
+Kotlin内嵌了以下几种数值类型">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Kotlin基础之基础类型与包">
+<meta property="og:url" content="http://blog.alexwan1989.com/2017/07/03/Kotlin基础之基础类型与包/index.html">
+<meta property="og:site_name" content="Alexwan Studio">
+<meta property="og:description" content="基础类型在Kotlin中，一切皆对象从这种意义上来说，我们可以调用任何变量的属性和方法。有些内嵌类型的实现是经过优化的，但是对于开发者而言看上就是普通的类。这些类型有：数值类型，字符类型，boolean类型，数组类型
+数值类型Kotlin使用类似Java的方式处理数值类型，但是与Java不是完全相同。如：不支持数值的隐式扩大转换或在某些情况中字面常量会些许不同。
+Kotlin内嵌了以下几种数值类型">
+<meta property="og:updated_time" content="2017-07-03T07:48:19.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kotlin基础之基础类型与包">
+<meta name="twitter:description" content="基础类型在Kotlin中，一切皆对象从这种意义上来说，我们可以调用任何变量的属性和方法。有些内嵌类型的实现是经过优化的，但是对于开发者而言看上就是普通的类。这些类型有：数值类型，字符类型，boolean类型，数组类型
+数值类型Kotlin使用类似Java的方式处理数值类型，但是与Java不是完全相同。如：不支持数值的隐式扩大转换或在某些情况中字面常量会些许不同。
+Kotlin内嵌了以下几种数值类型">
+    
+    
+    
+        <meta property="og:image" content="/assets/images/http://res.cloudinary.com/dmfz9aun7/image/upload/v1467081842/android/3397490934332211.jpg"/>
+    
+    
+        <meta property="og:image" content="/2017/07/03/Kotlin基础之基础类型与包/https://pic1.zhimg.com/v2-30253c279faba2e77120862dd54d49d4_r.jpg"/>
+        <meta class="swiftype" name="image" data-type="enum" content="http://blog.alexwan1989.com/2017/07/03/Kotlin基础之基础类型与包/https://pic1.zhimg.com/v2-30253c279faba2e77120862dd54d49d4_r.jpg" />
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style.min.css" type="text/css">
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-74386866-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+</head>
+
+    <body>
+        <div id="blog">
+            <header id="header" data-behavior="1">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/ ">Alexwan Studio</a>
+    </h1>
+    
+        
+            <a  class="header-right-icon st-search-show-outputs"
+                href="/#search">
+        
+                <i class="fa fa-lg fa-search"></i>
+            </a>
+    
+</header>
+            <nav id="sidebar" data-behavior="1">
+    
+        <div class="sidebar-profile">
+            <a href="/#about">
+                
+                    <!-- use remote images as avatar-->
+                    <img class="sidebar-profile-picture" src="http://res.cloudinary.com/dmfz9aun7/image/upload/v1467081842/android/3397490934332211.jpg"/>
+                
+            </a>
+            <span class="sidebar-profile-name">alexwan</span>
+        </div>
+    
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/ "
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">主页</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-categories"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">分类</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-tags"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">标签</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-archives"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-bars"></i>
+                    <span class="sidebar-button-desc">归档</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link st-search-show-outputs"
+                         href="/#search"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-search"></i>
+                    <span class="sidebar-button-desc">搜索</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/#about"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">关于</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://github.com/alexwan02" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-github-square"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="http://stackoverflow.com/users/4919743/alexwan1989" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-stack-overflow"></i>
+                    <span class="sidebar-button-desc">Stack Overflow</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://alexwan0312@gmail.com" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
+                    <span class="sidebar-button-desc">Mail</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/atom.xml"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+
+            
+            <div id="main" data-behavior="1"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            Kotlin基础之基础类型与包
+        </h1>
+    
+    <div class="post-meta">
+    <time itemprop="datePublished" content="Mon Jul 03 2017 15:48:18 GMT+0800">
+	
+		    Jul 03, 2017
+    	
+    </time>
+    
+</div>
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <h1 id="u57FA_u7840_u7C7B_u578B"><a href="#u57FA_u7840_u7C7B_u578B" class="headerlink" title="基础类型"></a>基础类型</h1><p>在Kotlin中，一切皆对象从这种意义上来说，我们可以调用任何变量的属性和方法。有些内嵌类型的实现是经过优化的，但是对于开发者而言看上就是普通的类。这些类型有：数值类型，字符类型，boolean类型，数组类型</p>
+<h2 id="u6570_u503C_u7C7B_u578B"><a href="#u6570_u503C_u7C7B_u578B" class="headerlink" title="数值类型"></a>数值类型</h2><p>Kotlin使用类似Java的方式处理数值类型，但是与Java不是完全相同。如：不支持数值的隐式扩大转换或在某些情况中字面常量会些许不同。</p>
+<p>Kotlin内嵌了以下几种数值类型</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Bit width</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Double</td>
+<td>64</td>
+</tr>
+<tr>
+<td>Float</td>
+<td>32</td>
+</tr>
+<tr>
+<td>Long</td>
+<td>64</td>
+</tr>
+<tr>
+<td>Int</td>
+<td>32</td>
+</tr>
+<tr>
+<td>Short</td>
+<td>16</td>
+</tr>
+<tr>
+<td>Byte</td>
+<td>18</td>
+</tr>
+</tbody>
+</table>
+<p>在Kotlin中，字符常量不属于数值类型</p>
+<h2 id="u5B57_u9762_u5E38_u91CF"><a href="#u5B57_u9762_u5E38_u91CF" class="headerlink" title="字面常量"></a>字面常量</h2><p>整型的字面常量</p>
+<ul>
+<li>十进制：123<ul>
+<li>Long类型后缀L表示：123L</li>
+</ul>
+</li>
+<li>十六进制：0x0F</li>
+<li>二进制：0b00001011</li>
+</ul>
+<blockquote>
+<p>不支持八进制</p>
+</blockquote>
+<p>支持浮点型数值的常规字符</p>
+<ul>
+<li>Double：<code>123.5</code> ，<code>123.5e10</code></li>
+<li>Float使用<code>f</code>或<code>F</code>标记：<code>123.5f</code></li>
+</ul>
+<h2 id="u6570_u5B57_u5E38_u91CF_u4E2D_u7684_u4E0B_u5212_u7EBF"><a href="#u6570_u5B57_u5E38_u91CF_u4E2D_u7684_u4E0B_u5212_u7EBF" class="headerlink" title="数字常量中的下划线"></a>数字常量中的下划线</h2><p>可以在数字中使用下划线，让数字可读性更好。<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable"><span class="keyword">val</span> oneMillion</span> = <span class="number">1</span>_000_000</span><br><span class="line"><span class="variable"><span class="keyword">val</span> creditCardNumber</span> = <span class="number">1234</span>_5678_9012_3456L</span><br><span class="line"><span class="variable"><span class="keyword">val</span> socialSecurityNumber</span> = <span class="number">999</span>_99_9999L</span><br><span class="line"><span class="variable"><span class="keyword">val</span> hexBytes</span> = <span class="number">0xFF</span>_EC_DE_5E</span><br><span class="line"><span class="variable"><span class="keyword">val</span> bytes</span> = <span class="number">0</span>b11010010_01101001_10010100_10010010</span><br></pre></td></tr></table></figure></p>
+<h2 id="u8868_u793A_u6CD5"><a href="#u8868_u793A_u6CD5" class="headerlink" title="表示法"></a>表示法</h2><p>在Java平台，数字物理存储为JVM的原始类型，除非需要一个可以为空的数值引用或作为泛型引用，这种情况时，数字会被自动装箱。</p>
+<p>数值装箱不一定保留同一性<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable"><span class="keyword">val</span> a</span>: <span class="typename">Int</span> = <span class="number">10000</span></span><br><span class="line">print(a === a) <span class="comment">// Prints 'true'</span></span><br><span class="line"><span class="variable"><span class="keyword">val</span> boxedA</span>: <span class="typename">Int</span>? = a</span><br><span class="line"><span class="variable"><span class="keyword">val</span> anotherBoxedA</span>: <span class="typename">Int</span>? = a</span><br><span class="line">print(boxedA === anotherBoxedA) <span class="comment">// !!!Prints 'false'!!!</span></span><br></pre></td></tr></table></figure></p>
+<p>但保留相等性<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable"><span class="keyword">val</span> a</span>: <span class="typename">Int</span> = <span class="number">10000</span></span><br><span class="line">print(a == a) <span class="comment">// Prints 'true'</span></span><br><span class="line"><span class="variable"><span class="keyword">val</span> boxedA</span>: <span class="typename">Int</span>? = a</span><br><span class="line"><span class="variable"><span class="keyword">val</span> anotherBoxedA</span>: <span class="typename">Int</span>? = a</span><br><span class="line">print(boxedA == anotherBoxedA) <span class="comment">// Prints 'true'</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="u663E_u5F0F_u8F6C_u6362"><a href="#u663E_u5F0F_u8F6C_u6362" class="headerlink" title="显式转换"></a>显式转换</h2><p>因为不同的表示法，较小类型并非是较大类型数字的子类型。因为如果是的话，则会遇到下面的问题<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 非实际编译，假设性代码</span></span><br><span class="line"><span class="variable"><span class="keyword">val</span> a</span>: <span class="typename">Int</span>? = <span class="number">1</span> <span class="comment">//  Int装箱</span></span><br><span class="line"><span class="variable"><span class="keyword">val</span> b</span>: <span class="typename">Long</span>? = a <span class="comment">// 隐式装换，生成Long类型装箱</span></span><br><span class="line">print(a == b) <span class="comment">// 因为Long只与Long类型比较，打印`false`</span></span><br></pre></td></tr></table></figure></p>
+<p>不仅仅是同一性，甚至相等性也默默丢失。</p>
+<p>因此较小的类型无法隐式转换成较大类型。意思是无法将<code>Byte</code>类型数值隐式转为<code>Int</code>类型<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable"><span class="keyword">val</span> b</span>: <span class="typename">Byte</span> = <span class="number">1</span> <span class="comment">// OK, literals are checked statically</span></span><br><span class="line"><span class="variable"><span class="keyword">val</span> i</span>: <span class="typename">Int</span> = b <span class="comment">// ERROR</span></span><br></pre></td></tr></table></figure></p>
+<p>使用显式转换扩大数值<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable"><span class="keyword">val</span> i</span>: <span class="typename">Int</span> = b.toInt() <span class="comment">// OK: explicitly widened</span></span><br></pre></td></tr></table></figure></p>
+<p>所有数值类型都支持以下转换：</p>
+<ul>
+<li>toByte(): Byte</li>
+<li>toShort(): Short</li>
+<li>toInt(): Int</li>
+<li>toLong(): Long</li>
+<li>toFloat(): Float</li>
+<li>toDouble(): Double</li>
+<li>toChar(): Char</li>
+</ul>
+<p>缺少隐式转换很少被注意到，因为数值类型可从上下文中推断出，合适转换算术运算符的重载。如<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable"><span class="keyword">val</span> l</span> = <span class="number">1</span>L + <span class="number">3</span> <span class="comment">// Long + Int =&gt; Long</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="u64CD_u4F5C_u7B26"><a href="#u64CD_u4F5C_u7B26" class="headerlink" title="操作符"></a>操作符</h2><p>Kotlin支持标准的数值操作符，这些操作符声明为合适类的成员（编译会优化操作符到对应指令）。查看<a href="https://kotlinlang.org/docs/reference/operator-overloading.html" target="_blank" rel="external"><code>操作符重载</code></a></p>
+<p>因为按位操作符没有特定的符号表示，使用中缀表达式来使用对应名称的函数。如<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable"><span class="keyword">val</span> x</span> = (<span class="number">1</span> shl <span class="number">2</span>) and <span class="number">0x000FF000</span></span><br></pre></td></tr></table></figure></p>
+<p>下面就是按位操作符的完整列表（仅适应于<code>Int</code>和<code>Long</code>）</p>
+<ul>
+<li>shl(bits) – 有符号左移 (Java’s &lt;&lt;)</li>
+<li>shr(bits) – 有符号右移 (Java’s &gt;&gt;)</li>
+<li>ushr(bits) – 无符号右移 (Java’s &gt;&gt;&gt;)</li>
+<li>and(bits) – 按位与</li>
+<li>or(bits) – 按位或</li>
+<li>xor(bits) – 按位异或</li>
+<li>inv() – 按位反转</li>
+</ul>
+<h2 id="u5B57_u7B26"><a href="#u5B57_u7B26" class="headerlink" title="字符"></a>字符</h2><p><code>Char</code>表示字符，不能直接作为数值使用。<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">check</span><span class="params">(c: <span class="typename">Char</span>)</span> &#123;</span></span><br><span class="line">    <span class="keyword">if</span> (c == <span class="number">1</span>) &#123; <span class="comment">// ERROR: incompatible types</span></span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>字符常量使用单引号括起来，如<code>1</code>。特殊字符串使用反斜杠转义。<code>\t</code>、<code>\b</code>、<code>\n</code>、<code>\r</code>、<code>\&#39;</code>、<code>\\</code>和<code>\$</code>等转义字都符能支持。使用Unicode转义字符语法（<code>&#39;\uFF00&#39;</code>）来对其他字符进行编码。</p>
+<p>可以显式将Char转为Int类型。<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">decimalDigitValue</span><span class="params">(c: <span class="typename">Char</span>)</span>: Int &#123;</span></span><br><span class="line">    <span class="keyword">if</span> (c !<span class="keyword">in</span> '<span class="number">0</span>'..'<span class="number">9</span>')</span><br><span class="line">        <span class="keyword">throw</span> IllegalArgumentException(<span class="string">"Out of range"</span>)</span><br><span class="line">    <span class="keyword">return</span> c.toInt() - '<span class="number">0</span>'.toInt() <span class="comment">// Explicit conversions to numbers</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>当需要可为空的引用时，字符可以像数字一样装箱。装箱操作不会保留同一性。</p>
+<h2 id="Boolean"><a href="#Boolean" class="headerlink" title="Boolean"></a>Boolean</h2><p>Boolean类型表示布尔值，有两个值<em>true</em>和<em>false</em></p>
+<p>当为可空的引用时，Boolean类型进行装箱。</p>
+<p>内置的boolean操作包括：</p>
+<ul>
+<li>|| 短路或</li>
+<li>&amp;&amp; 短路与</li>
+<li>!  逻辑非</li>
+</ul>
+<h2 id="Array_u6570_u7EC4"><a href="#Array_u6570_u7EC4" class="headerlink" title="Array数组"></a>Array数组</h2><p>Kotlin使用<code>Array</code>类表示数组。Array类定义了<code>set</code>与<code>get</code>函数（按照函数重载定义会转换成<code>[]</code>）,<code>size</code>属性，和其他几个有用的函数。<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Array</span>&lt;<span class="type">T</span>&gt; <span class="title">private</span> <span class="title">constructor</span></span>() &#123;</span><br><span class="line">    <span class="variable"><span class="keyword">val</span> size</span>: <span class="typename">Int</span></span><br><span class="line">    operator <span class="function"><span class="keyword">fun</span> <span class="title">get</span><span class="params">(index: <span class="typename">Int</span>)</span>: T</span></span><br><span class="line">    operator <span class="function"><span class="keyword">fun</span> <span class="title">set</span><span class="params">(index: <span class="typename">Int, value: T</span>)</span>: Unit</span></span><br><span class="line"></span><br><span class="line">    operator <span class="function"><span class="keyword">fun</span> <span class="title">iterator</span><span class="params">()</span>: Iterator<span class="type">&lt;T&gt;</span></span></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>使用函数<code>arrayOf()</code>来创建数组，传入多个item参数（如arrayOf(1, 2, ,3) 能够创建[1 , 2, 3]的数组）。使用函数<code>arrayOfNulls()</code>来创建指定长度但是元素为空的数组。</p>
+<p>使用一个工厂函数传入数组长度，返回数组指定index的元素值。<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Creates an Array&lt;String&gt; with values ["0", "1", "4", "9", "16"]</span></span><br><span class="line"><span class="variable"><span class="keyword">val</span> asc</span> = Array(<span class="number">5</span>, &#123; i -&gt; (i * i).toString() &#125;)</span><br></pre></td></tr></table></figure></p>
+<p>正如上面所说，<code>[]</code>操作符可以替代成员函数<code>get</code>和<code>set</code>。</p>
+<blockquote>
+<p>与Java不同，Kotlin中的数组是不可变的，也就是说Kotlin不能将<code>Array&lt;String&gt;</code>赋值给<code>Array&lt;Any&gt;</code>，也就预防可能的运行时问题（但可以使用<code>Array&lt;outAny&gt;</code>），详见<a href="https://kotlinlang.org/docs/reference/generics.html#type-projections" target="_blank" rel="external"><code>类型保护</code></a></p>
+</blockquote>
+<p>Kotlin有特殊类来表示原始类型数组，而不用向上装箱：<code>ByteArray</code>、<code>ShortArray</code>、<code>IntArray</code>等等。这些类与<code>Array</code>类没有继承关系，但是有相同的方法和属性，每个都有响应的工厂方法。<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable"><span class="keyword">val</span> x</span>: IntArray = intArrayOf(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line">x[<span class="number">0</span>] = x[<span class="number">1</span>] + x[<span class="number">2</span>]</span><br></pre></td></tr></table></figure></p>
+<h2 id="String"><a href="#String" class="headerlink" title="String"></a>String</h2><p>String表示String类型数据。String不可变，string中的字符元素可使用<code>s[i]</code>方式访问。可使用<code>for</code>循环来迭代String。<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (c <span class="keyword">in</span> str) &#123;</span><br><span class="line">    println(c)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>String常量<br>Kotlin支持两种string字面常量：转义string与raw string。转义string可能含有转义字符。raw string 可以有换行符和任意字符。</p>
+<p>转义string与java很像<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable"><span class="keyword">val</span> s</span> = <span class="string">"Hello World !\n"</span></span><br></pre></td></tr></table></figure></p>
+<p>转义与常规方式相同，使用转义字符。详情查看<a href="https://kotlinlang.org/docs/reference/basic-types.html#characters" target="_blank" rel="external"><code>字符</code></a>。</p>
+<p>raw string使用三个引号界定<code>&quot;&quot;&quot;</code>，不用转义字符，可以含有换行字符和任意其他字符。<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">val text = """</span><br><span class="line">    for (c in "foo")</span><br><span class="line">        print(c)</span><br><span class="line">"""</span><br></pre></td></tr></table></figure></p>
+<p>可以使用<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.text/trim-margin.html" target="_blank" rel="external"><code>trimMargin()</code></a>函数去除前导空格。<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">val text = """</span><br><span class="line">    |Tell me and I forget.</span><br><span class="line">    |Teach me and I remember.</span><br><span class="line">    |Involve me and I learn.</span><br><span class="line">    |(Benjamin Franklin)</span><br><span class="line">    """.trimMargin()</span><br></pre></td></tr></table></figure></p>
+<p>默认使用<code>|</code>表示边缘前缀，也可以传入其他字符，如<code>trimMargin(&quot;&gt;&quot;)</code>。</p>
+<h2 id="String_u6A21_u677F"><a href="#String_u6A21_u677F" class="headerlink" title="String模板"></a>String模板</h2><p>String可以包含模板表达式，如将代码中的返回结果串联到字符串中。模板表达式由<code>$</code>起始符与参数名构成。<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable"><span class="keyword">val</span> i</span> = <span class="number">10</span></span><br><span class="line"><span class="variable"><span class="keyword">val</span> s</span> = <span class="string">"i = $i"</span> <span class="comment">// evaluates to "i = 10"</span></span><br></pre></td></tr></table></figure></p>
+<p>或者在<code>{}</code>中的任意表达式<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable"><span class="keyword">val</span> s</span> = <span class="string">"abc"</span></span><br><span class="line"><span class="variable"><span class="keyword">val</span> str</span> = <span class="string">"$s.length is $&#123;s.length&#125;"</span> <span class="comment">// evaluates to "abc.length is 3"</span></span><br></pre></td></tr></table></figure></p>
+<p>String模板在raw string和转义string中都可以使用。如果要在raw string中表示一个$字符常量（不支持反斜杠转义），则可使用下面语法：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">val price = """</span><br><span class="line">$&#123;'$'&#125;9.99</span><br><span class="line">"""</span><br></pre></td></tr></table></figure></p>
+<h1 id="Package_u5305"><a href="#Package_u5305" class="headerlink" title="Package包"></a>Package包</h1><p>源码文件可能需要声明包命<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> foo.bar</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">baz</span><span class="params">()</span> &#123;&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Goo</span> </span>&#123;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>源码文件所有内容（如类与函数）都包含在声明的包中。上面例子中，<code>baz()</code>全称为<code>foo.bar.baz</code>，<code>Goo</code>的全称为<code>foo.bar.Goo</code>。</p>
+<p>如果未执行包，文件内容属于无名的默认包</p>
+<h2 id="u9ED8_u8BA4_u5BFC_u5165"><a href="#u9ED8_u8BA4_u5BFC_u5165" class="headerlink" title="默认导入"></a>默认导入</h2><p>许多包默认导入到Kotlin的每个文件中</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">kotlin.*</span><br><span class="line">kotlin.annotation.*</span><br><span class="line">kotlin.collections.*</span><br><span class="line">kotlin.comparisons.* (since <span class="number">1.1</span>)</span><br><span class="line">kotlin.io.*</span><br><span class="line">kotlin.ranges.*</span><br><span class="line">kotlin.sequences.*</span><br><span class="line">kotlin.text.*</span><br></pre></td></tr></table></figure>
+<p>根据目标平台导入附加包<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">JVM:</span><br><span class="line">    java.lang.*</span><br><span class="line">    kotlin.jvm.*</span><br><span class="line">JS:</span><br><span class="line">    kotlin.js.*</span><br></pre></td></tr></table></figure></p>
+<h2 id="u5BFC_u5165"><a href="#u5BFC_u5165" class="headerlink" title="导入"></a>导入</h2><p>处理默认导入，每个文件可以含有自己导入的目录。导入的语法描述参考<a href="https://kotlinlang.org/docs/reference/grammar.html#import" target="_blank" rel="external"><code>Import</code></a></p>
+<p>可以导入单独名称<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> foo.Bar <span class="comment">// Bar is now accessible without qualification</span></span><br></pre></td></tr></table></figure></p>
+<p>或者访问范围内容（包，类，对象等）<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> foo.* <span class="comment">// everything in 'foo' becomes accessible</span></span><br></pre></td></tr></table></figure></p>
+<p>出现冲突时，使用<code>as</code>关键字给冲突包设置别名<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> foo.Bar <span class="comment">// Bar is accessible</span></span><br><span class="line"><span class="keyword">import</span> bar.Bar <span class="keyword">as</span> bBar <span class="comment">// bBar stands for 'bar.Bar'</span></span><br></pre></td></tr></table></figure></p>
+<p><code>import</code>关键字不限于导入类，也可以用来导入其他声明：</p>
+<ul>
+<li>上层函数与属性</li>
+<li>在<a href="https://kotlinlang.org/docs/reference/object-declarations.html#object-declarations" target="_blank" rel="external"><code>对象声明</code></a>中声明的函数与属性</li>
+<li><a href="https://kotlinlang.org/docs/reference/enum-classes.html" target="_blank" rel="external"><code>枚举常量</code></a></li>
+</ul>
+<p>与Java不同的是，Kotlin没有单独的<code>import static</code>语法；所有声明都使用<code>import</code>关键字导入。</p>
+<h2 id="u9876_u5C42_u58F0_u660E_u8BBF_u95EE"><a href="#u9876_u5C42_u58F0_u660E_u8BBF_u95EE" class="headerlink" title="顶层声明访问"></a>顶层声明访问</h2><p>如果顶层声明标记为<code>private</code>，则它私有属于在声明的文件。详情查看<a href="https://kotlinlang.org/docs/reference/visibility-modifiers.html" target="_blank" rel="external"><code>访问修饰符</code></a></p>
+
+            
+                
+
+            
+        </div>
+    </div>
+    <div class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/kotlin/">kotlin</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/07/03/Kotlin基础之类、继承、可见性修饰符/"  data-tooltip="Kotlin基础之类、继承、可见性修饰符">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/07/03/Kotlin基础之跳转与条件循环表达式/" data-tooltip="Kotlin基础之跳转与条件循环表达式">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至Google+" href="https://plus.google.com/share?url=http://blog.alexwan1989.com/2017/07/03/Kotlin基础之基础类型与包/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+       
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至Twitter" href="https://twitter.com/intent/tweet?text=http://blog.alexwan1989.com/2017/07/03/Kotlin基础之基础类型与包/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+
+         <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至新浪微博" href="http://www.jiathis.com/send/?webid=tsina&amp;appkey=&amp;uid=1850331&amp;url=http://blog.alexwan1989.com/2017/07/03/Kotlin基础之基础类型与包/&amp;title=Kotlin基础之基础类型与包">
+                <i class="fa fa-weibo"></i>
+            </a>
+        </li>
+
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+            <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2017 alexwan. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="1">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/07/03/Kotlin基础之类、继承、可见性修饰符/"  data-tooltip="Kotlin基础之类、继承、可见性修饰符">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/07/03/Kotlin基础之跳转与条件循环表达式/" data-tooltip="Kotlin基础之跳转与条件循环表达式">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至Google+" href="https://plus.google.com/share?url=http://blog.alexwan1989.com/2017/07/03/Kotlin基础之基础类型与包/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+       
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至Twitter" href="https://twitter.com/intent/tweet?text=http://blog.alexwan1989.com/2017/07/03/Kotlin基础之基础类型与包/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+
+         <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至新浪微博" href="http://www.jiathis.com/send/?webid=tsina&amp;appkey=&amp;uid=1850331&amp;url=http://blog.alexwan1989.com/2017/07/03/Kotlin基础之基础类型与包/&amp;title=Kotlin基础之基础类型与包">
+                <i class="fa fa-weibo"></i>
+            </a>
+        </li>
+
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="1">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://blog.alexwan1989.com/2017/07/03/Kotlin基础之基础类型与包/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://blog.alexwan1989.com/2017/07/03/Kotlin基础之基础类型与包/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://blog.alexwan1989.com/2017/07/03/Kotlin基础之基础类型与包/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        <div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <!-- use remote images as avatar-->
+            <img id="about-card-picture" src="http://res.cloudinary.com/dmfz9aun7/image/upload/v1467081842/android/3397490934332211.jpg"/>
+        
+            <h4 id="about-card-name">alexwan</h4>
+        
+            <h5 id="about-card-bio"><p>无限大な梦のあとの 何もない世の中じゃ!</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Android Developer</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                China ShangHai
+            </h5>
+        
+    </div>
+</div>
+
+        <div id="cover" style="background-image:url('http://res.cloudinary.com/dmfz9aun7/image/upload/v1465302627/hexo/re_zero_kara_hajimeru_isekai_seikatsu_99.jpg');"></div>
+
+    </body>
+    <!--SCRIPTS-->
+<script src="/assets/js/script.min.js" type="text/javascript"></script>
+<!--SCRIPTS END-->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'alexwan';
+        (function() {
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+
+
+
+</html>

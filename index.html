@@ -211,8 +211,320 @@
 <section class="postShorten-group main-content-wrap">
     
         
+            
+                
+            
         
-                <article class="postShorten" itemscope itemType="http://schema.org/BlogPosting">
+        
+            <article class="postShorten postShorten--thumbnailimg" itemscope itemType="http://schema.org/BlogPosting">
+        
+            <div class="postShorten-wrap">
+                <div class="postShorten-header">
+                    <h1 class="postShorten-title" itemprop="headline">
+                        
+                                <a class="link-unstyled" href="/2017/07/03/Kotlin基础之泛型/">Kotlin基础之泛型</a>
+                        
+                    </h1>
+                    <div class="postShorten-meta">
+    <time itemprop="datePublished" content="Mon Jul 03 2017 15:49:52 GMT+0800">
+	
+		    Jul 03, 2017
+    	
+    </time>
+    
+</div>
+                </div>
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    
+                        <p>
+                            泛型与Java一样，Koltin的类也有类型参数123class Box&lt;T&gt;(t: T)&#123;    var value = t&#125;
+常规来说，创建这样的类，需要提供具体的类型1val box: Box&lt;Int&gt; = Box&lt;Int&gt;(1)
+当类型可以从构造参数或其他上下文中推断出时，可以忽略类型参数1val box = Box(1) // 1 <br>
+                    
+                    
+                        
+                            <a href="/2017/07/03/Kotlin基础之泛型/" class="postShorten-excerpt_link link ">Continue reading</a>
+                            
+                        
+                    
+                    
+                        </p>
+                    
+                </div>
+            </div>
+            
+                <div class="postShorten-thumbnailimg">
+                    <img alt="" itemprop="image" src="https://pic1.zhimg.com/v2-30253c279faba2e77120862dd54d49d4_r.jpg"/>
+                </div>
+                
+            
+        </article>
+    
+        
+            
+                
+            
+        
+        
+            <article class="postShorten postShorten--thumbnailimg" itemscope itemType="http://schema.org/BlogPosting">
+        
+            <div class="postShorten-wrap">
+                <div class="postShorten-header">
+                    <h1 class="postShorten-title" itemprop="headline">
+                        
+                                <a class="link-unstyled" href="/2017/07/03/Kotlin基础之数据类、密封类、嵌套类和枚举类/">Kotlin基础之数据类、密封类、嵌套类和枚举类</a>
+                        
+                    </h1>
+                    <div class="postShorten-meta">
+    <time itemprop="datePublished" content="Mon Jul 03 2017 15:49:27 GMT+0800">
+	
+		    Jul 03, 2017
+    	
+    </time>
+    
+</div>
+                </div>
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    
+                        <p>
+                            数据类我们经常创建只用来存储数据的类。在这样的类中，一些标准功能常由数据来驱动。这些类在Kotlin中使用data修饰符标记为数据类1data class User(val name: String, val age: Int)
+编译器自动驱动在私有构造中声明的所有属性，生成为成员。
+
+equals()和hashCode()函数对
+User(name=John, age=42)形式的toStrin<br>
+                    
+                    
+                        
+                            <a href="/2017/07/03/Kotlin基础之数据类、密封类、嵌套类和枚举类/" class="postShorten-excerpt_link link ">Continue reading</a>
+                            
+                        
+                    
+                    
+                        </p>
+                    
+                </div>
+            </div>
+            
+                <div class="postShorten-thumbnailimg">
+                    <img alt="" itemprop="image" src="https://pic1.zhimg.com/v2-30253c279faba2e77120862dd54d49d4_r.jpg"/>
+                </div>
+                
+            
+        </article>
+    
+        
+            
+                
+            
+        
+        
+            <article class="postShorten postShorten--thumbnailimg" itemscope itemType="http://schema.org/BlogPosting">
+        
+            <div class="postShorten-wrap">
+                <div class="postShorten-header">
+                    <h1 class="postShorten-title" itemprop="headline">
+                        
+                                <a class="link-unstyled" href="/2017/07/03/Kotlin基础之属性与字段、接口/">Kotlin基础之字段、接口</a>
+                        
+                    </h1>
+                    <div class="postShorten-meta">
+    <time itemprop="datePublished" content="Mon Jul 03 2017 15:49:07 GMT+0800">
+	
+		    Jul 03, 2017
+    	
+    </time>
+    
+</div>
+                </div>
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    
+                        <p>
+                            属性与字段属性声明Kotlin中类拥有属性。用var关键字声明为可变属性，或用val关键字声明为只读属性。
+1234567class Address &#123;    var name: String = ...    var street: String = ...    var city: String = ...    var state: String? = ...    var zip<br>
+                    
+                    
+                        
+                            <a href="/2017/07/03/Kotlin基础之属性与字段、接口/" class="postShorten-excerpt_link link ">Continue reading</a>
+                            
+                        
+                    
+                    
+                        </p>
+                    
+                </div>
+            </div>
+            
+                <div class="postShorten-thumbnailimg">
+                    <img alt="" itemprop="image" src="https://pic1.zhimg.com/v2-30253c279faba2e77120862dd54d49d4_r.jpg"/>
+                </div>
+                
+            
+        </article>
+    
+        
+            
+                
+            
+        
+        
+            <article class="postShorten postShorten--thumbnailimg" itemscope itemType="http://schema.org/BlogPosting">
+        
+            <div class="postShorten-wrap">
+                <div class="postShorten-header">
+                    <h1 class="postShorten-title" itemprop="headline">
+                        
+                                <a class="link-unstyled" href="/2017/07/03/Kotlin基础之类、继承、可见性修饰符/">Kotlin基础之类、继承、可见性修饰符</a>
+                        
+                    </h1>
+                    <div class="postShorten-meta">
+    <time itemprop="datePublished" content="Mon Jul 03 2017 15:48:46 GMT+0800">
+	
+		    Jul 03, 2017
+    	
+    </time>
+    
+</div>
+                </div>
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    
+                        <p>
+                            类与继承类在Kotlin中使用class声明类
+12class Invoice &#123;&#125;
+类声明由类名，类头部（指定类型参数，首要构造等）和用大括号包裹的类体组成。类头部和类体为可选；如果无类体，可省略花括号1class Empty
+构造器Kotlin的类可以有一个首要构造器和多个次要构造器。首要构造是类头部的一部分，跟在类名之后（参数类型可选）12class Person con<br>
+                    
+                    
+                        
+                            <a href="/2017/07/03/Kotlin基础之类、继承、可见性修饰符/" class="postShorten-excerpt_link link ">Continue reading</a>
+                            
+                        
+                    
+                    
+                        </p>
+                    
+                </div>
+            </div>
+            
+                <div class="postShorten-thumbnailimg">
+                    <img alt="" itemprop="image" src="https://pic1.zhimg.com/v2-30253c279faba2e77120862dd54d49d4_r.jpg"/>
+                </div>
+                
+            
+        </article>
+    
+        
+            
+                
+            
+        
+        
+            <article class="postShorten postShorten--thumbnailimg" itemscope itemType="http://schema.org/BlogPosting">
+        
+            <div class="postShorten-wrap">
+                <div class="postShorten-header">
+                    <h1 class="postShorten-title" itemprop="headline">
+                        
+                                <a class="link-unstyled" href="/2017/07/03/Kotlin基础之基础类型与包/">Kotlin基础之基础类型与包</a>
+                        
+                    </h1>
+                    <div class="postShorten-meta">
+    <time itemprop="datePublished" content="Mon Jul 03 2017 15:48:18 GMT+0800">
+	
+		    Jul 03, 2017
+    	
+    </time>
+    
+</div>
+                </div>
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    
+                        <p>
+                            基础类型在Kotlin中，一切皆对象从这种意义上来说，我们可以调用任何变量的属性和方法。有些内嵌类型的实现是经过优化的，但是对于开发者而言看上就是普通的类。这些类型有：数值类型，字符类型，boolean类型，数组类型
+数值类型Kotlin使用类似Java的方式处理数值类型，但是与Java不是完全相同。如：不支持数值的隐式扩大转换或在某些情况中字面常量会些许不同。
+Kotlin内嵌了以下几种数值类型<br>
+                    
+                    
+                        
+                            <a href="/2017/07/03/Kotlin基础之基础类型与包/" class="postShorten-excerpt_link link ">Continue reading</a>
+                            
+                        
+                    
+                    
+                        </p>
+                    
+                </div>
+            </div>
+            
+                <div class="postShorten-thumbnailimg">
+                    <img alt="" itemprop="image" src="https://pic1.zhimg.com/v2-30253c279faba2e77120862dd54d49d4_r.jpg"/>
+                </div>
+                
+            
+        </article>
+    
+        
+            
+                
+            
+        
+        
+            <article class="postShorten postShorten--thumbnailimg" itemscope itemType="http://schema.org/BlogPosting">
+        
+            <div class="postShorten-wrap">
+                <div class="postShorten-header">
+                    <h1 class="postShorten-title" itemprop="headline">
+                        
+                                <a class="link-unstyled" href="/2017/07/03/Kotlin基础之跳转与条件循环表达式/">Kotlin基础之跳转与条件循环表达式</a>
+                        
+                    </h1>
+                    <div class="postShorten-meta">
+    <time itemprop="datePublished" content="Mon Jul 03 2017 15:47:55 GMT+0800">
+	
+		    Jul 03, 2017
+    	
+    </time>
+    
+</div>
+                </div>
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    
+                        <p>
+                            跳转Kotlin有三种结构的跳转表达式
+
+return. return默认返回最近的闭合函数或匿名函数
+break. 结束最近闭合循环
+continue. 执行最近闭合循环下一步
+
+所有跳转表达式可在大的表达式中使用1val s = person.name ?: return
+跳转表达式的类型为Nothing类型
+Break和Continue 标注kotlin中任意表达式都可以用标注来标记，以标识<br>
+                    
+                    
+                        
+                            <a href="/2017/07/03/Kotlin基础之跳转与条件循环表达式/" class="postShorten-excerpt_link link ">Continue reading</a>
+                            
+                        
+                    
+                    
+                        </p>
+                    
+                </div>
+            </div>
+            
+                <div class="postShorten-thumbnailimg">
+                    <img alt="" itemprop="image" src="https://pic1.zhimg.com/v2-30253c279faba2e77120862dd54d49d4_r.jpg"/>
+                </div>
+                
+            
+        </article>
+    
+        
+            
+                
+            
+        
+        
+            <article class="postShorten postShorten--thumbnailimg" itemscope itemType="http://schema.org/BlogPosting">
         
             <div class="postShorten-wrap">
                 <div class="postShorten-header">
@@ -248,11 +560,20 @@
                 </div>
             </div>
             
+                <div class="postShorten-thumbnailimg">
+                    <img alt="" itemprop="image" src="https://pic1.zhimg.com/v2-30253c279faba2e77120862dd54d49d4_r.jpg"/>
+                </div>
+                
+            
         </article>
     
         
+            
+                
+            
         
-                <article class="postShorten" itemscope itemType="http://schema.org/BlogPosting">
+        
+            <article class="postShorten postShorten--thumbnailimg" itemscope itemType="http://schema.org/BlogPosting">
         
             <div class="postShorten-wrap">
                 <div class="postShorten-header">
@@ -292,11 +613,20 @@
                 </div>
             </div>
             
+                <div class="postShorten-thumbnailimg">
+                    <img alt="" itemprop="image" src="https://pic1.zhimg.com/v2-30253c279faba2e77120862dd54d49d4_r.jpg"/>
+                </div>
+                
+            
         </article>
     
         
+            
+                
+            
         
-                <article class="postShorten" itemscope itemType="http://schema.org/BlogPosting">
+        
+            <article class="postShorten postShorten--thumbnailimg" itemscope itemType="http://schema.org/BlogPosting">
         
             <div class="postShorten-wrap">
                 <div class="postShorten-header">
@@ -339,6 +669,11 @@
                     
                 </div>
             </div>
+            
+                <div class="postShorten-thumbnailimg">
+                    <img alt="" itemprop="image" src="https://pic1.zhimg.com/v2-30253c279faba2e77120862dd54d49d4_r.jpg"/>
+                </div>
+                
             
         </article>
     
@@ -886,303 +1221,6 @@ Interceptors是OkHttp3整个框架的核心，包含了请求监控、请求重�
                     <img alt="" itemprop="image" src="http://res.cloudinary.com/dmfz9aun7/image/upload/c_scale,w_500/v1468746215/android/android_data_binding.png"/>
                 </div>
                 
-            
-        </article>
-    
-        
-            
-                
-            
-        
-        
-            <article class="postShorten postShorten--thumbnailimg" itemscope itemType="http://schema.org/BlogPosting">
-        
-            <div class="postShorten-wrap">
-                <div class="postShorten-header">
-                    <h1 class="postShorten-title" itemprop="headline">
-                        
-                                <a class="link-unstyled" href="/2016/06/28/Android：Handler、Message、MessageQueue、Looper/">Android：Handler、Message、MessageQueue、Looper</a>
-                        
-                    </h1>
-                    <div class="postShorten-meta">
-    <time itemprop="datePublished" content="Tue Jun 28 2016 09:46:10 GMT+0800">
-	
-		    Jun 28, 2016
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/android-aosp/">android-aosp</a>
-
-
-    
-</div>
-                </div>
-                <div class="postShorten-excerpt" itemprop="articleBody">
-                    
-                        <p>
-                            Android中引入消息事件驱动的机制。每个Thread通过ThreadLocal来绑定一个Looper对象，每个Looper对应一个消息队列MessageQueue，在创建一个Handler时，绑定当前线程的MessageQueue，来用来接收消息和分发处理消息。
-
-Handler、Message、MessageQueue、Message关系图
-一、Handler1.创建一个Handler1Ha<br>
-                    
-                    
-                        
-                            <a href="/2016/06/28/Android：Handler、Message、MessageQueue、Looper/" class="postShorten-excerpt_link link ">Continue reading</a>
-                            
-                        
-                    
-                    
-                        </p>
-                    
-                </div>
-            </div>
-            
-                <div class="postShorten-thumbnailimg">
-                    <img alt="" itemprop="image" src="http://res.cloudinary.com/dmfz9aun7/image/upload/v1467081862/android/android_aosp_code.png"/>
-                </div>
-                
-            
-        </article>
-    
-        
-            
-                
-            
-        
-        
-            <article class="postShorten postShorten--thumbnailimg" itemscope itemType="http://schema.org/BlogPosting">
-        
-            <div class="postShorten-wrap">
-                <div class="postShorten-header">
-                    <h1 class="postShorten-title" itemprop="headline">
-                        
-                                <a class="link-unstyled" href="/2016/06/05/Android：Activity的基础知识及启动过程/">Android：Activity的基础知识及启动过程</a>
-                        
-                    </h1>
-                    <div class="postShorten-meta">
-    <time itemprop="datePublished" content="Sun Jun 05 2016 23:14:29 GMT+0800">
-	
-		    Jun 05, 2016
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/android-aosp/">android-aosp</a>
-
-
-    
-</div>
-                </div>
-                <div class="postShorten-excerpt" itemprop="articleBody">
-                    
-                        <p>
-                            Activity是Android四个基本组件之一，主要用作Application的界面展示和交互。Activity可以说是Android中应用最多的组件，因此有必要掌握关于Activity的知识。如：Activity的生命周期，Activity的启动模式，更深层次的如Activity的创建过程以及Actvity生命周期对应的方法是如何调用的。
-一、Activity的生命周期1.正常生命周期一个Ac<br>
-                    
-                    
-                        
-                            <a href="/2016/06/05/Android：Activity的基础知识及启动过程/" class="postShorten-excerpt_link link ">Continue reading</a>
-                            
-                        
-                    
-                    
-                        </p>
-                    
-                </div>
-            </div>
-            
-                <div class="postShorten-thumbnailimg">
-                    <img alt="" itemprop="image" src="http://res.cloudinary.com/dmfz9aun7/image/upload/v1467529028/android/8ff23095a2a4e04af26ca63642bfdea3_b.png"/>
-                </div>
-                
-            
-        </article>
-    
-        
-            
-                
-            
-        
-        
-            <article class="postShorten postShorten--thumbnailimg" itemscope itemType="http://schema.org/BlogPosting">
-        
-            <div class="postShorten-wrap">
-                <div class="postShorten-header">
-                    <h1 class="postShorten-title" itemprop="headline">
-                        
-                                <a class="link-unstyled" href="/2016/05/17/RxJava读书笔记(一)/">RxJava读书笔记(一)</a>
-                        
-                    </h1>
-                    <div class="postShorten-meta">
-    <time itemprop="datePublished" content="Tue May 17 2016 15:41:44 GMT+0800">
-	
-		    May 17, 2016
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/RxJava/">RxJava</a>
-
-
-    
-</div>
-                </div>
-                <div class="postShorten-excerpt" itemprop="articleBody">
-                    
-                        <p>
-                            RxJava Essentials CN
-ReactiveX
-ReactiveX文档中文翻译
-介绍概述RxJava是ReactiveX (Reactive Extensions)的Java版本：
-
-a library for composing asynchronous and event-based programs by using observable sequences.一个构成异步的、基<br>
-                    
-                    
-                        
-                            <a href="/2016/05/17/RxJava读书笔记(一)/" class="postShorten-excerpt_link link ">Continue reading</a>
-                            
-                        
-                    
-                    
-                        </p>
-                    
-                </div>
-            </div>
-            
-                <div class="postShorten-thumbnailimg">
-                    <img alt="" itemprop="image" src="http://res.cloudinary.com/dmfz9aun7/image/upload/v1453950569/reactive/Rx_Logo_S.png"/>
-                </div>
-                
-            
-        </article>
-    
-        
-        
-                <article class="postShorten" itemscope itemType="http://schema.org/BlogPosting">
-        
-            <div class="postShorten-wrap">
-                <div class="postShorten-header">
-                    <h1 class="postShorten-title" itemprop="headline">
-                        
-                                <a class="link-unstyled" href="/2016/04/18/Android：NDK开发（二）/">Android NDK开发（二）：使用Android Studio开发进行NDK开发</a>
-                        
-                    </h1>
-                    <div class="postShorten-meta">
-    <time itemprop="datePublished" content="Mon Apr 18 2016 11:32:17 GMT+0800">
-	
-		    Apr 18, 2016
-    	
-    </time>
-    
-</div>
-                </div>
-                <div class="postShorten-excerpt" itemprop="articleBody">
-                    
-                        <p>
-                            Android NDK Preview
-Experimental Plugin User Guide
-NDK-JNI实战教程（四）再谈新工具及NDK开发调试
-使用AndroidStudio进行NDK开发（一）
-一、Android Studio环境配置1、介绍Android Studio的插件是基于Gradle的新组件模型机制，减少了NDK环境配置时间。同时含有编译JNI应用所需的NDK集成环境。本<br>
-                    
-                    
-                        
-                            <a href="/2016/04/18/Android：NDK开发（二）/" class="postShorten-excerpt_link link ">Continue reading</a>
-                            
-                        
-                    
-                    
-                        </p>
-                    
-                </div>
-            </div>
-            
-        </article>
-    
-        
-        
-                <article class="postShorten" itemscope itemType="http://schema.org/BlogPosting">
-        
-            <div class="postShorten-wrap">
-                <div class="postShorten-header">
-                    <h1 class="postShorten-title" itemprop="headline">
-                        
-                                <a class="link-unstyled" href="/2016/04/12/Android：NDK开发（一）/">Android：NDK开发（一）</a>
-                        
-                    </h1>
-                    <div class="postShorten-meta">
-    <time itemprop="datePublished" content="Tue Apr 12 2016 17:28:12 GMT+0800">
-	
-		    Apr 12, 2016
-    	
-    </time>
-    
-</div>
-                </div>
-                <div class="postShorten-excerpt" itemprop="articleBody">
-                    
-                        <p>
-                            一、Mac NDK开发环境搭建二、Android Studio配置三、NDK 配置文件介绍（一）、Android.MKAndroid.MK文件位于./jni文件夹下，描述编译系统的资源和共享库信息。对于定义项目配置åApplication.mk、环境变量。
-1. 基本属性1234567891011121314// LOCAL_PATHLOCAL_PATH := $(call my-dir)// C<br>
-                    
-                    
-                        
-                            <a href="/2016/04/12/Android：NDK开发（一）/" class="postShorten-excerpt_link link ">Continue reading</a>
-                            
-                        
-                    
-                    
-                        </p>
-                    
-                </div>
-            </div>
-            
-        </article>
-    
-        
-        
-                <article class="postShorten" itemscope itemType="http://schema.org/BlogPosting">
-        
-            <div class="postShorten-wrap">
-                <div class="postShorten-header">
-                    <h1 class="postShorten-title" itemprop="headline">
-                        
-                                <a class="link-unstyled" href="/2016/04/06/Android：6-0运行时权限/">Android：6.0运行时权限</a>
-                        
-                    </h1>
-                    <div class="postShorten-meta">
-    <time itemprop="datePublished" content="Wed Apr 06 2016 10:47:42 GMT+0800">
-	
-		    Apr 06, 2016
-    	
-    </time>
-    
-</div>
-                </div>
-                <div class="postShorten-excerpt" itemprop="articleBody">
-                    
-                        <p>
-                            Working with System Permissions
-聊一聊Android 6.0的运行时权限
-Android 6.0: 动态权限管理的解决方案
-###Android 6.0运行时权限
-权限声明请求运行时权限权限检查权限最佳实践<br>
-                    
-                    
-                        
-                            <a href="/2016/04/06/Android：6-0运行时权限/" class="postShorten-excerpt_link link ">Continue reading</a>
-                            
-                        
-                    
-                    
-                        </p>
-                    
-                </div>
-            </div>
             
         </article>
     

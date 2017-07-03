@@ -1,0 +1,578 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+    
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Alexwan Studio">
+    <title>Kotlin基础之类、继承、可见性修饰符 - Alexwan Studio</title>
+    <meta name="author" content="alexwan">
+    
+        <link rel="icon" href="/assets/images/https://cdn.discordapp.com/icons/102860784329052160/109fd014c718f40110c4a182f105ca71.jpg">
+    
+    
+        <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="类与继承类在Kotlin中使用class声明类
+12class Invoice &amp;#123;&amp;#125;
+类声明由类名，类头部（指定类型参数，首要构造等）和用大括号包裹的类体组成。类头部和类体为可选；如果无类体，可省略花括号1class Empty
+构造器Kotlin的类可以有一个首要构造器和多个次要构造器。首要构造是类头部的一部分，跟在类名之后（参数类型可选）12class Person con">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Kotlin基础之类、继承、可见性修饰符">
+<meta property="og:url" content="http://blog.alexwan1989.com/2017/07/03/Kotlin基础之类、继承、可见性修饰符/index.html">
+<meta property="og:site_name" content="Alexwan Studio">
+<meta property="og:description" content="类与继承类在Kotlin中使用class声明类
+12class Invoice &amp;#123;&amp;#125;
+类声明由类名，类头部（指定类型参数，首要构造等）和用大括号包裹的类体组成。类头部和类体为可选；如果无类体，可省略花括号1class Empty
+构造器Kotlin的类可以有一个首要构造器和多个次要构造器。首要构造是类头部的一部分，跟在类名之后（参数类型可选）12class Person con">
+<meta property="og:updated_time" content="2017-07-03T07:48:47.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kotlin基础之类、继承、可见性修饰符">
+<meta name="twitter:description" content="类与继承类在Kotlin中使用class声明类
+12class Invoice &amp;#123;&amp;#125;
+类声明由类名，类头部（指定类型参数，首要构造等）和用大括号包裹的类体组成。类头部和类体为可选；如果无类体，可省略花括号1class Empty
+构造器Kotlin的类可以有一个首要构造器和多个次要构造器。首要构造是类头部的一部分，跟在类名之后（参数类型可选）12class Person con">
+    
+    
+    
+        <meta property="og:image" content="/assets/images/http://res.cloudinary.com/dmfz9aun7/image/upload/v1467081842/android/3397490934332211.jpg"/>
+    
+    
+        <meta property="og:image" content="/2017/07/03/Kotlin基础之类、继承、可见性修饰符/https://pic1.zhimg.com/v2-30253c279faba2e77120862dd54d49d4_r.jpg"/>
+        <meta class="swiftype" name="image" data-type="enum" content="http://blog.alexwan1989.com/2017/07/03/Kotlin基础之类、继承、可见性修饰符/https://pic1.zhimg.com/v2-30253c279faba2e77120862dd54d49d4_r.jpg" />
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style.min.css" type="text/css">
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-74386866-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+</head>
+
+    <body>
+        <div id="blog">
+            <header id="header" data-behavior="1">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/ ">Alexwan Studio</a>
+    </h1>
+    
+        
+            <a  class="header-right-icon st-search-show-outputs"
+                href="/#search">
+        
+                <i class="fa fa-lg fa-search"></i>
+            </a>
+    
+</header>
+            <nav id="sidebar" data-behavior="1">
+    
+        <div class="sidebar-profile">
+            <a href="/#about">
+                
+                    <!-- use remote images as avatar-->
+                    <img class="sidebar-profile-picture" src="http://res.cloudinary.com/dmfz9aun7/image/upload/v1467081842/android/3397490934332211.jpg"/>
+                
+            </a>
+            <span class="sidebar-profile-name">alexwan</span>
+        </div>
+    
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/ "
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">主页</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-categories"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">分类</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-tags"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">标签</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-archives"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-bars"></i>
+                    <span class="sidebar-button-desc">归档</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link st-search-show-outputs"
+                         href="/#search"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-search"></i>
+                    <span class="sidebar-button-desc">搜索</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/#about"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">关于</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://github.com/alexwan02" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-github-square"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="http://stackoverflow.com/users/4919743/alexwan1989" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-stack-overflow"></i>
+                    <span class="sidebar-button-desc">Stack Overflow</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://alexwan0312@gmail.com" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
+                    <span class="sidebar-button-desc">Mail</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/atom.xml"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+
+            
+            <div id="main" data-behavior="1"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            Kotlin基础之类、继承、可见性修饰符
+        </h1>
+    
+    <div class="post-meta">
+    <time itemprop="datePublished" content="Mon Jul 03 2017 15:48:46 GMT+0800">
+	
+		    Jul 03, 2017
+    	
+    </time>
+    
+</div>
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <h1 id="u7C7B_u4E0E_u7EE7_u627F"><a href="#u7C7B_u4E0E_u7EE7_u627F" class="headerlink" title="类与继承"></a>类与继承</h1><h2 id="u7C7B"><a href="#u7C7B" class="headerlink" title="类"></a>类</h2><p>在Kotlin中使用class声明类</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Invoice</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>类声明由类名，类头部（指定类型参数，首要构造等）和用大括号包裹的类体组成。类头部和类体为可选；如果无类体，可省略花括号<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Empty</span></span></span><br></pre></td></tr></table></figure></p>
+<h2 id="u6784_u9020_u5668"><a href="#u6784_u9020_u5668" class="headerlink" title="构造器"></a>构造器</h2><p>Kotlin的类可以有一个首要构造器和多个次要构造器。首要构造是类头部的一部分，跟在类名之后（参数类型可选）<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> <span class="title">constructor</span></span>(firstName: String) &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果首要构造没有任何注解或可见修饰符，<code>constructor</code>关键字可省略。<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span></span>(firstName: String)&#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>首要构造不能含有任何代码。初始代码可以放在初始块中，初始块使用<code>init</code>前缀修饰：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Customer</span></span>(name: String)&#123;</span><br><span class="line">    init &#123;</span><br><span class="line">        logger.info(<span class="string">"Customer initialized with value $&#123;name&#125;"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>首要构造的参数可以在init代码块中使用，也可以用来初始化类中声明的属性</p>
+</blockquote>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Customer</span></span>(name: String) &#123;</span><br><span class="line">    <span class="variable"><span class="keyword">val</span> customerKey</span> = name.toUpperCase()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>事实上，Kotlin有个简明语法在首要构造器中初始话声明的属性<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span></span>(<span class="variable"><span class="keyword">val</span> firstName</span>: String, <span class="variable"><span class="keyword">val</span> lastName</span>: String, <span class="variable"><span class="keyword">var</span> age</span>: <span class="typename">Int</span>) &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>与常规属性一样，声明在首要构造的属性可以是可变的（var）或只读（val）</p>
+<p>如果构造器有注解或可见修饰符，在构则要加上<code>constructor</code>关键字。<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Customer</span> <span class="title">public</span> @<span class="title">Inject</span> <span class="title">constructor</span></span>(name: String) &#123; ... &#125;</span><br></pre></td></tr></table></figure></p>
+<p>更多查看<a href="https://kotlinlang.org/docs/reference/visibility-modifiers.html#constructors" target="_blank" rel="external"><code>可见性修饰符</code></a></p>
+<h2 id="u6B21_u8981_u6784_u9020_u5668"><a href="#u6B21_u8981_u6784_u9020_u5668" class="headerlink" title="次要构造器"></a>次要构造器</h2><p>类可以声明次要构造器，使用<code>custructor</code>前缀修饰<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    constructor(parent: Person) &#123;</span><br><span class="line">        parent.children.add(this)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果类有首要构造，每个次要构造器都需要委托给首要构造或间接地通过其他次要构造器。使用<code>this</code>关键字完成委托。<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span></span>(<span class="variable"><span class="keyword">val</span> name</span>: String) &#123;</span><br><span class="line">    constructor(name: String, parent: Person) : this(name) &#123;</span><br><span class="line">        parent.children.add(this)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果不是抽象类并且没有声明任何构造器，则生成一个无参首要构造。构造器可见性为public。如果不希望有public类型构造器，则需要声明一个空的非默认可见性的首要构造器<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DontCreateMe</span> <span class="title">private</span> <span class="title">constructor</span> </span>() &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>在JVM上，如果首要构造所有参数都有默认值，编译器生成一个使用默认值的额外参数构造器。可以让kotlin和像<code>Jackson</code>或<code>JPA</code>这样创建类的实例的库一起使用。</p>
+</blockquote>
+<pre><code>class Customer(val customerName: String = &quot;&quot;)
+</code></pre><h2 id="u521B_u5EFA_u7C7B_u7684_u5B9E_u4F8B"><a href="#u521B_u5EFA_u7C7B_u7684_u5B9E_u4F8B" class="headerlink" title="创建类的实例"></a>创建类的实例</h2><p>像常规函数一样调用构造器，来创建一个类的实例<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable"><span class="keyword">val</span> invoice</span> = Invoice()</span><br><span class="line"></span><br><span class="line"><span class="variable"><span class="keyword">val</span> customer</span> = Customer(<span class="string">"Joe Smith"</span>)</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>kotlin 没有<code>new</code>关键字</p>
+</blockquote>
+<p>查看关于创建<a href="https://kotlinlang.org/docs/reference/nested-classes.html" target="_blank" rel="external"><code>嵌套类</code></a>的描述</p>
+<h2 id="u7C7B_u6210_u5458"><a href="#u7C7B_u6210_u5458" class="headerlink" title="类成员"></a>类成员</h2><p>类包含</p>
+<ul>
+<li>构造器和初始块</li>
+<li><a href="https://kotlinlang.org/docs/reference/functions.html" target="_blank" rel="external">函数</a></li>
+<li><a href="https://kotlinlang.org/docs/reference/properties.html" target="_blank" rel="external">属性</a></li>
+<li><a href="https://kotlinlang.org/docs/reference/nested-classes.html" target="_blank" rel="external">嵌套和内部类</a></li>
+<li><a href="https://kotlinlang.org/docs/reference/object-declarations.html" target="_blank" rel="external">对象声明</a></li>
+</ul>
+<h2 id="u7EE7_u627F"><a href="#u7EE7_u627F" class="headerlink" title="继承"></a>继承</h2><p>所有Kotlin类都有一个共通的超类Any。<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Example</span> // <span class="title">Implicitly</span> <span class="title">inherits</span> <span class="title">from</span> <span class="title">Any</span></span></span><br></pre></td></tr></table></figure></p>
+<p><code>Any</code>不是<code>java.lang.Object</code>;除了<code>equals()</code>，<code>hashCode()</code>，<code>toString()</code>，没有其他的成员。详情查看<a href="https://kotlinlang.org/docs/reference/java-interop.html#object-methods" target="_blank" rel="external"><code>Java协同</code></a>小节</p>
+<p>在类头部的尾部来声明明确的父类类型<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">open</span> <span class="class"><span class="keyword">class</span> <span class="title">Base</span></span>(p: <span class="typename">Int</span>)</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Derived</span></span>(p: <span class="typename">Int</span>) : Base(p)</span><br></pre></td></tr></table></figure></p>
+<p>如果类有一个首要构造，则必须使用首要构造器初始化基类。</p>
+<p>如果类没有首要构造器，则每个次要构造器使用<code>super</code>关键字初始化基类或委托给其他构造执行。</p>
+<blockquote>
+<p>不同次要构造器可以调用不同基类构造</p>
+</blockquote>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyView</span> : <span class="typename">View &#123;</span></span></span><br><span class="line">    constructor(ctx: Context) : super(ctx)</span><br><span class="line"></span><br><span class="line">    constructor(ctx: Context, attrs: AttributeSet) : super(ctx, attrs)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>类的<code>open</code>注解与Java的<code>final</code>意义相反：允许其他类继承本类。kotlin默认的所有类都是final类型，对应<a href="http://www.oracle.com/technetwork/java/effectivejava-136174.html" target="_blank" rel="external"><code>Effective Java</code></a>中第17条：<code>要么为继承而设计，并提供文档说明，要么就禁止继承</code>。</p>
+<h2 id="u590D_u5199_u65B9_u6CD5"><a href="#u590D_u5199_u65B9_u6CD5" class="headerlink" title="复写方法"></a>复写方法</h2><p>如上面说到，Kotlin 力求事情明确。与Java不同，Kotlin需要明确的可复写的成员（Koltin称为open）和复写<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">open</span> <span class="class"><span class="keyword">class</span> <span class="title">Base</span> </span>&#123;</span><br><span class="line">    <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">v</span><span class="params">()</span> &#123;&#125;</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">nv</span><span class="params">()</span> &#123;&#125;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Derived</span></span>() : Base() &#123;</span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">v</span><span class="params">()</span> &#123;&#125;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>Derived.v()</code>需要<code>override</code>，如果缺失，编译则给出抗议。如果函数没有<code>open</code>注解，如<code>Base.nv()</code>，则在子类中声明相同签名的方法，无论使用或不使用<code>override</code>注解都是非法的。在final类（没有使用<code>open</code>注解）中，禁止注解open成员。</p>
+<p>标记为<code>override</code>的成员函数可以被子类复写。如果禁止复写，使用<code>final</code>关键字<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">open</span> <span class="class"><span class="keyword">class</span> <span class="title">AnotherDerived</span></span>() : Base() &#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">v</span><span class="params">()</span> &#123;&#125;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="u590D_u5199_u5C5E_u6027"><a href="#u590D_u5199_u5C5E_u6027" class="headerlink" title="复写属性"></a>复写属性</h2><p>复写属性原理与复写方法相似；超类中声明的属性并在派生类中重新声明，必须使用<code>override</code>在前面标记，并且具有兼容的类型。每个声明的属性可以被有初始化操作或有<code>getter</code>方法的属性复写。<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">open</span> <span class="class"><span class="keyword">class</span> <span class="title">Foo</span> </span>&#123;</span><br><span class="line">    <span class="keyword">open</span> <span class="variable"><span class="keyword">val</span> x</span>: <span class="typename">Int</span> <span class="keyword">get</span> &#123; ... &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Bar1</span> : <span class="typename">Foo</span></span>() &#123;</span><br><span class="line">    <span class="keyword">override</span> <span class="variable"><span class="keyword">val</span> x</span>: <span class="typename">Int</span> = ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>可以使用var属性来复写val属性，反过来不可。因为val属性本质上声明了getter方法，复写为<code>var</code>属性在派生类中声明了<code>setter</code>方法</p>
+<blockquote>
+<p>可以在首要构造器中使用<code>override</code>关键字来声明属性</p>
+</blockquote>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">interface Foo &#123;</span><br><span class="line">    <span class="variable"><span class="keyword">val</span> count</span>: <span class="typename">Int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Bar1</span></span>(<span class="keyword">override</span> <span class="variable"><span class="keyword">val</span> count</span>: <span class="typename">Int</span>) : Foo</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Bar2</span> : <span class="typename">Foo &#123;</span></span></span><br><span class="line">    <span class="keyword">override</span> <span class="variable"><span class="keyword">var</span> count</span>: <span class="typename">Int</span> = <span class="number">0</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="u590D_u5199_u89C4_u5219"><a href="#u590D_u5199_u89C4_u5219" class="headerlink" title="复写规则"></a>复写规则</h2><p>Koltin定义了实现继承的规则。如果类继承它直接超类的相同成员的多个实现，则必须复写这个方法并且提供自己实现。为了表示采用的继承实现父型，需要使用<code>super</code>修饰尖括号中的超类类型，如：<code>super&lt;Base&gt;</code><br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">open</span> <span class="class"><span class="keyword">class</span> <span class="title">A</span></span>&#123;</span><br><span class="line">    <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">f</span><span class="params">()</span>&#123; <span class="title">print</span><span class="params">("A")</span> &#125;</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">a</span><span class="params">()</span> &#123; <span class="title">print</span><span class="params">("a")</span> &#125;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">open</span> <span class="class"><span class="keyword">class</span> <span class="title">B</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">f</span><span class="params">()</span>&#123; <span class="title">print</span><span class="params">("B")</span> &#125;</span></span><br><span class="line">    funcb() &#123; print(<span class="string">"b"</span>) &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span></span>() : A() , B&#123;</span><br><span class="line">    <span class="comment">// The compiler requires f() to be overridden:</span></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">f</span><span class="params">()</span> &#123;</span></span><br><span class="line">        super<span class="type">&lt;A&gt;</span>.f() <span class="comment">// call to A.f()</span></span><br><span class="line">        super<span class="type">&lt;B&gt;</span>.f() <span class="comment">// call to B.f()</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>同时继承A和B，对于函数<code>a()</code>和函数<code>b()</code>没有问题，因为<code>C</code>只继承了这些函数一个实现。但是对于函数<code>f()</code>，有<code>C</code>的两个实现，因此必须要复写<code>f()</code>，并由<code>C</code>提供自己的显示来消除歧义。</p>
+<h2 id="u62BD_u8C61_u7C7B"><a href="#u62BD_u8C61_u7C7B" class="headerlink" title="抽象类"></a>抽象类</h2><p>类和它一些成员可以声明为<code>abstract</code>。抽象成员在当前类没有具体实现。</p>
+<blockquote>
+<p>不言而喻，抽象类或抽象函数无须使用open注解</p>
+</blockquote>
+<p>可以使用抽象来复写非抽象的open函数</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">open</span> <span class="class"><span class="keyword">class</span> <span class="title">Base</span> </span>&#123;</span><br><span class="line">    <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">f</span><span class="params">()</span> &#123;&#125;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">abstract <span class="class"><span class="keyword">class</span> <span class="title">Derived</span> : <span class="typename">Base</span></span>() &#123;</span><br><span class="line">    <span class="keyword">override</span> abstract <span class="function"><span class="keyword">fun</span> <span class="title">f</span><span class="params">()</span></span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="u4F34_u751F_u5BF9_u8C61"><a href="#u4F34_u751F_u5BF9_u8C61" class="headerlink" title="伴生对象"></a>伴生对象</h2><p>与Java，C++不同的是，Kotlin没有静态方法。在多数类中，建议使用包级函数替代。</p>
+<p>如果需要写一个不用类的实例来调用的函数，但要通过访问类的内部信息（如：工厂方法），可以在类中写作为<a href="https://kotlinlang.org/docs/reference/object-declarations.html" target="_blank" rel="external"><code>对象声明</code></a>成员。</p>
+<p>更为特殊的情况，如果在类中声明<a href="https://kotlinlang.org/docs/reference/object-declarations.html#companion-objects" target="_blank" rel="external"><code>伴生对象</code></a>，就可以只使用类的名称作为限定符来调用成员，就好像Java/C#中调用静态方法那样。</p>
+<h1 id="u53EF_u89C1_u6027_u4FEE_u9970_u7B26"><a href="#u53EF_u89C1_u6027_u4FEE_u9970_u7B26" class="headerlink" title="可见性修饰符"></a>可见性修饰符</h1><p>类、对象、接口、构造器、函数、属性和他们的<code>setter</code>都可以有可见性修饰符（Getters与属性相同的修饰符）。Kotlin有四种可见性修饰符：<code>private</code>，<code>protected</code>，<code>internal</code>和<code>public</code>。默认可见性为<code>public</code>。</p>
+<h2 id="u5305"><a href="#u5305" class="headerlink" title="包"></a>包</h2><p>函数，属性，和类，对象和接口都可以在上层中声明。如：直接在包中<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// file name: example.kt</span></span><br><span class="line"><span class="keyword">package</span> foo</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">baz</span><span class="params">()</span> &#123;&#125;</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Bar</span> </span>&#123;&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>如果没有指定任何可见性修饰符，默认为<code>public</code>，意味：声明随处可见</li>
+<li>如果标记为<code>private</code>，则只在声明的文件中可见</li>
+<li>如果标记为<code>internal</code>，则在相同<a href="https://kotlinlang.org/docs/reference/visibility-modifiers.html#modules" target="_blank" rel="external"><code>模块</code></a>中可见</li>
+<li>标记为<code>protected</code>，则不能为顶层访问<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// file name: example.kt</span></span><br><span class="line"><span class="keyword">package</span> foo</span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">foo</span><span class="params">()</span> &#123;&#125; <span class="comment">// 在example.kt内部可访问</span></span></span><br><span class="line"><span class="keyword">public</span> <span class="variable"><span class="keyword">var</span> bar</span>: <span class="typename">Int</span> = <span class="number">5</span> <span class="comment">// 在任何地方可见</span></span><br><span class="line"> <span class="keyword">private</span> <span class="keyword">set</span>         <span class="comment">// setter 方法只在example.kt中可见</span></span><br><span class="line">internal <span class="variable"><span class="keyword">val</span> baz</span> = <span class="number">6</span> <span class="comment">// 在相同module中可见</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="u7C7B_u4E0E_u63A5_u53E3"><a href="#u7C7B_u4E0E_u63A5_u53E3" class="headerlink" title="类与接口"></a>类与接口</h2><p>对于类中声明的成员</p>
+<ul>
+<li>private：只在声明的类中可见（包括类所有的成员函数）</li>
+<li>protected：与private相似，但子类也可访问</li>
+<li>internal：相同模块的任何client都访问类的internal成员</li>
+<li>public：任何client都可访问类的public成员</li>
+</ul>
+<blockquote>
+<p>Java开发注意：在kotlin中，外部类无法访问内部类的私有成员</p>
+</blockquote>
+<p>如果复写<code>protected</code>成员且没有显式指定可见修饰符，复写后的成员也具有<code>protected</code>可见性。<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">open</span> <span class="class"><span class="keyword">class</span> <span class="title">Outer</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="variable"><span class="keyword">val</span> a</span> = <span class="number">1</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">open</span> <span class="variable"><span class="keyword">val</span> b</span> = <span class="number">2</span></span><br><span class="line">    internal <span class="variable"><span class="keyword">val</span> c</span> = <span class="number">3</span></span><br><span class="line">    <span class="variable"><span class="keyword">val</span> d</span> = <span class="number">4</span>  <span class="comment">// public by default</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">protected</span> <span class="class"><span class="keyword">class</span> <span class="title">Nested</span> </span>&#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="variable"><span class="keyword">val</span> e</span>: <span class="typename">Int</span> = <span class="number">5</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Subclass</span> : <span class="typename">Outer</span></span>() &#123;</span><br><span class="line">    <span class="comment">// a 不可见</span></span><br><span class="line">    <span class="comment">// b, c 和 d 可见</span></span><br><span class="line">    <span class="comment">// Nested 和 e 可见</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="variable"><span class="keyword">val</span> b</span> = <span class="number">5</span>   <span class="comment">// 'b' 为 protected</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Unrelated</span></span>(o: Outer) &#123;</span><br><span class="line">    <span class="comment">// o.a, o.b 不可见</span></span><br><span class="line">    <span class="comment">// o.c 和 o.d are 可见（相同模块）</span></span><br><span class="line">    <span class="comment">// Outer.Nested 不可见且 Nested::e 也不可见</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="u6784_u9020_u5668-1"><a href="#u6784_u9020_u5668-1" class="headerlink" title="构造器"></a>构造器</h2><p>使用下面的语法来指定类的首要构造器的可见性</p>
+<blockquote>
+<p>需要显式添加<code>constructor</code>关键字</p>
+</blockquote>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span> <span class="title">private</span> <span class="title">constructor</span></span>(a: <span class="typename">Int</span>) &#123; ... &#125;</span><br></pre></td></tr></table></figure>
+<p>类C的构造器为私有。默认的构造器都为<code>public</code>属性，也说明了只要可访问类，就能使用对应类的构造器。（如 internal类型的类，只在相同模块中访问）</p>
+<h2 id="u5C40_u90E8_u53D8_u91CF"><a href="#u5C40_u90E8_u53D8_u91CF" class="headerlink" title="局部变量"></a>局部变量</h2><p>局部变量，函数和类没有可见性修饰符</p>
+<h2 id="u6A21_u5757"><a href="#u6A21_u5757" class="headerlink" title="模块"></a>模块</h2><p><code>internal</code>修饰符表示成员只能被相同模块访问。明确地说，Kotlin的模块是共同编译的一组文件：</p>
+<ul>
+<li><code>IntelliJ IDEA</code>模块</li>
+<li>Maven或Gradle项目</li>
+<li>使用Ant构建编译的文件</li>
+</ul>
+
+            
+                
+
+            
+        </div>
+    </div>
+    <div class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/kotlin/">kotlin</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/07/03/Kotlin基础之属性与字段、接口/"  data-tooltip="Kotlin基础之字段、接口">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/07/03/Kotlin基础之基础类型与包/" data-tooltip="Kotlin基础之基础类型与包">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至Google+" href="https://plus.google.com/share?url=http://blog.alexwan1989.com/2017/07/03/Kotlin基础之类、继承、可见性修饰符/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+       
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至Twitter" href="https://twitter.com/intent/tweet?text=http://blog.alexwan1989.com/2017/07/03/Kotlin基础之类、继承、可见性修饰符/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+
+         <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至新浪微博" href="http://www.jiathis.com/send/?webid=tsina&amp;appkey=&amp;uid=1850331&amp;url=http://blog.alexwan1989.com/2017/07/03/Kotlin基础之类、继承、可见性修饰符/&amp;title=Kotlin基础之类、继承、可见性修饰符">
+                <i class="fa fa-weibo"></i>
+            </a>
+        </li>
+
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+            <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2017 alexwan. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="1">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/07/03/Kotlin基础之属性与字段、接口/"  data-tooltip="Kotlin基础之字段、接口">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/07/03/Kotlin基础之基础类型与包/" data-tooltip="Kotlin基础之基础类型与包">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至Google+" href="https://plus.google.com/share?url=http://blog.alexwan1989.com/2017/07/03/Kotlin基础之类、继承、可见性修饰符/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+       
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至Twitter" href="https://twitter.com/intent/tweet?text=http://blog.alexwan1989.com/2017/07/03/Kotlin基础之类、继承、可见性修饰符/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+
+         <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至新浪微博" href="http://www.jiathis.com/send/?webid=tsina&amp;appkey=&amp;uid=1850331&amp;url=http://blog.alexwan1989.com/2017/07/03/Kotlin基础之类、继承、可见性修饰符/&amp;title=Kotlin基础之类、继承、可见性修饰符">
+                <i class="fa fa-weibo"></i>
+            </a>
+        </li>
+
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="1">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://blog.alexwan1989.com/2017/07/03/Kotlin基础之类、继承、可见性修饰符/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://blog.alexwan1989.com/2017/07/03/Kotlin基础之类、继承、可见性修饰符/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://blog.alexwan1989.com/2017/07/03/Kotlin基础之类、继承、可见性修饰符/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        <div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <!-- use remote images as avatar-->
+            <img id="about-card-picture" src="http://res.cloudinary.com/dmfz9aun7/image/upload/v1467081842/android/3397490934332211.jpg"/>
+        
+            <h4 id="about-card-name">alexwan</h4>
+        
+            <h5 id="about-card-bio"><p>无限大な梦のあとの 何もない世の中じゃ!</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Android Developer</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                China ShangHai
+            </h5>
+        
+    </div>
+</div>
+
+        <div id="cover" style="background-image:url('http://res.cloudinary.com/dmfz9aun7/image/upload/v1465302627/hexo/re_zero_kara_hajimeru_isekai_seikatsu_99.jpg');"></div>
+
+    </body>
+    <!--SCRIPTS-->
+<script src="/assets/js/script.min.js" type="text/javascript"></script>
+<!--SCRIPTS END-->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'alexwan';
+        (function() {
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+
+
+
+</html>
