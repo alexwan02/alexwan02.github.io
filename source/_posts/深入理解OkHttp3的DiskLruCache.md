@@ -1,7 +1,7 @@
 ---
 title: 深入理解OkHttp3的DiskLruCache（2）
 date: 2017-04-24 10:14:09
-tags: okhttp3 android
+tags: okhttp3
 categories: okhttp3
 ---
 磁盘缓存是将网络资源先保存到系统分配出的内存空间中，当内存中的资源容量达到某个限度时，在将内存中的资源保存的磁盘中。这样做可以有效减少磁盘的读写操作。

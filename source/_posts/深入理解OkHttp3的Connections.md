@@ -1,7 +1,7 @@
 ---
 title: 深入理解OkHttp3的Connections（3）
 date: 2017-04-24 17:34:07
-tags: okhttp3 android
+tags: okhttp3
 categories: okhttp3
 ---
 ![img](http://res.cloudinary.com/dmfz9aun7/image/upload/v1492768247/wechat/OkHttpCore.jpg)

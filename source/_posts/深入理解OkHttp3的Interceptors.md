@@ -1,7 +1,7 @@
 ---
 title: 深入理解OkHttp3的Interceptors（1）
 date: 2017-04-23 10:14:09
-tags: okhttp3 android
+tags: okhttp3
 categories: okhttp3
 ---
 > Version : okhttp:3.6.0
