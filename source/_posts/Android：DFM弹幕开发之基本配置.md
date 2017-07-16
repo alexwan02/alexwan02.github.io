@@ -1,6 +1,5 @@
 title: Android：DFM弹幕开发之基本配置
 date: 2016-09-19 09:34:37
-tags:
 thumbnailImage:  http://res.cloudinary.com/dmfz9aun7/image/upload/b_rgb:fff,c_fit,dpr_0.75,e_grayscale,w_564/v1474249270/android/bilibili_dfm.png
 tags: danmaku
 categories: danmaku
