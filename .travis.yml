@@ -12,13 +12,11 @@ script:
 after_script:
   - cd ./public 
   - git init
-  - git config user.name "alexwan02"
-  - git config user.email "alexwan0312@gmail.com"
-  - cd ..
-  - hexo d
-  # - git add .
-  # - git commit -m "travis ci auto build"
-  # - git push "https://${Personal_access_tokens}@${REPO}" master:master
+  - git config --global user.name "alexwan02"
+  - git config --global user.email "alexwan0312@gmail.com"
+  - git add .
+  - git commit -m "travis ci auto build"
+  - git push "https://${Personal_access_tokens}@${REPO}" master:master
 
 branches:
   only: 
