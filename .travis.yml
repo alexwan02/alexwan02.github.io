@@ -7,7 +7,7 @@ cache:
     - node_modules
 
 before_script:
-  - git clone --branch hexo https://github.com/alexwan02/alexwan02.github.io.git public
+  
 script:
   - npm run build
 after_success:
