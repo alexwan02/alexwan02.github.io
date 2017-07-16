@@ -1,0 +1,543 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+    
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Alexwan Studio">
+    <title>Android：Material Design笔记（一） - Alexwan Studio</title>
+    <meta name="author" content="alexwan">
+    
+        <link rel="icon" href="/assets/images/https://cdn.discordapp.com/icons/102860784329052160/109fd014c718f40110c4a182f105ca71.jpg">
+    
+    
+        <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="Codelab for Android Design Support Library used in I/O Rewind Bangkok session
+Material Design for Android
+Material Design Introduction
+一、准备1. style.xml配置res/style.xml12345678910&amp;lt;!--NoActionBar --&amp;g">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Android：Material Design笔记（一）">
+<meta property="og:url" content="http://blog.alexwan.cn/2016/01/31/Android：Material-Design笔记（一）/index.html">
+<meta property="og:site_name" content="Alexwan Studio">
+<meta property="og:description" content="Codelab for Android Design Support Library used in I/O Rewind Bangkok session
+Material Design for Android
+Material Design Introduction
+一、准备1. style.xml配置res/style.xml12345678910&amp;lt;!--NoActionBar --&amp;g">
+<meta property="og:updated_time" content="2016-04-10T00:13:26.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android：Material Design笔记（一）">
+<meta name="twitter:description" content="Codelab for Android Design Support Library used in I/O Rewind Bangkok session
+Material Design for Android
+Material Design Introduction
+一、准备1. style.xml配置res/style.xml12345678910&amp;lt;!--NoActionBar --&amp;g">
+    
+    
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style.min.css" type="text/css">
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-74386866-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+</head>
+
+    <body>
+        <div id="blog">
+            <header id="header" data-behavior="1">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/ ">Alexwan Studio</a>
+    </h1>
+    
+        
+            <a  class="header-right-icon st-search-show-outputs"
+                href="/#search">
+        
+                <i class="fa fa-lg fa-search"></i>
+            </a>
+    
+</header>
+            <nav id="sidebar" data-behavior="1">
+    
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/ "
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">主页</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-categories"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">分类</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-tags"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">标签</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-archives"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-bars"></i>
+                    <span class="sidebar-button-desc">归档</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link st-search-show-outputs"
+                         href="/#search"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-search"></i>
+                    <span class="sidebar-button-desc">搜索</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/#about"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">关于</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://github.com/alexwan02" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-github-square"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="http://stackoverflow.com/users/4919743/alexwan1989" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-stack-overflow"></i>
+                    <span class="sidebar-button-desc">Stack Overflow</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://alexwan0312@gmail.com" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
+                    <span class="sidebar-button-desc">Mail</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/atom.xml"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+
+            
+            <div id="main" data-behavior="1"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            Android：Material Design笔记（一）
+        </h1>
+    
+    <div class="post-meta">
+    <time itemprop="datePublished" content="Sun Jan 31 2016 01:30:44 GMT+0800">
+	
+		    Jan 31, 2016
+    	
+    </time>
+    
+</div>
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <p><a href="http://inthecheesefactory.com/blog/android-design-support-library-codelab/en" target="_blank" rel="external">Codelab for Android Design Support Library used in I/O Rewind Bangkok session</a></p>
+<p><a href="http://developer.android.com/design/material/index.html" target="_blank" rel="external">Material Design for Android</a></p>
+<p><a href="http://www.google.com/design/spec/material-design/introduction.html#" target="_blank" rel="external">Material Design Introduction</a></p>
+<h3 id="u4E00_u3001_u51C6_u5907"><a href="#u4E00_u3001_u51C6_u5907" class="headerlink" title="一、准备"></a>一、准备</h3><h4 id="1-_style-xml_u914D_u7F6E"><a href="#1-_style-xml_u914D_u7F6E" class="headerlink" title="1. style.xml配置"></a>1. style.xml配置</h4><figure class="highlight xml"><figcaption><span>res/style.xml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--NoActionBar --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">resources</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- Base application theme. --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">style</span> <span class="attribute">name</span>=<span class="value">"AppTheme"</span> <span class="attribute">parent</span>=<span class="value">"Theme.AppCompat.Light.DarkActionBar"</span>&gt;</span><span class="css"></span><br><span class="line">        &lt;!<span class="tag">--</span> <span class="tag">Customize</span> <span class="tag">your</span> <span class="tag">theme</span> <span class="tag">here</span>. <span class="tag">--</span>&gt;</span><br><span class="line">        &lt;<span class="tag">item</span> <span class="tag">name</span>="<span class="tag">colorPrimary</span>"&gt;<span class="at_rule">@<span class="keyword">color/colorPrimary&lt;/item&gt;</span></span><br><span class="line">        &lt;item name=<span class="string">"colorPrimaryDark"</span>&gt;@color/colorPrimaryDark&lt;/item&gt;</span><br><span class="line">        &lt;item name=<span class="string">"colorAccent"</span>&gt;@color/colorAccent&lt;/item&gt;</span><br><span class="line">    </span></span><span class="tag">&lt;/<span class="title">style</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">resources</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h4 id="2-gradle__u4F9D_u8D56"><a href="#2-gradle__u4F9D_u8D56" class="headerlink" title="2.gradle 依赖"></a>2.gradle 依赖</h4><p>在app的build.gradle中添加Design Support依赖<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">compile <span class="string">'com.android.support:support-v4:23.0.1'</span></span><br><span class="line">compile <span class="string">'com.android.support:appcompat-v7:23.0.1'</span></span><br><span class="line">compile <span class="string">'com.android.support:design:23.0.1'</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="3-_u5E03_u5C40_u6587_u4EF6"><a href="#3-_u5E03_u5C40_u6587_u4EF6" class="headerlink" title="3.布局文件"></a>3.布局文件</h4><figure class="highlight xml"><figcaption><span>layout/activity_main.xml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="pi">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">android.support.v4.widget.DrawerLayout</span></span><br><span class="line">    <span class="attribute">xmlns:android</span>=<span class="value">"http://schemas.android.com/apk/res/android"</span></span><br><span class="line">    <span class="attribute">xmlns:tools</span>=<span class="value">"http://schemas.android.com/tools"</span></span><br><span class="line">    <span class="attribute">android:layout_width</span>=<span class="value">"match_parent"</span></span><br><span class="line">    <span class="attribute">android:layout_height</span>=<span class="value">"match_parent"</span></span><br><span class="line">    <span class="attribute">android:paddingLeft</span>=<span class="value">"@dimen/activity_horizontal_margin"</span></span><br><span class="line">    <span class="attribute">android:paddingRight</span>=<span class="value">"@dimen/activity_horizontal_margin"</span></span><br><span class="line">    <span class="attribute">android:paddingTop</span>=<span class="value">"@dimen/activity_vertical_margin"</span></span><br><span class="line">    <span class="attribute">android:paddingBottom</span>=<span class="value">"@dimen/activity_vertical_margin"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">android.support.v4.widget.DrawerLayout</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="u4E8C_u3001_u6DFB_u52A0FAB"><a href="#u4E8C_u3001_u6DFB_u52A0FAB" class="headerlink" title="二、添加FAB"></a>二、添加FAB</h3><p>Floating Action Button (FAB) 是带有阴影效果的圆形Button。在<code>activity_main.xml</code>中添加FloatingActionButton布局，FAB需要有个父布局来确定它在布局文件中的具体位置，所以把FAB放在FrameLayout中。如：<code>android:layout_gravity=&quot;bottom|end&quot;</code>表示FAB位于整个布局的右下角。</p>
+<figure class="highlight xml"><figcaption><span>layout/activity_main.xml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="pi">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">android.support.v4.widget.DrawerLayout</span></span><br><span class="line">    <span class="attribute">xmlns:android</span>=<span class="value">"http://schemas.android.com/apk/res/android"</span></span><br><span class="line">    <span class="attribute">xmlns:app</span>=<span class="value">"http://schemas.android.com/apk/res-auto"</span></span><br><span class="line">    <span class="attribute">android:layout_width</span>=<span class="value">"match_parent"</span></span><br><span class="line">    <span class="attribute">android:layout_height</span>=<span class="value">"match_parent"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">FrameLayout</span></span><br><span class="line">        <span class="attribute">android:layout_width</span>=<span class="value">"match_parent"</span></span><br><span class="line">        <span class="attribute">android:layout_height</span>=<span class="value">"match_parent"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="title">android.support.design.widget.FloatingActionButton</span></span><br><span class="line">            <span class="attribute">android:layout_width</span>=<span class="value">"wrap_content"</span></span><br><span class="line">            <span class="attribute">android:layout_height</span>=<span class="value">"wrap_content"</span></span><br><span class="line">            <span class="attribute">android:layout_gravity</span>=<span class="value">"bottom|end"</span></span><br><span class="line">            <span class="attribute">android:src</span>=<span class="value">"@drawable/ic_plus"</span></span><br><span class="line">            <span class="attribute">app:fabSize</span>=<span class="value">"normal"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="title">FrameLayout</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">android.support.v4.widget.DrawerLayout</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h4 id="1-_android_3Asrc"><a href="#1-_android_3Asrc" class="headerlink" title="1. android:src"></a>1. android:src</h4><p>表示FAB中的图标。建议大小为40dp的透明png图片。</p>
+<h4 id="2-_app_3AfabSize"><a href="#2-_app_3AfabSize" class="headerlink" title="2. app:fabSize"></a>2. app:fabSize</h4><p>表示FAB的大小。有<code>normal</code>、<code>min</code>两个值。normal的大小为56dp，min的大小为40dp。</p>
+<p>5.0的效果</p>
+<div><br><image src="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot21.jpg"><br></image></div>
+
+<p>4.x的效果</p>
+<div><br><image src="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot20.jpg"><br></image></div>
+
+<p>在同样的布局文件中，两个的margin并不一致。design library开发小组把这个问题已确认为bug。目前的解决方案是在api 21+的dimens资源中设置FAB的margin值设置为16dp，低于api 21的dimens资源中设置FAB的margin值为0dp</p>
+<p>res/values/dimens.xml</p>
+<figure class="highlight xml"><figcaption><span>res/values/dimens.xml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">dimen</span> <span class="attribute">name</span>=<span class="value">"codelab_fab_margin_right"</span>&gt;</span>0dp<span class="tag">&lt;/<span class="title">dimen</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">dimen</span> <span class="attribute">name</span>=<span class="value">"codelab_fab_margin_bottom"</span>&gt;</span>0dp<span class="tag">&lt;/<span class="title">dimen</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>res/values-v21/dimens.xml</p>
+<figure class="highlight xml"><figcaption><span>res/values-v21/dimens.xml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">dimen</span> <span class="attribute">name</span>=<span class="value">"codelab_fab_margin_right"</span>&gt;</span>16dp<span class="tag">&lt;/<span class="title">dimen</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">dimen</span> <span class="attribute">name</span>=<span class="value">"codelab_fab_margin_bottom"</span>&gt;</span>16dp<span class="tag">&lt;/<span class="title">dimen</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>res/layout/activity_code_lab.xml 中设定FAB的margin值<br><figure class="highlight xml"><figcaption><span>res/layout/activity_code_lab.xml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">android.support.design.widget.FloatingActionButton</span></span><br><span class="line">    <span class="attribute">...</span></span><br><span class="line">    <span class="attribute">android:layout_marginBottom</span>=<span class="value">"@dimen/codelab_fab_margin_bottom"</span></span><br><span class="line">    <span class="attribute">android:layout_marginRight</span>=<span class="value">"@dimen/codelab_fab_margin_right"</span></span><br><span class="line">    <span class="attribute">...</span>/&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="3-_app_3Aelevation"><a href="#3-_app_3Aelevation" class="headerlink" title="3. app:elevation"></a>3. app:elevation</h4><p>FAB的阴影深度。默认为6dp</p>
+<h4 id="4-_app_3ApressedTranslationZ"><a href="#4-_app_3ApressedTranslationZ" class="headerlink" title="4. app:pressedTranslationZ"></a>4. app:pressedTranslationZ</h4><p>FAB按住时的阴影深度。默认为12dp</p>
+<h4 id="5-app_3AbackgroundTint"><a href="#5-app_3AbackgroundTint" class="headerlink" title="5.app:backgroundTint"></a>5.app:backgroundTint</h4><p>FAB背景颜色。默认使用样式中的<code>colorAccent</code>的颜色。</p>
+<h4 id="6-FAB_u70B9_u51FB_u4E8B_u4EF6"><a href="#6-FAB_u70B9_u51FB_u4E8B_u4EF6" class="headerlink" title="6.FAB点击事件"></a>6.FAB点击事件</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">FloatingActionButton fabBtn;</span><br><span class="line">...</span><br><span class="line">fabBtn = (FloatingActionButton) findViewById(R.id.fabBtn);</span><br><span class="line">    fabBtn.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">        <span class="annotation">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="u4E09_u3001_u4F7F_u7528Snackbar"><a href="#u4E09_u3001_u4F7F_u7528Snackbar" class="headerlink" title="三、使用Snackbar"></a>三、使用Snackbar</h3><p>Snackbar，一个在屏幕底部显示的黑色条，可以设置显示的文本。类似Toast，与Toast不一样的是，Snackbar为UI的一部分，而Toast是浮动在屏幕上。</p>
+<div><br>    <image src="http://inthecheesefactory.com/uploads/source/designlibrary/snackbar.jpg"><br></image></div>
+
+<h4 id="1-__u5B9E_u4F8B_u5316_Snackbar"><a href="#1-__u5B9E_u4F8B_u5316_Snackbar" class="headerlink" title="1. 实例化 Snackbar"></a>1. 实例化 Snackbar</h4><p>Snackbar make(@NonNull View view, @NonNull CharSequence text, int duration)</p>
+<ul>
+<li>view Snackbar 的显示位置</li>
+<li>text 显示的文字</li>
+<li>duration  Snackbar显示的时长 <code>LENGTH_SHORT</code>或<code>LENGTH_LONG</code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">FrameLayout rootLayout;</span><br><span class="line">...</span><br><span class="line">rootLayout = (FrameLayout) findViewById(R.id.rootLayout);</span><br><span class="line">...</span><br><span class="line">fabBtn = (FloatingActionButton) findViewById(R.id.fabBtn);</span><br><span class="line">fabBtn.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</span><br><span class="line">        Snackbar.make(rootLayout, <span class="string">"Hello. I am Snackbar!"</span>, Snackbar.LENGTH_SHORT)</span><br><span class="line">                .setAction(<span class="string">"Undo"</span>, <span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">                    <span class="annotation">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;)</span><br><span class="line">                .show();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>效果：</p>
+<div><br>    <image src="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot24.jpg"><br></image></div>
+
+<p>Snackbar显示的有问题，是因为Snackbar需要Design Library的CoordinatorLayout布局配合来使用。</p>
+<h3 id="u56DB_u3001CoordinatorLayout"><a href="#u56DB_u3001CoordinatorLayout" class="headerlink" title="四、CoordinatorLayout"></a>四、CoordinatorLayout</h3><p>CoordinatorLayout是由Design Library的新添的布局，可以让包含的View和相协调。必须保证每个子View是为配合CoordinatorLayout的布局而设计和实现的。其中FAB和Snackbar就是其中两个。</p>
+<h4 id="u66FF_u6362FrameLayout_u3002"><a href="#u66FF_u6362FrameLayout_u3002" class="headerlink" title="替换FrameLayout。"></a>替换<code>FrameLayout</code>。</h4><figure class="highlight xml"><figcaption><span>res/activity/main_activity.xml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">android.support.design.widget.CoordinatorLayout</span></span><br><span class="line">    <span class="attribute">android:id</span>=<span class="value">"@+id/rootLayout"</span></span><br><span class="line">    <span class="attribute">android:layout_width</span>=<span class="value">"match_parent"</span></span><br><span class="line">    <span class="attribute">android:layout_height</span>=<span class="value">"match_parent"</span></span><br><span class="line">    &gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">android.support.design.widget.FloatingActionButton</span></span><br><span class="line">        <span class="attribute">...</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">android.support.design.widget.CoordinatorLayout</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>同时修改Activity中rootLayout的类型为CoordinatorLayout。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//FrameLayout rootLayout;</span></span><br><span class="line">CoordinatorLayout rootLayout;</span><br><span class="line">...</span><br><span class="line"><span class="comment">//rootLayout = (FrameLayout) findViewById(R.id.rootLayout);</span></span><br><span class="line">rootLayout = (CoordinatorLayout) findViewById(R.id.rootLayout);</span><br></pre></td></tr></table></figure>
+<p>效果图：</p>
+<div><br>    <image src="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot19n.png"><br></image></div>
+
+<p>在android api 4.x上会有显示的bug。FAB的margin变为0dp。调整dimens的值</p>
+<figure class="highlight xml"><figcaption><span>res/values/dimens.xml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">dimen</span> <span class="attribute">name</span>=<span class="value">"codelab_fab_margin_right"</span>&gt;</span>16dp<span class="tag">&lt;/<span class="title">dimen</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">dimen</span> <span class="attribute">name</span>=<span class="value">"codelab_fab_margin_bottom"</span>&gt;</span>16dp<span class="tag">&lt;/<span class="title">dimen</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>修改完毕</p>
+<div><br>    <image src="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot20n.png"><br></image></div>
+
+<p><code>注</code> ：如果使用<code>Android Design Support</code>库的话，考虑使用<code>CoordinatorLayout</code>作为布局根view。</p>
+<h3 id="u4E94_u3001Toolbar"><a href="#u4E94_u3001Toolbar" class="headerlink" title="五、Toolbar"></a>五、Toolbar</h3><p>相比传统的ActionBar，Toolbar更加灵活。</p>
+<h4 id="1-_u9690_u85CFActionBar"><a href="#1-_u9690_u85CFActionBar" class="headerlink" title="1.隐藏ActionBar"></a>1.隐藏ActionBar</h4><figure class="highlight xml"><figcaption><span>res/values/styles.xml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">style</span> <span class="attribute">name</span>=<span class="value">"AppTheme"</span> <span class="attribute">parent</span>=<span class="value">"Theme.AppCompat.Light.DarkActionBar"</span>&gt;</span><span class="css"></span><br><span class="line">    &lt;<span class="tag">item</span> <span class="tag">name</span>="<span class="tag">windowActionBar</span>"&gt;<span class="tag">false</span>&lt;/<span class="tag">item</span>&gt;</span><br><span class="line">    &lt;<span class="tag">item</span> <span class="tag">name</span>="<span class="tag">windowNoTitle</span>"&gt;<span class="tag">true</span>&lt;/<span class="tag">item</span>&gt;</span><br><span class="line"></span><span class="tag">&lt;/<span class="title">style</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h4 id="2-_u6DFB_u52A0Toolbar"><a href="#2-_u6DFB_u52A0Toolbar" class="headerlink" title="2.添加Toolbar"></a>2.添加Toolbar</h4><p>（1）、在布局main_activity.xml添加Toolbar</p>
+<figure class="highlight xml"><figcaption><span>res/layout/main_activity.xml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">android.support.design.widget.CoordinatorLayout</span></span><br><span class="line">    <span class="attribute">...</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">android.support.design.widget.AppBarLayout</span></span><br><span class="line">            <span class="attribute">android:layout_width</span>=<span class="value">"match_parent"</span></span><br><span class="line">            <span class="attribute">android:layout_height</span>=<span class="value">"wrap_content"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="title">android.support.v7.widget.Toolbar</span></span><br><span class="line">                <span class="attribute">android:id</span>=<span class="value">"@+id/toolbar"</span></span><br><span class="line">                <span class="attribute">android:layout_width</span>=<span class="value">"match_parent"</span></span><br><span class="line">                <span class="attribute">android:layout_height</span>=<span class="value">"?attr/actionBarSize"</span></span><br><span class="line">                <span class="attribute">android:background</span>=<span class="value">"?attr/colorPrimary"</span></span><br><span class="line">                <span class="attribute">app:popupTheme</span>=<span class="value">"@style/ThemeOverlay.AppCompat.Light"</span></span><br><span class="line">                <span class="attribute">app:theme</span>=<span class="value">"@style/ThemeOverlay.AppCompat.Dark.ActionBar"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="title">android.support.design.widget.AppBarLayout</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="title">android.support.design.widget.FloatingActionButton</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">android.support.design.widget.CoordinatorLayout</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>（2）、在Activity中调用setSupportActionBar为Activity指定toolBar。</p>
+<figure class="highlight java"><figcaption><span>MainActivity</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line">    Toolbar toolBar;</span><br><span class="line">    DrawerLayout drawerLayout;</span><br><span class="line">    ActionBarDrawerToggle drawerToggle;</span><br><span class="line">    ...</span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        toolbar = (Toolbar) findViewById(R.id.toolbar);</span><br><span class="line">        setSupportActionBar(toolbar);</span><br><span class="line">        ActionBar actionBar = getSupportActionBar();</span><br><span class="line">        <span class="keyword">if</span>(actionBar != <span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="comment">// 是否显示icon</span></span><br><span class="line">            actionBar.setDisplayShowHomeEnabled(<span class="keyword">true</span>);</span><br><span class="line">            actionBar.setDisplayHomeAsUpEnabled(<span class="keyword">true</span>);</span><br><span class="line">            <span class="comment">// 是否显示标题</span></span><br><span class="line">            actionBar.setDisplayShowTitleEnabled(<span class="keyword">true</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);</span><br><span class="line">        drawerToggle = <span class="keyword">new</span> ActionBarDrawerToggle(<span class="keyword">this</span> , drawerLayout , <span class="number">0</span> , <span class="number">0</span>);</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onPostCreate</span><span class="params">(@Nullable Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onPostCreate(savedInstanceState);</span><br><span class="line">        <span class="comment">// toolbar 导航图标样式为home</span></span><br><span class="line">        drawerToggle.syncState();</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="u516D_u3001_u5185_u5BB9_u5E03_u5C40"><a href="#u516D_u3001_u5185_u5BB9_u5E03_u5C40" class="headerlink" title="六、内容布局"></a>六、内容布局</h3><p>我们介绍了FAB、Toolbar，现在为<code>main_activity.xml</code>布局主区域添加一些内容。如：添加带有两个button的LinearLayout。<br><figure class="highlight xml"><figcaption><span>res/layout/main_activity.xml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">android.support.design.widget.AppBarLayout</span>&gt;</span></span><br><span class="line">...</span><br><span class="line"><span class="tag">&lt;/<span class="title">android.support.design.widget.AppBarLayout</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">LinearLayout</span></span><br><span class="line">    <span class="attribute">android:layout_width</span>=<span class="value">"match_parent"</span></span><br><span class="line">    <span class="attribute">android:layout_height</span>=<span class="value">"match_parent"</span></span><br><span class="line">    <span class="attribute">android:orientation</span>=<span class="value">"vertical"</span></span><br><span class="line">    &gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">Button</span></span><br><span class="line">        <span class="attribute">android:layout_width</span>=<span class="value">"wrap_content"</span></span><br><span class="line">        <span class="attribute">android:layout_height</span>=<span class="value">"wrap_content"</span></span><br><span class="line">        <span class="attribute">android:text</span>=<span class="value">"Yo Yo"</span></span><br><span class="line">        /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">Button</span></span><br><span class="line">        <span class="attribute">android:layout_width</span>=<span class="value">"wrap_content"</span></span><br><span class="line">        <span class="attribute">android:layout_height</span>=<span class="value">"wrap_content"</span></span><br><span class="line">        <span class="attribute">android:text</span>=<span class="value">"Yo Yo"</span></span><br><span class="line">        /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">LinearLayout</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">android.support.design.widget.FloatingActionButton</span></span><br><span class="line">    <span class="attribute">...</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>如下图</p>
+<div><br>    <image src="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot29.jpg"><br></image></div>
+
+<p>发现两个buttom并不是我们想要的样式：置于toolbar下面，而是被toolbar遮住。因为<code>LinearLayout</code>并不适配CoordinatorLayout，所以没有像toolbar那样直接自适应CoordinatorLayout的内容。解决这个问题也很简单，在<code>LinearLayout</code>中加上<code>app:layout_behavior=&quot;@string/appbar_scrolling_view_behavior&quot;</code>这个属性即可完美适配CoordinatorLayout布局了。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;LinearLayout</span><br><span class="line">    ...</span><br><span class="line">    app:layout_behavior=<span class="string">"@string/appbar_scrolling_view_behavior"</span></span><br><span class="line">    ...</span><br><span class="line">    &gt;</span><br></pre></td></tr></table></figure></p>
+<div><br>    <image src="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot30.jpg"><br></image></div>
+
+<p>内容介绍结束。</p>
+<h3 id="u4E03_u3001TabLayout"><a href="#u4E03_u3001TabLayout" class="headerlink" title="七、TabLayout"></a>七、TabLayout</h3><p>Material Design提供新的tab布局TabLayout，在这之前实现这个功能一般选择第三方库<code>SlidingTabLayout</code>或<code>SlidingTabStrip</code>。引入TabLayout与toolbar类似需要在xml布局文件中添加TabLayout的布局，并在Java代码中设定TabLayout的Tab属性。</p>
+<h4 id="1-main_activity-xml"><a href="#1-main_activity-xml" class="headerlink" title="1.main_activity.xml"></a>1.main_activity.xml</h4><figure class="highlight xml"><figcaption><span>res/layout/main_activity.xml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="tag">&lt;<span class="title">android.support.design.widget.AppBarLayout</span> <span class="attribute">...</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">    <span class="tag">&lt;<span class="title">android.support.v7.widget.Toolbar</span> <span class="attribute">...</span> /&gt;</span></span><br><span class="line"> </span><br><span class="line">    <span class="tag">&lt;<span class="title">android.support.design.widget.TabLayout</span></span><br><span class="line">        <span class="attribute">android:id</span>=<span class="value">"@+id/tabLayout"</span></span><br><span class="line">        <span class="attribute">android:layout_width</span>=<span class="value">"match_parent"</span></span><br><span class="line">        <span class="attribute">android:layout_height</span>=<span class="value">"wrap_content"</span>/&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;/<span class="title">android.support.design.widget.AppBarLayout</span>&gt;</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<h4 id="2-_u5728Java_u4EE3_u7801_u4E2D_u6DFB_u52A0Tab"><a href="#2-_u5728Java_u4EE3_u7801_u4E2D_u6DFB_u52A0Tab" class="headerlink" title="2.在Java代码中添加Tab"></a>2.在Java代码中添加Tab</h4><figure class="highlight java"><figcaption><span>MainActivity.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">TabLayout tabLayout;</span><br><span class="line">...</span><br><span class="line">tabLayout = (TabLayout) findViewById(R.id.tabLayout);</span><br><span class="line">tabLayout.addTab(tabLayout.newTab().setText(<span class="string">"Tab 1"</span>));</span><br><span class="line">tabLayout.addTab(tabLayout.newTab().setText(<span class="string">"Tab 2"</span>));</span><br><span class="line">tabLayout.addTab(tabLayout.newTab().setText(<span class="string">"Tab 3"</span>));</span><br></pre></td></tr></table></figure>
+<div><br>    <image src="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot31.jpg"><br></image></div>
+
+<h4 id="3-_u4FEE_u6539Tab_u7684_u5B57_u4F53_u989C_u8272"><a href="#3-_u4FEE_u6539Tab_u7684_u5B57_u4F53_u989C_u8272" class="headerlink" title="3.修改Tab的字体颜色"></a>3.修改Tab的字体颜色</h4><p>Tab的字体颜色是默认为黑色，用<code>app:theme=&quot;@style/ThemeOverlay.AppCompat.Dark.ActionBar&quot;</code>可以修改Tab的字体颜色为白色</p>
+<figure class="highlight xml"><figcaption><span>res/layout/main_activity.xml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="tag">&lt;<span class="title">android.support.design.widget.TabLayout</span></span><br><span class="line">    <span class="attribute">...</span></span><br><span class="line">    <span class="attribute">app:theme</span>=<span class="value">"@style/ThemeOverlay.AppCompat.Dark.ActionBar"</span> /&gt;</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<div><br>    <image src="http://inthecheesefactory.com/uploads/source/designlibrary/screenshot32.jpg"><br></image></div>
+
+<h4 id="4-_u9002_u914DViewPager"><a href="#4-_u9002_u914DViewPager" class="headerlink" title="4.适配ViewPager"></a>4.适配ViewPager</h4><p>调用<code>setupWithViewPager()</code> 方法为TabLayout指定ViewPager容器。</p>
+<h4 id="5-_app_3AtabMode__u4E0E_app_3AtabGravity_u5C5E_u6027"><a href="#5-_app_3AtabMode__u4E0E_app_3AtabGravity_u5C5E_u6027" class="headerlink" title="5. app:tabMode 与 app:tabGravity属性"></a>5. app:tabMode 与 app:tabGravity属性</h4><p>app:tabMode<br>设置为<code>fixed</code>时，显示所有的Tab。适应于少量的Tab。不确定Tab的数量或Tab的数量较多的情况时，使用<code>scrollable</code>属性值，可以像Google Play Store那样滚动Tab。</p>
+<p>app:tabGravity 设置为<code>fill</code>时，Tab显示的方式为填充，设置为<code>center</code>时，则居中显示Tab。</p>
+<blockquote>
+<p>如果app:tabMode 的属性值为<code>scrollable</code>时，app:tabGravity的属性值则被忽略。</p>
+</blockquote>
+<div><br>    <image src="http://inthecheesefactory.com/uploads/source/designlibrary/tabmodetabgravity.jpg" style="width:100%"><br></image></div>
+
+<h3 id="u516B_u3001_u8BA9AppBarLayout_u968F_u5185_u5BB9_u6EDA_u52A8_u9000_u51FA_u5C4F_u5E55"><a href="#u516B_u3001_u8BA9AppBarLayout_u968F_u5185_u5BB9_u6EDA_u52A8_u9000_u51FA_u5C4F_u5E55" class="headerlink" title="八、让AppBarLayout随内容滚动退出屏幕"></a>八、让AppBarLayout随内容滚动退出屏幕</h3><p>Android UX中设计非常好的一点就是可以让AppBarLayout随内容滚动退出屏幕，可以增加内容区域更多的显示空间。</p>
+<h4 id="1-_u4FEE_u6539_u5E03_u5C40_u6587_u4EF6"><a href="#1-_u4FEE_u6539_u5E03_u5C40_u6587_u4EF6" class="headerlink" title="1.修改布局文件"></a>1.修改布局文件</h4><p>使用NestedScrollView替换LinearLayout。<br><figure class="highlight xml"><figcaption><span>res/layout/main_activity.xml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">android.support.v4.widget.NestedScrollView</span> <span class="attribute">...</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">LinearLayout</span> <span class="attribute">...</span>&gt;</span></span><br><span class="line">        ...</span><br><span class="line">    <span class="tag">&lt;/<span class="title">LinearLayout</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">android.support.v4.widget.NestedScrollView</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="2-_u8BBE_u7F6EToolbar_u7684Scroll_Flags_u5C5E_u6027_u503C"><a href="#2-_u8BBE_u7F6EToolbar_u7684Scroll_Flags_u5C5E_u6027_u503C" class="headerlink" title="2.设置Toolbar的Scroll Flags属性值"></a>2.设置Toolbar的Scroll Flags属性值</h4><figure class="highlight xml"><figcaption><span>res/layout/main_activity.xml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="tag">&lt;<span class="title">android.support.v7.widget.Toolbar</span></span><br><span class="line">    <span class="attribute">...</span></span><br><span class="line">    <span class="attribute">app:layout_scrollFlags</span>=<span class="value">"scroll|enterAlways"</span> /&gt;</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+            
+                
+
+            
+        </div>
+    </div>
+    <div class="post-footer main-content-wrap">
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/02/06/Android：RecyclerView/"  data-tooltip="Android：RecyclerView">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/01/28/Android图片加载框架：Picasso（一）/" data-tooltip="Android图片加载框架：Picasso（一）">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至Google+" href="https://plus.google.com/share?url=http://blog.alexwan.cn/2016/01/31/Android：Material-Design笔记（一）/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+       
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至Twitter" href="https://twitter.com/intent/tweet?text=http://blog.alexwan.cn/2016/01/31/Android：Material-Design笔记（一）/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+
+         <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至新浪微博" href="http://www.jiathis.com/send/?webid=tsina&amp;appkey=&amp;uid=1850331&amp;url=http://blog.alexwan.cn/2016/01/31/Android：Material-Design笔记（一）/&amp;title=Android：Material Design笔记（一）">
+                <i class="fa fa-weibo"></i>
+            </a>
+        </li>
+
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+            <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2017 alexwan. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="1">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/02/06/Android：RecyclerView/"  data-tooltip="Android：RecyclerView">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/01/28/Android图片加载框架：Picasso（一）/" data-tooltip="Android图片加载框架：Picasso（一）">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至Google+" href="https://plus.google.com/share?url=http://blog.alexwan.cn/2016/01/31/Android：Material-Design笔记（一）/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+       
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至Twitter" href="https://twitter.com/intent/tweet?text=http://blog.alexwan.cn/2016/01/31/Android：Material-Design笔记（一）/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+
+         <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至新浪微博" href="http://www.jiathis.com/send/?webid=tsina&amp;appkey=&amp;uid=1850331&amp;url=http://blog.alexwan.cn/2016/01/31/Android：Material-Design笔记（一）/&amp;title=Android：Material Design笔记（一）">
+                <i class="fa fa-weibo"></i>
+            </a>
+        </li>
+
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="1">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://blog.alexwan.cn/2016/01/31/Android：Material-Design笔记（一）/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://blog.alexwan.cn/2016/01/31/Android：Material-Design笔记（一）/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://blog.alexwan.cn/2016/01/31/Android：Material-Design笔记（一）/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        <div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <h4 id="about-card-name">alexwan</h4>
+        
+            <h5 id="about-card-bio"><p>无限大な梦のあとの 何もない世の中じゃ!</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Android Developer</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                China ShangHai
+            </h5>
+        
+    </div>
+</div>
+
+        <div id="cover" style="background-image:url('http://imgbucket-1252300500.picsh.myqcloud.com/github/body_bg_page.jpg');"></div>
+
+    </body>
+    <!--SCRIPTS-->
+<script src="/assets/js/script.min.js" type="text/javascript"></script>
+<!--SCRIPTS END-->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'alexwan';
+        (function() {
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+
+
+
+</html>

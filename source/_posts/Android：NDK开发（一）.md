@@ -1,0 +1,167 @@
+---
+title: Android：NDK开发（一）
+date: 2016-04-12T17:28:12.000Z
+tags: null
+---
+## 一、Mac NDK开发环境搭建
+
+## 二、Android Studio配置
+
+## 三、NDK 配置文件介绍
+
+### （一）、Android.MK
+
+Android.MK文件位于`./jni`文件夹下，描述编译系统的资源和共享库信息。对于定义项目配置å`Application.mk`、环境变量。
+
+#### 1. 基本属性
+
+```java
+// LOCAL_PATH
+LOCAL_PATH := $(call my-dir)
+
+// CLEAR_VARS
+include $(CLEAR_VARS)
+
+// LOCAL_MODULE
+LOCAL_MODULE := hello-jni
+
+// LOCAL_SRC_FILES
+LOCAL_SRC_FILES := hello-jni.c
+
+// BUILD_SHARED_LIBRARY
+include $(BUILD_SHARED_LIBRARY)
+```
+#### 2. 变量和宏
+#### 3. NDK定义的变量
+（1） CLEAR_VARS
+
+（2）2BUILD_SHARED_LIBRARY
+
+（3）BUILD_STATIC_LIBRARY
+
+（4）PREBUILT_SHARED_LIBRARY
+
+（5）PREBUILT_STATIC_LIBRARY
+
+（6）TARGET_ARCH
+
+（7）TARGET_PLATFORM
+
+（8）TARGET_ARCH_ABI
+
+（9）TARGET_ABI
+#### 4. 组件描述的变量
+（1）LOCAL_PATH
+
+（2）LOCAL_MODULE
+
+（3）LOCAL_MODULE_FILENAME
+
+（4）LOCAL_SRC_FILES
+
+（5）LOCAL_CPP_EXTENSION
+
+（6）LOCAL_CPP_FEATURES
+
+（7）LOCAL_C_INCLUDES
+
+（8）LOCAL_CFLAGS
+
+（9）LOCAL_CPPFLAGS
+
+（10）LOCAL_STATIC_LIBRARIES
+
+（11）LOCAL_SHARED_LIBRARIES
+
+（12）LOCAL_WHOLE_STATIC_LIBRARIES
+
+（13）LOCAL_LDLIBS
+
+（14）LOCAL_LDFLAGS
+
+（15）LOCAL_ALLOW_UNDEFINED_SYMBOLS
+
+（16）LOCAL_ARM_MODE
+
+（17）LOCAL_ARM_NEON
+
+（18）LOCAL_DISABLE_NO_EXECUTE
+
+（19）LOCAL_DISABLE_RELRO
+
+（20）LOCAL_DISABLE_FORMAT_STRING_CHECKS
+
+（21）LOCAL_EXPORT_CFLAGS
+
+（22）LOCAL_EXPORT_CPPFLAGS
+
+（23）LOCAL_EXPORT_C_INCLUDES
+
+（24）LOCAL_EXPORT_LDFLAGS
+
+（25）LOCAL_EXPORT_LDLIBS
+
+（26）LOCAL_SHORT_COMMANDS
+
+（27）LOCAL_THIN_ARCHIVE
+
+（28）LOCAL_FILTER_ASM
+
+#### 5. NDK提供的函数宏
+（1）my-dir
+
+（2）all-subdir-makefiles
+
+（3）this-makefile
+
+（4）parent-makefile
+
+（5）grand-parent-makefile
+
+（6）import-module
+
+### （二）、Application.mk
+
+### （三）、属性
+（1）APP_PROJECT_PATH
+
+（2）APP_OPTIM
+
+（3）APP_OPTIM
+
+（4）APP_CFLAGS
+
+（5）APP_CPPFLAGS
+
+（6）APP_LDFLAGS
+
+（7）APP_BUILD_SCRIPT
+
+（8）APP_ABI
+
+（9）APP_PLATFORM
+
+（10）APP_STL
+
+（11）APP_SHORT_COMMANDS
+
+（12）APP_SHORT_COMMANDS
+
+（13）APP_PIE
+
+（14）APP_THIN_ARCHIVE
+
+## 四、ndk-build
+### （一）、核心
+### （二）、运行
+### （三）、可选参数
+
+
+## 五、NDK实战
+
+### 
+javah -jni io.github.yanbober.ndkapplication.NdkJniUtils
+
+### 
+native 方法的第一个参数为 JNI接口指针 ：JNIEnv。
+第二个参数

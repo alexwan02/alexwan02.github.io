@@ -1,0 +1,579 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+    
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Alexwan Studio">
+    <title>Android NDK开发（二）：使用Android Studio开发进行NDK开发 - Alexwan Studio</title>
+    <meta name="author" content="alexwan">
+    
+        <link rel="icon" href="/assets/images/https://cdn.discordapp.com/icons/102860784329052160/109fd014c718f40110c4a182f105ca71.jpg">
+    
+    
+        <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="Android NDK Preview
+Experimental Plugin User Guide
+NDK-JNI实战教程（四）再谈新工具及NDK开发调试
+使用AndroidStudio进行NDK开发（一）
+一、Android Studio环境配置1、介绍Android Studio的插件是基于Gradle的新组件模型机制，减少了NDK环境配置时间。同时含有编译JNI应用所需的NDK集成环境。本">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Android NDK开发（二）：使用Android Studio开发进行NDK开发">
+<meta property="og:url" content="http://blog.alexwan.cn/2016/04/18/Android：NDK开发（二）/index.html">
+<meta property="og:site_name" content="Alexwan Studio">
+<meta property="og:description" content="Android NDK Preview
+Experimental Plugin User Guide
+NDK-JNI实战教程（四）再谈新工具及NDK开发调试
+使用AndroidStudio进行NDK开发（一）
+一、Android Studio环境配置1、介绍Android Studio的插件是基于Gradle的新组件模型机制，减少了NDK环境配置时间。同时含有编译JNI应用所需的NDK集成环境。本">
+<meta property="og:updated_time" content="2016-05-12T02:13:52.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android NDK开发（二）：使用Android Studio开发进行NDK开发">
+<meta name="twitter:description" content="Android NDK Preview
+Experimental Plugin User Guide
+NDK-JNI实战教程（四）再谈新工具及NDK开发调试
+使用AndroidStudio进行NDK开发（一）
+一、Android Studio环境配置1、介绍Android Studio的插件是基于Gradle的新组件模型机制，减少了NDK环境配置时间。同时含有编译JNI应用所需的NDK集成环境。本">
+    
+    
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style.min.css" type="text/css">
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-74386866-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+</head>
+
+    <body>
+        <div id="blog">
+            <header id="header" data-behavior="1">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/ ">Alexwan Studio</a>
+    </h1>
+    
+        
+            <a  class="header-right-icon st-search-show-outputs"
+                href="/#search">
+        
+                <i class="fa fa-lg fa-search"></i>
+            </a>
+    
+</header>
+            <nav id="sidebar" data-behavior="1">
+    
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/ "
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">主页</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-categories"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">分类</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-tags"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">标签</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-archives"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-bars"></i>
+                    <span class="sidebar-button-desc">归档</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link st-search-show-outputs"
+                         href="/#search"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-search"></i>
+                    <span class="sidebar-button-desc">搜索</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/#about"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">关于</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://github.com/alexwan02" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-github-square"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="http://stackoverflow.com/users/4919743/alexwan1989" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-stack-overflow"></i>
+                    <span class="sidebar-button-desc">Stack Overflow</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://alexwan0312@gmail.com" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
+                    <span class="sidebar-button-desc">Mail</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/atom.xml"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+
+            
+            <div id="main" data-behavior="1"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            Android NDK开发（二）：使用Android Studio开发进行NDK开发
+        </h1>
+    
+    <div class="post-meta">
+    <time itemprop="datePublished" content="Mon Apr 18 2016 11:32:17 GMT+0800">
+	
+		    Apr 18, 2016
+    	
+    </time>
+    
+</div>
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <p><a href="http://tools.android.com/tech-docs/android-ndk-preview" target="_blank" rel="external">Android NDK Preview</a></p>
+<p><a href="http://tools.android.com/tech-docs/new-build-system/gradle-experimental" target="_blank" rel="external">Experimental Plugin User Guide</a></p>
+<p><a href="http://blog.csdn.net/yanbober/article/details/51027520" target="_blank" rel="external">NDK-JNI实战教程（四）再谈新工具及NDK开发调试</a></p>
+<p><a href="https://dailyios.com/article/Using_Android_Studio_for_NDK_development.html" target="_blank" rel="external">使用AndroidStudio进行NDK开发（一）</a></p>
+<h3 id="u4E00_u3001Android_Studio_u73AF_u5883_u914D_u7F6E"><a href="#u4E00_u3001Android_Studio_u73AF_u5883_u914D_u7F6E" class="headerlink" title="一、Android Studio环境配置"></a>一、Android Studio环境配置</h3><h4 id="1_u3001_u4ECB_u7ECD"><a href="#1_u3001_u4ECB_u7ECD" class="headerlink" title="1、介绍"></a>1、介绍</h4><p>Android Studio的插件是基于Gradle的新组件模型机制，减少了NDK环境配置时间。同时含有编译JNI应用所需的NDK集成环境。本篇用户指导详细介绍如何使用Android Studio的新插件、标出新的插件和传统插件的区别。</p>
+<blockquote>
+<p>注意：新的插件还是预览版，对应的Gradle api不是最终的版本，也意味着不同插件需要配合对应版本的Gradle来使用，DSL也可能变动。</p>
+</blockquote>
+<h4 id="2_u3001_u6700_u65B0_u7248_u672C"><a href="#2_u3001_u6700_u65B0_u7248_u672C" class="headerlink" title="2、最新版本"></a>2、最新版本</h4><p>Check <a href="/bintray repository">https://bintray.com/android/android-tools/com.android.tools.build.gradle-experimental/view</a> 查看最新版本；</p>
+<h4 id="3_u3001_u914D_u7F6E"><a href="#3_u3001_u914D_u7F6E" class="headerlink" title="3、配置"></a>3、配置</h4><ul>
+<li>Gradle（根据下面的表格选择对应的插件版本）</li>
+<li>Android NDK r10e（如需使用NDK）</li>
+<li>SDK的Build Tools 至少需要19.0.0 ，意图在未来的版本变动最小化迁移过流程中带来的变动。一些特性需要更新的版本。</li>
+<li><p>每个不同版本的插件需要配置对应的Gradle版本</p>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">┌───────────┬────────────┐</span><br><span class="line">    Plugin Version  	    Gradle Version          	</span><br><span class="line">├───────────┼────────────┤</span><br><span class="line">    <span class="number">0.1</span>.0                   <span class="number">2.5</span>                            	</span><br><span class="line">├───────────┼────────────┤</span><br><span class="line">    <span class="number">0.2</span>.0                   <span class="number">2.6</span> 	                          	</span><br><span class="line">├───────────┼────────────┤</span><br><span class="line">    <span class="number">0.3</span>.0-alpha3            <span class="number">2.8</span>                           	</span><br><span class="line">├───────────┼────────────┤</span><br><span class="line">    <span class="number">0.6</span>.0-alpha1            <span class="number">2.8</span>                            	</span><br><span class="line">├───────────┼────────────┤</span><br><span class="line">    <span class="number">0.6</span>.0-alpha5            <span class="number">2.10</span>                           	</span><br><span class="line">├───────────┼────────────┤</span><br><span class="line">    <span class="number">0.7</span>.0-alpha1            <span class="number">2.10</span>                           	</span><br><span class="line">└───────────┴────────────┘</span><br></pre></td></tr></table></figure>
+<h4 id="4_u3001_u4ECE_u4F20_u7EDFAndroid_Gradle__u63D2_u4EF6_u8FC1_u79FB"><a href="#4_u3001_u4ECE_u4F20_u7EDFAndroid_Gradle__u63D2_u4EF6_u8FC1_u79FB" class="headerlink" title="4、从传统Android Gradle 插件迁移"></a>4、从传统Android Gradle 插件迁移</h4><p>经典的Android Studio项目类似下面的目录结构，迁移新的ndk插件需要修改标出的文件内容。传统插件和新插件的有几个重要的DSL内容变化。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">.</span><br><span class="line">├── app/</span><br><span class="line">│   ├── app.iml</span><br><span class="line">│   ├── build.gradle  ◀</span><br><span class="line">│   └── src/</span><br><span class="line">├── build.gradle ◀</span><br><span class="line">├── gradle/</span><br><span class="line">│   └── wrapper/</span><br><span class="line">│       ├── gradle-wrapper.jar</span><br><span class="line">│       └── gradle-wrapper.properties ◀</span><br><span class="line">├── gradle.properties</span><br><span class="line">├── gradlew*</span><br><span class="line">├── gradlew.bat</span><br><span class="line">├── local.properties</span><br><span class="line">├── MyApplication.iml</span><br><span class="line">└── settings.gradle</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h5 id="uFF081_uFF09-/gradle/wrapper/gradle-wrapper-properties"><a href="#uFF081_uFF09-/gradle/wrapper/gradle-wrapper-properties" class="headerlink" title="（1）./gradle/wrapper/gradle-wrapper.properties"></a>（1）./gradle/wrapper/gradle-wrapper.properties</h5><ul>
+<li>新插件每个版本支持指定的gradle版本。参考<a href="http://tools.android.com/tech-docs/new-build-system/gradle-experimental?pli=1#TOC-Gradle-Requirements" target="_blank" rel="external">Gradle Requirements</a> 选择Gradle。</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#Wed Apr 10 15:27:10 PDT 2013</span><br><span class="line">distributionBase=GRADLE_USER_HOME</span><br><span class="line">distributionPath=wrapper/dists</span><br><span class="line">zipStoreBase=GRADLE_USER_HOME</span><br><span class="line">zipStorePath=wrapper/dists</span><br><span class="line">distributionUrl=https\://services.gradle.org/distributions/gradle-2.10-all.zip</span><br></pre></td></tr></table></figure>
+<h5 id="uFF082_uFF09-/build-gradle"><a href="#uFF082_uFF09-/build-gradle" class="headerlink" title="（2）./build.gradle"></a>（2）./build.gradle</h5><ul>
+<li>插件路径 <code>com.android.tools.build:gradle-experimental</code> 替换 <code>com.android.tools.build:gradle</code>.</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Top-level build file where you can add configuration options common to all sub-projects/modules.</span></span><br><span class="line">buildscript &#123;</span><br><span class="line">  repositories &#123;</span><br><span class="line">    jcenter()</span><br><span class="line">  &#125;</span><br><span class="line">  dependencies &#123;</span><br><span class="line">    classpath <span class="string">"com.android.tools.build:gradle-experimental:0.7.0-alpha4"</span></span><br><span class="line">    <span class="comment">// <span class="doctag">NOTE:</span> Do not place your application dependencies here; they belong</span></span><br><span class="line">    <span class="comment">// in the individual module build.gradle files</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">allprojects &#123;</span><br><span class="line">    repositories &#123;</span><br><span class="line">        jcenter()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="uFF083_uFF09-/app/build-gradle"><a href="#uFF083_uFF09-/app/build-gradle" class="headerlink" title="（3）./app/build.gradle"></a>（3）./app/build.gradle</h5><p>DSL有意义的变化，我们知道很多变化看起来没有必要的，而我们的目的是移除一些这些变化，来减少在未来处理迁移的处理。</p>
+<blockquote>
+<p>注意：从版本<code>0.6.0-alpha5</code>开始，DSL有部分重要的提升。例子中的代码不适应之前版本，如果你使用旧版本插件，请参考<a href="https://sites.google.com/a/android.com/tools/tech-docs/new-build-system/gradle-experimental/0-4-0" target="_blank" rel="external">旧版本用户指导</a></p>
+</blockquote>
+<p>DSL 变化：</p>
+<ul>
+<li>插件名称由<code>com.android.application</code>变为<code>com.android.model.application</code>，或者用<code>apply plugin: &quot;com.android.model.library&quot;</code> 创建Android aar Library。</li>
+<li>用<code>model { }</code>来包裹配置。</li>
+<li>用add方法来为集合添加元素。</li>
+</ul>
+<p>当前DSL限制 </p>
+<ul>
+<li>属性列表只能设置它们的直系类型，无法接受其他类型。例如：<ul>
+<li>你可以用String来设置File类型的属性，但List<file>只能接受文件类型</file></li>
+</ul>
+</li>
+<li>创建编译类型或产品需要调用create方法，修改已经存在的发布或编译类型可以使用名字来完成。</li>
+<li><p>修改变量和任务的DSL很受限制。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">apply plugin: <span class="string">"com.android.model.application"</span></span><br><span class="line">model &#123;</span><br><span class="line">  android &#123;</span><br><span class="line">    compileSdkVersion <span class="number">23</span></span><br><span class="line">    buildToolsVersion <span class="string">"23.0.2"</span></span><br><span class="line"></span><br><span class="line">    defaultConfig &#123;</span><br><span class="line">      applicationId <span class="string">"com.example.user.myapplication"</span></span><br><span class="line">      minSdkVersion.apiLevel <span class="number">15</span></span><br><span class="line">      targetSdkVersion.apiLevel <span class="number">22</span></span><br><span class="line">      versionCode <span class="number">1</span></span><br><span class="line">      versionName <span class="string">"1.0"</span></span><br><span class="line"></span><br><span class="line">      buildConfigFields &#123;</span><br><span class="line">        create() &#123;</span><br><span class="line">          type <span class="string">"int"</span></span><br><span class="line">          name <span class="string">"VALUE"</span></span><br><span class="line">          value <span class="string">"1"</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    buildTypes &#123;</span><br><span class="line">      release &#123;</span><br><span class="line">        minifyEnabled <span class="keyword">false</span></span><br><span class="line">        proguardFiles.add(file(<span class="string">"proguard-rules.pro"</span>))</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    productFlavors &#123;</span><br><span class="line">      create(<span class="string">"flavor1"</span>) &#123;</span><br><span class="line">        applicationId <span class="string">"com.app"</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">   </span><br><span class="line">    <span class="comment">// Configures source set directory.</span></span><br><span class="line">    sources &#123;</span><br><span class="line">      main &#123;</span><br><span class="line">        java &#123;</span><br><span class="line">          source &#123;</span><br><span class="line">            srcDir <span class="string">"src"</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">dependencies &#123;</span><br><span class="line">  <span class="function">compile <span class="title">fileTree</span><span class="params">(dir: <span class="string">"libs"</span>, include: [<span class="string">"*.jar"</span>])</span></span><br><span class="line">  compile "com.android.support:appcompat-v7:22.2.0"</span><br><span class="line">&#125;</span></span><br></pre></td></tr></table></figure>
+<h5 id="uFF084_uFF09_u7B7E_u540D_u914D_u7F6E"><a href="#uFF084_uFF09_u7B7E_u540D_u914D_u7F6E" class="headerlink" title="（4）签名配置"></a>（4）签名配置</h5><p>用<code>$()</code>语法指定其他的model元素。使用<code>$()</code>，需要为Gradle 2.10以下版本添加<code>&quot;-Dorg.gradle.model.dsl=true&quot;</code>Gradle命令行的参数。对指定签名配置文件很有用。</p>
+<blockquote>
+<p>注意：android.signingConfigs必须在<code>android {}</code>块之外。</p>
+</blockquote>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">apply plugin: <span class="string">"com.android.model.application"</span></span><br><span class="line"></span><br><span class="line">model &#123;</span><br><span class="line">  android &#123;</span><br><span class="line">    compileSdkVersion <span class="number">23</span></span><br><span class="line">    buildToolsVersion <span class="string">"23.0.2"</span></span><br><span class="line">    buildTypes &#123;</span><br><span class="line">      release &#123;</span><br><span class="line">        signingConfig = $(<span class="string">"android.signingConfigs.myConfig"</span>)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  android.signingConfigs &#123;</span><br><span class="line">    create(<span class="string">"myConfig"</span>) &#123;</span><br><span class="line">      storeFile <span class="string">"/path/to/debug.keystore"</span></span><br><span class="line">      storePassword <span class="string">"android"</span></span><br><span class="line">      keyAlias <span class="string">"androiddebugkey"</span></span><br><span class="line">      keyPassword <span class="string">"android"</span></span><br><span class="line">      storeType <span class="string">"jks"</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="5_u3001NDK_u96C6_u6210_u73AF_u5883"><a href="#5_u3001NDK_u96C6_u6210_u73AF_u5883" class="headerlink" title="5、NDK集成环境"></a>5、NDK集成环境</h4><p>新的插件集成了NDK开发环境，支持创建Native应用。如何使用NDK集成环境：</p>
+<ul>
+<li>用Studio内部SDK Manager 下载 NDK</li>
+<li>设定local.properties中的ndk.dir 或ANDROID_NDK_HOME环境变量的值，为NDK的路径</li>
+<li>在build.gradle 中添加<code>android.ndk</code>模块<h5 id="uFF081_uFF09_u7B80_u5355NDK_u914D_u7F6E"><a href="#uFF081_uFF09_u7B80_u5355NDK_u914D_u7F6E" class="headerlink" title="（1）简单NDK配置"></a>（1）简单NDK配置</h5>一个简单NDK应用的build.gradle如下：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">apply plugin: <span class="string">'com.android.model.application'</span></span><br><span class="line"></span><br><span class="line">model &#123;</span><br><span class="line">  android &#123;</span><br><span class="line">    compileSdkVersion <span class="number">23</span></span><br><span class="line">    buildToolsVersion <span class="string">"23.0.2"</span></span><br><span class="line">    ndk &#123;</span><br><span class="line">      moduleName <span class="string">"native"</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<blockquote>
+<p>注意：<code>moduleName</code>参数不能省略，决定native库的名称</p>
+</blockquote>
+<h5 id="uFF082_uFF09Ndk_Source__u8BBE_u7F6E"><a href="#uFF082_uFF09Ndk_Source__u8BBE_u7F6E" class="headerlink" title="（2）Ndk Source 设置"></a>（2）Ndk Source 设置</h5><p>默认情况下，会查找<code>src/main/jni</code>中的 C/C++ 文件。配置android.sources 修改源码路径<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">model &#123;</span><br><span class="line">  android &#123;</span><br><span class="line">    compileSdkVersion <span class="number">23</span></span><br><span class="line">    buildToolsVersion <span class="string">"23.0.2"</span></span><br><span class="line">    ndk &#123;</span><br><span class="line">      moduleName <span class="string">"native"</span></span><br><span class="line">    &#125;</span><br><span class="line">    sources &#123;</span><br><span class="line">      main &#123;</span><br><span class="line">        jni &#123;</span><br><span class="line">          source &#123;</span><br><span class="line">            srcDir <span class="string">"src"</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>JNI源码包含C和C++ 文件，子目录中所有文件都包含。带有.c后缀的文件为 C 文件，而C++ 文件则有以下几种后缀：.C ，.CPP，.c++ .cp ，.cpp ，.cxx。可以使用<code>exculde</code>方法排除文件，用<code>include</code>忽略文件。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">model &#123; </span><br><span class="line">  android.sources &#123;</span><br><span class="line">    main &#123;</span><br><span class="line">      jni &#123;</span><br><span class="line">        source &#123;</span><br><span class="line">          include <span class="string">"someFile.txt"</span></span><br><span class="line">          exclude <span class="string">"**/excludeThisFile.c"</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;		</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="uFF083_uFF09_u5176_u4ED6_u7F16_u8BD1_u53C2_u6570"><a href="#uFF083_uFF09_u5176_u4ED6_u7F16_u8BD1_u53C2_u6570" class="headerlink" title="（3）其他编译参数"></a>（3）其他编译参数</h5><p>可以使用<code>android.ndk{}</code>块来设置参数<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">model &#123;</span><br><span class="line">  android &#123;</span><br><span class="line">    compileSdkVersion <span class="number">23</span></span><br><span class="line">    buildToolsVersion <span class="string">"23.0.2"</span></span><br><span class="line">    ndk &#123;</span><br><span class="line">      <span class="comment">// All Configurations that can be changed in android.ndk</span></span><br><span class="line">      moduleName <span class="string">"native"</span></span><br><span class="line">      toolchain <span class="string">"clang"</span></span><br><span class="line">      toolchainVersion <span class="string">"3.5"</span></span><br><span class="line">      <span class="comment">// Note that CFlags has a capital C ,which is inconsistent with </span></span><br><span class="line">      <span class="comment">// the naming convention of other properties. This is a </span></span><br><span class="line">      <span class="comment">// technical limitation that will be resolved</span></span><br><span class="line">      CFlags.add(<span class="string">"-DCUSTOM_DEFINE"</span>)</span><br><span class="line">      cppFlags.add(<span class="string">"-DCUSTOM_DEFINE"</span>)</span><br><span class="line">      ldFlags.add(<span class="string">"-L/custom/lib/path"</span>)</span><br><span class="line">      ldLibs.add(<span class="string">"log"</span>)</span><br><span class="line">      stl <span class="string">"stlport_static"</span></span><br><span class="line">    &#125;</span><br><span class="line">    buildTypes &#123;</span><br><span class="line">      release &#123;</span><br><span class="line">        ndk &#123;</span><br><span class="line">          debuggable <span class="keyword">true</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    productFlavors &#123;</span><br><span class="line">      create(<span class="string">"arm"</span>) &#123;</span><br><span class="line">        ndk &#123;</span><br><span class="line">          <span class="comment">// You can customize the NDK configurations for each</span></span><br><span class="line">          <span class="comment">// productFlavors and buildTypes.</span></span><br><span class="line">          abiFilters.add(<span class="string">"armeabi-v7a"</span>)	  </span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      create(<span class="string">"fat"</span>) &#123;</span><br><span class="line">        <span class="comment">// If ndk.abiFilters is not configured, the application</span></span><br><span class="line">        <span class="comment">// compile and package all suppported ABI.</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// You can modify the NDK configuration for each variant.</span></span><br><span class="line">  components.android &#123;</span><br><span class="line">    binaries.afterEach &#123; binary -&gt;</span><br><span class="line">      binary.mergedNdkConfig.cppFlags.add( <span class="string">"-DVARIANT=\""</span> + binary.name + <span class="string">"\""</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="uFF084_uFF09_u5DF2_u77E5_u9650_u5236"><a href="#uFF084_uFF09_u5DF2_u77E5_u9650_u5236" class="headerlink" title="（4）已知限制"></a>（4）已知限制</h5><ol>
+<li>不支持类似cpu_feature的NDK 单元</li>
+<li>不支持合并外部build系统 </li>
+</ol>
+<h5 id="uFF085_uFF09_u793A_u4F8B"><a href="#uFF085_uFF09_u793A_u4F8B" class="headerlink" title="（5）示例"></a>（5）示例</h5><p>访问Github的<a href="https://github.com/googlesamples/android-ndk" target="_blank" rel="external">Ndk Samples</a></p>
+<h5 id="uFF086_uFF09_u591A_u91CDNDK_Project"><a href="#uFF086_uFF09_u591A_u91CDNDK_Project" class="headerlink" title="（6）多重NDK Project"></a>（6）多重NDK Project</h5><p>0.4.0 Plugin 添加了NDK依赖的基础支持，可以创建一个native 库。如果使用0.4.0 Plugin可以用Gradle编译native项目，但在Android Studio中编辑和调试功能尚未实现。</p>
+<ul>
+<li><p>独立NDK Plugin</p>
+<p>  在gradle-experimental:0.4.0中，一个新的Plugin可以只创建native library，无须创建android application 或 android     library。DSL与 application/library Plugin相近。下面的例子中<code>build.gradle</code>可以使用<code>src/main/jni</code>的C/C++源文件来生成<code>libhello.so</code>文件</p>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">apply plugin: <span class="string">"com.android.model.native"</span></span><br><span class="line">model &#123;</span><br><span class="line">  android&#123;</span><br><span class="line">    compileSdkVersion <span class="number">23</span></span><br><span class="line">    ndk &#123;</span><br><span class="line">      moduleName <span class="string">"hello"</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>已知问题</p>
+<ul>
+<li>Android Studio 未支持编辑单独plugin</li>
+<li>编译application时修改library源文件后，不会自动重链接到新的library</li>
+</ul>
+</li>
+</ul>
+<h5 id="uFF086_uFF09Ndk_u4F9D_u8D56"><a href="#uFF086_uFF09Ndk_u4F9D_u8D56" class="headerlink" title="（6）Ndk依赖"></a>（6）Ndk依赖</h5><p>指定依赖的语法遵照Gradle未来依赖系统的方式，你可以设定依赖的Android Project或指定文件。<br>比如，假设有个使用独立NDK Plugin的subproject</p>
+<figure class="highlight java"><figcaption><span>lib/build.gradle</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">apply plugin: <span class="string">"com.android.model.native"</span></span><br><span class="line">model &#123;</span><br><span class="line">  android&#123;</span><br><span class="line">    compileSdkVersion <span class="number">23</span></span><br><span class="line">    ndk &#123;</span><br><span class="line">      moduleName <span class="string">"hello"</span></span><br><span class="line">    &#125;</span><br><span class="line">    sources &#123;</span><br><span class="line">      main &#123;</span><br><span class="line">        jni &#123;</span><br><span class="line">          exportedHeaders &#123;</span><br><span class="line">            srcDir <span class="string">"src/main/headers"</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>任何带有JNI依赖的项目需要包含exportedHeaders指定的目录。你可以为项目的依赖项目添加JNI代码</p>
+<figure class="highlight java"><figcaption><span>app/build.gradle</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">apply plugin: <span class="string">"com.android.model.application"</span></span><br><span class="line">model&#123;</span><br><span class="line">  android&#123;</span><br><span class="line">    compileSdkVersion <span class="number">23</span></span><br><span class="line">    buildToolsVersion <span class="string">"23.0.2"</span></span><br><span class="line">    source &#123;</span><br><span class="line">      main &#123;</span><br><span class="line">        jni &#123;</span><br><span class="line">          dependencies &#123;</span><br><span class="line">            project <span class="string">":lib1"</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>你可以指定target项目的buildType 和（或）productFlavor 。否则，plugin会查找相同的buildType和productFlavor作为你的application。你也可以指定linkageType，如果希望native library最为静态链接库的话。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">model&#123;</span><br><span class="line">  android.sources &#123;</span><br><span class="line">    main &#123;</span><br><span class="line">      jni &#123;</span><br><span class="line">        dependencies &#123;</span><br><span class="line">          project <span class="string">":lib1"</span></span><br><span class="line">          buildType <span class="string">"debug"</span></span><br><span class="line">          productFlavor <span class="string">"flavor1"</span></span><br><span class="line">          linkage <span class="string">"static"</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>声明依赖文件，创建预编译库，添加依赖库等</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">model &#123;</span><br><span class="line">  repositories &#123;</span><br><span class="line">    libs (PrebuiltLibraries) &#123;</span><br><span class="line">      prebuilt &#123;</span><br><span class="line">        headers.srcDir <span class="string">"path/to/headers"</span></span><br><span class="line">        binaries.withType (SharedLibraryBinary) &#123;</span><br><span class="line">          sharedLibraryFile = file(<span class="string">"lib/$&#123;targetPlatform.getName() &#125;/prebuilt.so"</span>)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  android.sources &#123;</span><br><span class="line">    main &#123;</span><br><span class="line">      jniLibs &#123;</span><br><span class="line">        dependencies &#123;</span><br><span class="line">          library <span class="string">"prebuilt"</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以添加native 依赖到”jniLibs”或”jni” source 集合中。当添加natice依赖库到”jniLibs”中，依赖会打包到<code>application/library</code>下，但不会用来编译JNI代码。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">model &#123;</span><br><span class="line">  android.sources &#123;</span><br><span class="line">    main &#123;</span><br><span class="line">      jniLibs &#123;</span><br><span class="line">      	dependencies &#123;</span><br><span class="line">          library <span class="string">"prebuilt"</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="6_u3001DSL_u53D8_u5316"><a href="#6_u3001DSL_u53D8_u5316" class="headerlink" title="6、DSL变化"></a>6、DSL变化</h4><p>Plugin还在试验阶段，DSL会随着plugin开发版本变动。本节来说明不同版本的DSL变化，来帮助迁移。</p>
+<h5 id="uFF081_uFF09_u30010-6-0-alpha1_-_26gt_3B_0-6-0-alpha5"><a href="#uFF081_uFF09_u30010-6-0-alpha1_-_26gt_3B_0-6-0-alpha5" class="headerlink" title="（1）、0.6.0-alpha1 -&gt; 0.6.0-alpha5"></a>（1）、0.6.0-alpha1 -&gt; 0.6.0-alpha5</h5><ul>
+<li>Plugin需要gradle 2.10 ，带来DSL签名方面的改善</li>
+<li><p>配置信息可以被折叠</p>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">android&#123;</span><br><span class="line">  buildTypes &#123;</span><br><span class="line">   ... </span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>  替换</p>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">android.buildTypes &#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>文件类型接受String，但String无法添加到List<file>中</file></p>
+</li>
+<li>-Dorg.gradle.model=true 现在为默认值。允许被其他model引用，但是引用的model必须为独立的block</li>
+<li>大多数参数不在需要’=’来设值</li>
+</ul>
+<h5 id="uFF082_uFF09_u30010-4-x_-_26gt_3B_0-6-0-alpha1"><a href="#uFF082_uFF09_u30010-4-x_-_26gt_3B_0-6-0-alpha1" class="headerlink" title="（2）、0.4.x -&gt; 0.6.0-alpha1"></a>（2）、0.4.x -&gt; 0.6.0-alpha1</h5><ul>
+<li><p>指定依赖指定库文件的DSL修改为遵守Gradle的native依赖DSL。<a href="https://github.com/gradle/gradle/blob/master/subprojects/docs/src/samples/native-binaries/prebuilt/build.gradle" target="_blank" rel="external">Sample</a></p>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">model &#123;</span><br><span class="line">  repositories &#123;</span><br><span class="line">    prebuilt(PrebuildtLibraries) &#123;</span><br><span class="line">      binaries.withType(SharedLibraryBinary)&#123;</span><br><span class="line">        sharedLibraryFile = file(<span class="string">"lib/$&#123;targetPlatform.getName()&#125;/prebuilt.so"</span>)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    android.sources &#123;</span><br><span class="line">      main&#123;</span><br><span class="line">        jniLibs &#123;</span><br><span class="line">          dependencies &#123;</span><br><span class="line">            library <span class="string">"prebuilt"</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; </span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h5 id="uFF083_uFF09_u30010-2-x_-_26gt_3B_0-4-0"><a href="#uFF083_uFF09_u30010-2-x_-_26gt_3B_0-4-0" class="headerlink" title="（3）、0.2.x -&gt; 0.4.0"></a>（3）、0.2.x -&gt; 0.4.0</h5><ul>
+<li>+= 不在用于collections。列表添加Items可以使用’add’和’addAll’放。如 <code>CFlags += &quot;-DCUSTOM_DEFINE&quot;</code>用<code>CFlags.add(&quot;-DCUSTOM_DEFINE&quot;)</code>替换。</li>
+</ul>
+<h5 id="uFF084_uFF09_u30010-1-x_-_26gt_3B_0-2-x"><a href="#uFF084_uFF09_u30010-1-x_-_26gt_3B_0-2-x" class="headerlink" title="（4）、0.1.x -&gt; 0.2.x"></a>（4）、0.1.x -&gt; 0.2.x</h5><ul>
+<li><p>jniDebuggable 从buildType 移动到ndk模块中</p>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">release &#123;</span><br><span class="line">  jniDebuggable = <span class="keyword">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>  变为</p>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">release &#123;</span><br><span class="line">  ndk.with &#123;</span><br><span class="line">    debuggable = <span class="keyword">true</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+
+            
+                
+
+            
+        </div>
+    </div>
+    <div class="post-footer main-content-wrap">
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/05/17/RxJava读书笔记(一)/"  data-tooltip="RxJava读书笔记(一)">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/04/12/Android：NDK开发（一）/" data-tooltip="Android：NDK开发（一）">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至Google+" href="https://plus.google.com/share?url=http://blog.alexwan.cn/2016/04/18/Android：NDK开发（二）/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+       
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至Twitter" href="https://twitter.com/intent/tweet?text=http://blog.alexwan.cn/2016/04/18/Android：NDK开发（二）/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+
+         <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至新浪微博" href="http://www.jiathis.com/send/?webid=tsina&amp;appkey=&amp;uid=1850331&amp;url=http://blog.alexwan.cn/2016/04/18/Android：NDK开发（二）/&amp;title=Android NDK开发（二）：使用Android Studio开发进行NDK开发">
+                <i class="fa fa-weibo"></i>
+            </a>
+        </li>
+
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+            <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2017 alexwan. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="1">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/05/17/RxJava读书笔记(一)/"  data-tooltip="RxJava读书笔记(一)">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/04/12/Android：NDK开发（一）/" data-tooltip="Android：NDK开发（一）">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至Google+" href="https://plus.google.com/share?url=http://blog.alexwan.cn/2016/04/18/Android：NDK开发（二）/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+       
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至Twitter" href="https://twitter.com/intent/tweet?text=http://blog.alexwan.cn/2016/04/18/Android：NDK开发（二）/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+
+         <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至新浪微博" href="http://www.jiathis.com/send/?webid=tsina&amp;appkey=&amp;uid=1850331&amp;url=http://blog.alexwan.cn/2016/04/18/Android：NDK开发（二）/&amp;title=Android NDK开发（二）：使用Android Studio开发进行NDK开发">
+                <i class="fa fa-weibo"></i>
+            </a>
+        </li>
+
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="1">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://blog.alexwan.cn/2016/04/18/Android：NDK开发（二）/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://blog.alexwan.cn/2016/04/18/Android：NDK开发（二）/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://blog.alexwan.cn/2016/04/18/Android：NDK开发（二）/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        <div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <h4 id="about-card-name">alexwan</h4>
+        
+            <h5 id="about-card-bio"><p>无限大な梦のあとの 何もない世の中じゃ!</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Android Developer</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                China ShangHai
+            </h5>
+        
+    </div>
+</div>
+
+        <div id="cover" style="background-image:url('http://imgbucket-1252300500.picsh.myqcloud.com/github/body_bg_page.jpg');"></div>
+
+    </body>
+    <!--SCRIPTS-->
+<script src="/assets/js/script.min.js" type="text/javascript"></script>
+<!--SCRIPTS END-->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'alexwan';
+        (function() {
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+
+
+
+</html>

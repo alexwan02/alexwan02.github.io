@@ -1,0 +1,501 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+    
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Alexwan Studio">
+    <title>Android:WebView开发笔记（一） - Alexwan Studio</title>
+    <meta name="author" content="alexwan">
+    
+        <link rel="icon" href="/assets/images/https://cdn.discordapp.com/icons/102860784329052160/109fd014c718f40110c4a182f105ca71.jpg">
+    
+    
+        <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="讲解WebView
+技术小黑屋：WebView重写onJsAlert那些事
+技术小黑屋：Android中WebView拦截替换网络请求数据
+一、Android WebView1.添加网络访问权限
+1&amp;lt;uses-permission android:name=&quot;android.permission.INTERNET&quot; /&amp;gt;
+2.添加JavaScript支持1WebView.getSett">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Android:WebView开发笔记（一）">
+<meta property="og:url" content="http://blog.alexwan.cn/2016/01/19/Android-WebView开发笔记（一）/index.html">
+<meta property="og:site_name" content="Alexwan Studio">
+<meta property="og:description" content="讲解WebView
+技术小黑屋：WebView重写onJsAlert那些事
+技术小黑屋：Android中WebView拦截替换网络请求数据
+一、Android WebView1.添加网络访问权限
+1&amp;lt;uses-permission android:name=&quot;android.permission.INTERNET&quot; /&amp;gt;
+2.添加JavaScript支持1WebView.getSett">
+<meta property="og:updated_time" content="2016-01-21T07:13:38.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android:WebView开发笔记（一）">
+<meta name="twitter:description" content="讲解WebView
+技术小黑屋：WebView重写onJsAlert那些事
+技术小黑屋：Android中WebView拦截替换网络请求数据
+一、Android WebView1.添加网络访问权限
+1&amp;lt;uses-permission android:name=&quot;android.permission.INTERNET&quot; /&amp;gt;
+2.添加JavaScript支持1WebView.getSett">
+    
+    
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style.min.css" type="text/css">
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-74386866-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+</head>
+
+    <body>
+        <div id="blog">
+            <header id="header" data-behavior="1">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/ ">Alexwan Studio</a>
+    </h1>
+    
+        
+            <a  class="header-right-icon st-search-show-outputs"
+                href="/#search">
+        
+                <i class="fa fa-lg fa-search"></i>
+            </a>
+    
+</header>
+            <nav id="sidebar" data-behavior="1">
+    
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/ "
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">主页</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-categories"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">分类</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-tags"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">标签</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-archives"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-bars"></i>
+                    <span class="sidebar-button-desc">归档</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link st-search-show-outputs"
+                         href="/#search"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-search"></i>
+                    <span class="sidebar-button-desc">搜索</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/#about"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">关于</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://github.com/alexwan02" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-github-square"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="http://stackoverflow.com/users/4919743/alexwan1989" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-stack-overflow"></i>
+                    <span class="sidebar-button-desc">Stack Overflow</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://alexwan0312@gmail.com" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
+                    <span class="sidebar-button-desc">Mail</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/atom.xml"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+
+            
+            <div id="main" data-behavior="1"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            Android:WebView开发笔记（一）
+        </h1>
+    
+    <div class="post-meta">
+    <time itemprop="datePublished" content="Tue Jan 19 2016 16:58:34 GMT+0800">
+	
+		    Jan 19, 2016
+    	
+    </time>
+    
+</div>
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <p><a href="http://kymjs.com/code/2015/05/03/01/" target="_blank" rel="external">讲解WebView</a></p>
+<p><a href="http://droidyue.com/blog/2014/07/09/override-javascript-alert-in-android/?hmsr=toutiao.io&amp;utm_medium=toutiao.io&amp;utm_source=toutiao.io" target="_blank" rel="external">技术小黑屋：WebView重写onJsAlert那些事</a></p>
+<p><a href="http://droidyue.com/blog/2014/11/23/block-web-resource-in-webview/?hmsr=toutiao.io&amp;utm_medium=toutiao.io&amp;utm_source=toutiao.io" target="_blank" rel="external">技术小黑屋：Android中WebView拦截替换网络请求数据</a></p>
+<h3 id="u4E00_u3001Android_WebView"><a href="#u4E00_u3001Android_WebView" class="headerlink" title="一、Android WebView"></a>一、Android WebView</h3><p>1.添加网络访问权限</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;uses-permission android:name=<span class="string">"android.permission.INTERNET"</span> /&gt;</span><br></pre></td></tr></table></figure>
+<p>2.添加JavaScript支持<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">WebView.getSettings().setJavaScriptEnabled(<span class="keyword">true</span>);</span><br></pre></td></tr></table></figure></p>
+<p>3.只在当前WebView进行跳转，则必须覆盖<code>WebViewClient</code>对象<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mWebView.setWebViewClient(<span class="keyword">new</span> WebViewClient()&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">shouldOverrideUrlLoading</span><span class="params">(WebView view, String url)</span></span>&#123; </span><br><span class="line">		view.loadUrl(url);</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>4.支持点击返回键回到上一页，而不是关闭当前Actvitiy或Fragment，则复写<code>onBackPress</code>方法。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onKeyDown</span><span class="params">(<span class="keyword">int</span> keyCode, KeyEvent event)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> ((keyCode == KEYCODE_BACK) &amp;&amp; mWebView.canGoBack()) &#123; </span><br><span class="line">		mWebView.goBack();</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">super</span>.onKeyDown(keyCode, event);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>5.调用页面Js方法<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebViewDemo</span> <span class="keyword">extends</span> <span class="title">Activity</span></span>&#123;</span><br><span class="line">	mWebView.addJavascriptInterface(<span class="keyword">new</span> Object() &#123;</span><br><span class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">clickOnAndroid</span><span class="params">()</span> </span>&#123;</span><br><span class="line">			mHandler.post(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">				<span class="comment">// 在子线程中执行</span></span><br><span class="line">				<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123; </span><br><span class="line">					<span class="comment">// java 调用Js 方法</span></span><br><span class="line">					mWebView.loadUrl(<span class="string">"javascript:wave()"</span>);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;, <span class="string">"demo"</span>); </span><br><span class="line">	</span><br><span class="line">	mWebView.loadUrl(<span class="string">"file:///android_asset/demo.html"</span>); 	</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>主要方法<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">addJavascriptInterface(Object obj,String interfaceName)</span><br></pre></td></tr></table></figure></p>
+<p><code>addJavascriptInterface</code>将Java对象绑定到JavaScript对象中,<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">language</span>=<span class="value">"javascript"</span>&gt;</span><span class="javascript"></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">wave</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">document</span>.getElementById(<span class="string">"droid"</span>).src=<span class="string">"android_waving.png"</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">body</span>&gt;</span></span><br><span class="line">	// js调用java方法</span><br><span class="line">  <span class="tag">&lt;<span class="title">a</span> <span class="attribute">onClick</span>=<span class="value">"window.demo.clickOnAndroid()"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="title">img</span> <span class="attribute">id</span>=<span class="value">"droid"</span> <span class="attribute">src</span>=<span class="value">"android_normal.png"</span> <span class="attribute">mce_src</span>=<span class="value">"android_normal.png"</span>/&gt;</span><span class="tag">&lt;<span class="title">br</span>&gt;</span> Click me! <span class="tag">&lt;/<span class="title">a</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">html</span>&gt;</span></span></span><br></pre></td></tr></table></figure></p>
+<h3 id="u4E8C_u3001Js_u8C03_u7528Android_u4EE3_u7801"><a href="#u4E8C_u3001Js_u8C03_u7528Android_u4EE3_u7801" class="headerlink" title="二、Js调用Android代码"></a>二、Js调用Android代码</h3><ol>
+<li><ul>
+<li>WebView主要用来解析和渲染界面。</li>
+<li>WebViewClient 处理通知、请求事件等。</li>
+<li>WebChromeClient辅助WebView处理Js的对话框、网站图标、标题等。</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">webView.addJavascriptInterface(<span class="keyword">new</span> JavaScriperface(<span class="keyword">this</span>) , <span class="string">"android"</span>);</span><br><span class="line"><span class="comment">// 加载 htmlText 是以字符串的方式读取assets下的html内容</span></span><br><span class="line">webView.loadData(htmlText , <span class="string">"text/html"</span> , <span class="string">"utf-8"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 返回上一页</span></span><br><span class="line">webview.goBack();</span><br></pre></td></tr></table></figure>
+<h3 id="u4E09_u3001WebView_u7F13_u5B58"><a href="#u4E09_u3001WebView_u7F13_u5B58" class="headerlink" title="三、WebView缓存"></a>三、WebView缓存</h3><p>1.加载网页时，webview会在<code>/data/data/包名</code>目录下生成database与cache两个文件夹。请求url的记录保存在<code>WebViewCache.db</code>，内容保存在WebViewCache文件夹下。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 启用缓存</span></span><br><span class="line"><span class="comment">// 优先使用缓存</span></span><br><span class="line">webView.getSetting.setCacheMode(WebSettings. LOAD_CACHE_ELSE_NETWORK);</span><br><span class="line"><span class="comment">// 不使用缓存</span></span><br><span class="line">webView.getSetting.setCacheMode(WebSettings.LOAD_NO_CACHE);</span><br></pre></td></tr></table></figure>
+<p>2.删除缓存<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">clearCacheFolder</span><span class="params">(File dir , <span class="keyword">long</span> numDays)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> deletedFiles = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">if</span>(dir != <span class="keyword">null</span> &amp;&amp; dir.isDirectory)&#123;</span><br><span class="line">		<span class="keyword">try</span>&#123;</span><br><span class="line">			<span class="keyword">for</span>(File child:dir.listFiles())&#123;</span><br><span class="line">				<span class="keyword">if</span>(child.isDirectory())&#123;</span><br><span class="line">					deletedFiles += clearCacheFolder(child , numDays);</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">if</span>(child.lastModified() &lt; numDays)&#123;</span><br><span class="line">					<span class="keyword">if</span>(child.delete)&#123;</span><br><span class="line">						deleteFiles++;</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;<span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">			e.printStackTrace();	</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> deletedFiles;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="u56DB_u3001_u5904_u7406404"><a href="#u56DB_u3001_u5904_u7406404" class="headerlink" title="四、处理404"></a>四、处理404</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">webView.setWebViewClient(<span class="keyword">new</span> WebViewClient() &#123;</span><br><span class="line">	<span class="annotation">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onReceivedError</span><span class="params">(WebView view, <span class="keyword">int</span> errorCode, String description, String failingUrl)</span> </span>&#123;</span><br><span class="line">		<span class="comment">// stop load and handle errorcode</span></span><br><span class="line">		<span class="keyword">if</span>(errorCode == <span class="number">404</span>)&#123;</span><br><span class="line">			<span class="comment">// load 404 </span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="u4E94_u3001_u5224_u65AD_u662F_u5426_u6ED1_u52A8_u5230_u5E95_u90E8"><a href="#u4E94_u3001_u5224_u65AD_u662F_u5426_u6ED1_u52A8_u5230_u5E95_u90E8" class="headerlink" title="五、判断是否滑动到底部"></a>五、判断是否滑动到底部</h3><ul>
+<li>getScrollY() 当前可见区域的距离整个页面顶端的距离，即当前内容滚动的距离</li>
+<li>getHeight() 当前WebView的高度</li>
+<li>getBottom() 当前WebView</li>
+<li>getContentHeight() 返回整个html页面的高度，不是当前页面的高度，因为webview的缩放</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 是否可以缩放</span></span><br><span class="line">webView.getSettings().setSupportZoom(<span class="keyword">true</span>);</span><br><span class="line"><span class="comment">// 是否显示缩放控制</span></span><br><span class="line">webView.getSettings().setBuildInZoomControls(<span class="keyword">true</span>);</span><br><span class="line"><span class="comment">// 默认缩放大小</span></span><br><span class="line">webView.getSettings(). setDefaultZoom(ZoomDensity.CLOSE);</span><br></pre></td></tr></table></figure>
+<p>当前整个页面的高度<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> currentHeight = webView.getContentHeight * getScale();</span><br><span class="line"><span class="keyword">boolean</span> isBottom = currentHeight - webView.getHeight() - webView.getScroll() &lt;= <span class="number">0</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="u516D_u3001_u670D_u52A1_u5668Session"><a href="#u516D_u3001_u670D_u52A1_u5668Session" class="headerlink" title="六、服务器Session"></a>六、服务器Session</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">CookieManager manager = CookieManager.getInstance();</span><br><span class="line"><span class="comment">// 删除cookie</span></span><br><span class="line">manager.removeAllCookie();</span><br><span class="line"><span class="comment">// 获取cookie</span></span><br><span class="line">manager.getCookie(url);</span><br><span class="line"><span class="comment">// 设置cookie，覆盖之前的path，host，name的cookie</span></span><br><span class="line">manager.setCookie(url , cookie);</span><br></pre></td></tr></table></figure>
+<p>1.设置和清除SessionCookies</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span><br><span class="line">*  同步本地cookie到Webview中</span><br><span class="line">*/</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">synCookies</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(!CacheUtils.isLogin(<span class="keyword">this</span>)) <span class="keyword">return</span>;</span><br><span class="line">	CookiesSyncManager.createInstance(<span class="keyword">this</span>);</span><br><span class="line">	CookieManager manager = CookieManager.getInstance();</span><br><span class="line">	<span class="comment">// 是否发送和接收cookies，默认为true</span></span><br><span class="line">	manager.setAcceptCookie(<span class="keyword">true</span>);</span><br><span class="line">	<span class="comment">// 移除session cookie</span></span><br><span class="line">	manager.removeSessionCookies(<span class="keyword">new</span> ValueCallback&lt;Boolean&gt;()&#123;</span><br><span class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onReceiveValue</span><span class="params">(Boolean value)</span></span>&#123;</span><br><span class="line">				<span class="comment">//TODO</span></span><br><span class="line">			&#125;</span><br><span class="line">	&#125;);</span><br><span class="line">	String cookies = PreferenceHelper.readString(<span class="keyword">this</span> , key , key);</span><br><span class="line">	manager.setCookie(url , cookies);</span><br><span class="line">	CookieSyncManager.getInstance().sync();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>2.WebView本身也记录html缓存</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 清除缓存</span></span><br><span class="line">webview.clearCache(<span class="keyword">true</span>);</span><br><span class="line">webview.clearHistory();</span><br></pre></td></tr></table></figure>
+<h3 id="u4E03_u3001Android_u4E2DWebView_u66FF_u6362_u7F51_u7EDC_u8D44_u6E90"><a href="#u4E03_u3001Android_u4E2DWebView_u66FF_u6362_u7F51_u7EDC_u8D44_u6E90" class="headerlink" title="七、Android中WebView替换网络资源"></a>七、Android中WebView替换网络资源</h3><p><code>shouldInterceptRequest</code><br>通知主程序WebView处理资源文件，允许主程序返回处理后的数据。如果返回数据为null，WebView会自行加载网络资源，否则使用主程序提供的数据。回调是在子线程中处理，不能直接进行UI操作。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Deprecated</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> WebResourceResponse <span class="title">shouldInterceptRequest</span><span class="params">(WebView view,</span><br><span class="line">        String url)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br><span class="line">	</span><br><span class="line"><span class="function"><span class="keyword">public</span> WebResourceResponse <span class="title">shouldInterceptRequest</span><span class="params">(WebView view,</span><br><span class="line">        WebResourceRequest request)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> shouldInterceptRequest(view, request.getUrl().toString());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>Example<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">WebView webView = <span class="keyword">new</span> WebView(<span class="keyword">this</span>);</span><br><span class="line">webView.setWebViewClient(<span class="keyword">new</span> WebViewClient()&#123;</span><br><span class="line">	<span class="annotation">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> WebResourceResponse <span class="title">shouldInterceptRequest</span><span class="params">(WebView view,</span><br><span class="line">            String url)</span> </span>&#123;</span><br><span class="line">		WebResourceResponse response = <span class="keyword">null</span>;</span><br><span class="line">		<span class="keyword">if</span>(url.contains(<span class="string">"logo"</span>))&#123;</span><br><span class="line">			InputStream localCopy = <span class="keyword">null</span>;</span><br><span class="line">			<span class="keyword">try</span>&#123;</span><br><span class="line">				localCopy = getAssets().open(<span class="string">"xx.png"</span>);</span><br><span class="line">				<span class="comment">// MIME类型，数据编码，数据(InputStream流形式)</span></span><br><span class="line">				response = <span class="keyword">new</span> WebResourceResponse(<span class="string">"image/png"</span> , <span class="string">"UTF-8"</span> , localCopy);</span><br><span class="line">			&#125; <span class="keyword">catch</span>(Exception e)&#123;</span><br><span class="line">				e.printStackTrace();</span><br><span class="line">			&#125; <span class="keyword">finally</span>&#123;</span><br><span class="line">				<span class="keyword">try</span>&#123;</span><br><span class="line">					<span class="keyword">if</span>(localCopy != <span class="keyword">null</span>)&#123;</span><br><span class="line">						localCopy.close();</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;<span class="keyword">catch</span>(Exception e)&#123;</span><br><span class="line">					e.printStackTrace();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">        <span class="keyword">return</span> response;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+
+            
+                
+
+            
+        </div>
+    </div>
+    <div class="post-footer main-content-wrap">
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/01/21/Android：WebView开发笔记（二）/"  data-tooltip="Android：WebView开发笔记（二）">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/01/12/Android源码学习（一）/" data-tooltip="Android源码学习（一）：Mac OSX开发环境搭建">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至Google+" href="https://plus.google.com/share?url=http://blog.alexwan.cn/2016/01/19/Android-WebView开发笔记（一）/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+       
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至Twitter" href="https://twitter.com/intent/tweet?text=http://blog.alexwan.cn/2016/01/19/Android-WebView开发笔记（一）/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+
+         <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至新浪微博" href="http://www.jiathis.com/send/?webid=tsina&amp;appkey=&amp;uid=1850331&amp;url=http://blog.alexwan.cn/2016/01/19/Android-WebView开发笔记（一）/&amp;title=Android:WebView开发笔记（一）">
+                <i class="fa fa-weibo"></i>
+            </a>
+        </li>
+
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+            <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2017 alexwan. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="1">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/01/21/Android：WebView开发笔记（二）/"  data-tooltip="Android：WebView开发笔记（二）">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/01/12/Android源码学习（一）/" data-tooltip="Android源码学习（一）：Mac OSX开发环境搭建">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至Google+" href="https://plus.google.com/share?url=http://blog.alexwan.cn/2016/01/19/Android-WebView开发笔记（一）/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+       
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至Twitter" href="https://twitter.com/intent/tweet?text=http://blog.alexwan.cn/2016/01/19/Android-WebView开发笔记（一）/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+
+         <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至新浪微博" href="http://www.jiathis.com/send/?webid=tsina&amp;appkey=&amp;uid=1850331&amp;url=http://blog.alexwan.cn/2016/01/19/Android-WebView开发笔记（一）/&amp;title=Android:WebView开发笔记（一）">
+                <i class="fa fa-weibo"></i>
+            </a>
+        </li>
+
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="1">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://blog.alexwan.cn/2016/01/19/Android-WebView开发笔记（一）/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://blog.alexwan.cn/2016/01/19/Android-WebView开发笔记（一）/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://blog.alexwan.cn/2016/01/19/Android-WebView开发笔记（一）/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        <div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <h4 id="about-card-name">alexwan</h4>
+        
+            <h5 id="about-card-bio"><p>无限大な梦のあとの 何もない世の中じゃ!</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Android Developer</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                China ShangHai
+            </h5>
+        
+    </div>
+</div>
+
+        <div id="cover" style="background-image:url('http://imgbucket-1252300500.picsh.myqcloud.com/github/body_bg_page.jpg');"></div>
+
+    </body>
+    <!--SCRIPTS-->
+<script src="/assets/js/script.min.js" type="text/javascript"></script>
+<!--SCRIPTS END-->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'alexwan';
+        (function() {
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+
+
+
+</html>

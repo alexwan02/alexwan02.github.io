@@ -1,0 +1,505 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+    
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Alexwan Studio">
+    <title>React-Native基础（2）：聊聊Props与States - Alexwan Studio</title>
+    <meta name="author" content="alexwan">
+    
+        <link rel="icon" href="/assets/images/https://cdn.discordapp.com/icons/102860784329052160/109fd014c718f40110c4a182f105ca71.jpg">
+    
+    
+        <link rel="alternative" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="React-Native 基于状态实现对DOM控制和渲染。组件状态分为两种：一种是组件间的状态传递、另一种是组件的内部状态，这两种状态使用props和state表示。props用于从父组件到子组件的数据传递。组件内部也有自己的状态：state，这些状态只能在组件内部修改。
+Props在React-Native中大多数组件创建时可以带有不同的参数，这些参数被称为props。如：React-Nativ">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="React-Native基础（2）：聊聊Props与States">
+<meta property="og:url" content="http://blog.alexwan.cn/2017/05/18/React-Native基础（2）：聊聊Props和State/index.html">
+<meta property="og:site_name" content="Alexwan Studio">
+<meta property="og:description" content="React-Native 基于状态实现对DOM控制和渲染。组件状态分为两种：一种是组件间的状态传递、另一种是组件的内部状态，这两种状态使用props和state表示。props用于从父组件到子组件的数据传递。组件内部也有自己的状态：state，这些状态只能在组件内部修改。
+Props在React-Native中大多数组件创建时可以带有不同的参数，这些参数被称为props。如：React-Nativ">
+<meta property="og:updated_time" content="2017-05-18T06:44:02.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="React-Native基础（2）：聊聊Props与States">
+<meta name="twitter:description" content="React-Native 基于状态实现对DOM控制和渲染。组件状态分为两种：一种是组件间的状态传递、另一种是组件的内部状态，这两种状态使用props和state表示。props用于从父组件到子组件的数据传递。组件内部也有自己的状态：state，这些状态只能在组件内部修改。
+Props在React-Native中大多数组件创建时可以带有不同的参数，这些参数被称为props。如：React-Nativ">
+    
+    
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style.min.css" type="text/css">
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-74386866-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+</head>
+
+    <body>
+        <div id="blog">
+            <header id="header" data-behavior="1">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/ ">Alexwan Studio</a>
+    </h1>
+    
+        
+            <a  class="header-right-icon st-search-show-outputs"
+                href="/#search">
+        
+                <i class="fa fa-lg fa-search"></i>
+            </a>
+    
+</header>
+            <nav id="sidebar" data-behavior="1">
+    
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/ "
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">主页</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-categories"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">分类</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-tags"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">标签</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-archives"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-bars"></i>
+                    <span class="sidebar-button-desc">归档</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link st-search-show-outputs"
+                         href="/#search"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-search"></i>
+                    <span class="sidebar-button-desc">搜索</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/#about"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">关于</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://github.com/alexwan02" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-github-square"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="http://stackoverflow.com/users/4919743/alexwan1989" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-stack-overflow"></i>
+                    <span class="sidebar-button-desc">Stack Overflow</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://alexwan0312@gmail.com" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
+                    <span class="sidebar-button-desc">Mail</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/atom.xml"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+
+            
+            <div id="main" data-behavior="1"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            React-Native基础（2）：聊聊Props与States
+        </h1>
+    
+    <div class="post-meta">
+    <time itemprop="datePublished" content="Thu May 18 2017 14:43:29 GMT+0800">
+	
+		    May 18, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/react-native/">react-native</a>
+
+
+    
+</div>
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <p>React-Native 基于状态实现对DOM控制和渲染。组件状态分为两种：一种是组件间的状态传递、另一种是组件的内部状态，这两种状态使用props和state表示。props用于从父组件到子组件的数据传递。组件内部也有自己的状态：state，这些状态只能在组件内部修改。</p>
+<h2 id="Props"><a href="#Props" class="headerlink" title="Props"></a>Props</h2><p>在React-Native中大多数组件创建时可以带有不同的参数，这些参数被称为<code>props</code>。<br>如：React-Native的常用组件<code>Image</code>。当创建<code>Image</code>时，可以用<code>source</code>属性来指定要显示的图片资源。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React , &#123; Component &#125; <span class="keyword">from</span> <span class="string">'react'</span></span><br><span class="line"><span class="keyword">import</span> &#123; AppRegistry , Image , &#125; <span class="keyword">from</span> <span class="string">'react-native'</span></span><br><span class="line"></span><br><span class="line">class Bananas extends Component &#123;</span><br><span class="line">    render ()&#123;</span><br><span class="line">        let pic = &#123;</span><br><span class="line">            uri : <span class="string">'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg'</span></span><br><span class="line">        &#125;</span><br><span class="line">        return (</span><br><span class="line">            &lt;Image source=&#123;pic&#125; style=&#123;&#123; width : 193 , height : 110&#125;&#125;/&gt;</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">AppRegistry.registerComponent(<span class="string">'Bananas'</span>, () =&gt; Bananas);</span><br></pre></td></tr></table></figure></p>
+<p>自定义的组件也可以使用<code>Props</code>，根据<code>Props</code>名称引用指定的属性值。如在组件<code>Greeting</code>的<code>render</code>方法中用<code>this.props.name</code>应用组件的<code>name</code>属性值。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React , &#123; Component &#125; <span class="keyword">from</span> <span class="string">'react'</span></span><br><span class="line"><span class="keyword">import</span> &#123; AppRegistry , Text , View&#125; <span class="keyword">from</span> <span class="string">'react-native'</span></span><br><span class="line"></span><br><span class="line">class Greeting extends Component &#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    return (</span><br><span class="line">      &lt;Text&gt;Hello &#123;this.props.name&#125;!&lt;/Text&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">LotsOfGreetings</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      <span class="xml"><span class="tag">&lt;<span class="title">View</span> <span class="attribute">style</span>=<span class="value">&#123;&#123;alignItems:</span> '<span class="attribute">center</span>'&#125;&#125;&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="title">Greeting</span> <span class="attribute">name</span>=<span class="value">'Rexxar'</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="title">Greeting</span> <span class="attribute">name</span>=<span class="value">'Jaina'</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="title">Greeting</span> <span class="attribute">name</span>=<span class="value">'Valeera'</span> /&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="title">View</span>&gt;</span></span><br><span class="line">    )</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">AppRegistry.registerComponent(<span class="string">'LotsOfGreetings'</span>, () =&gt; LotsOfGreetings);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>默认属性</li>
+</ul>
+<p>使用<code>static</code>定义组件的默认属性值</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React , &#123; Component &#125; <span class="keyword">from</span> <span class="string">'react'</span></span><br><span class="line"><span class="keyword">import</span> &#123; AppRegistry , Text , View&#125; <span class="keyword">from</span> <span class="string">'react-native'</span></span><br><span class="line">class Greeting extends Component &#123;</span><br><span class="line">  static defaultProps = &#123;</span><br><span class="line">      name : <span class="string">'alex'</span> , s</span><br><span class="line">  &#125;</span><br><span class="line">  render() &#123;</span><br><span class="line">    return (</span><br><span class="line">      &lt;Text&gt;Hello &#123;this.props.name&#125;!&lt;/Text&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<ul>
+<li>约束与检查</li>
+</ul>
+<p>使用<code>PropTypes</code> 对<code>Props</code>值的类型进行约束<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React , &#123; Component , PropTypes , &#125; <span class="keyword">from</span> <span class="string">'react'</span></span><br><span class="line"><span class="keyword">import</span> &#123; AppRegistry , Text , View , &#125; <span class="keyword">from</span> <span class="string">'react-native'</span></span><br><span class="line">class Greeting extends Component &#123;</span><br><span class="line">  ...</span><br><span class="line">  static propTypes = &#123;</span><br><span class="line">      name : PropTypes.string , </span><br><span class="line">      age : PropTypes.num , </span><br><span class="line">      greet : PropTypes.func.isRequired ,</span><br><span class="line">  &#125;</span><br><span class="line">  render() &#123;</span><br><span class="line">    return (</span><br><span class="line">      &lt;Text&gt;Hello &#123;this.props.name&#125;!&lt;/Text&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果必须使用指定属性值，通过<code>PropTypes.{type}.isRequired</code>来约束。</p>
+<ul>
+<li>扩展语法…</li>
+</ul>
+<p>传入对象的属性会被复制到组件内，可以多次使用，可以与其他属性组合使用，后面的属性值覆盖之前的属性。<a href="http://reactjs.cn/react/docs/transferring-props.html" target="_blank" rel="external">JSX 展开属性</a><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React , &#123; Component , PropTypes , &#125; <span class="keyword">from</span> <span class="string">'react'</span></span><br><span class="line"><span class="keyword">import</span> &#123; AppRegistry , Text , View , &#125; <span class="keyword">from</span> <span class="string">'react-native'</span></span><br><span class="line">class Greeting extends Component &#123;</span><br><span class="line">  ...</span><br><span class="line">  render() &#123;</span><br><span class="line">    return (</span><br><span class="line">      &lt;Text&gt;Hello &#123;this.props.name&#125;&lt;/Text&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">&lt;Greeting &#123;...this.props&#125; name=<span class="string">'alex'</span> /&gt;</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>Props属性解构<br>通过解构Props属性，直接引用解构后的属性。<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React , &#123; Component , PropTypes , &#125; <span class="keyword">from</span> <span class="string">'react'</span></span><br><span class="line"><span class="keyword">import</span> &#123; AppRegistry , Text , View , &#125; <span class="keyword">from</span> <span class="string">'react-native'</span></span><br><span class="line">class Greeting extends Component &#123;</span><br><span class="line">  ...</span><br><span class="line">  render() &#123;</span><br><span class="line">    let &#123;name , ...props&#125; = this.props;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      <span class="xml"><span class="tag">&lt;<span class="title">Text</span>&gt;</span>Hello &#123;name&#125;<span class="tag">&lt;/<span class="title">Text</span>&gt;</span></span><br><span class="line">    )</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="State"><a href="#State" class="headerlink" title="State"></a>State</h2><p>控制组件有两种类型数据：<code>Props</code>和<code>State</code>。<code>Props</code>是由父元素设定的固定属性值，在组件整个生命周期中是不可变，使用<code>State</code>来更新数据，刷新UI。<br>通常在组件构造方法中初始化State，调用<code>setState()</code>方法更新State数据。<br>简单的文字闪烁的例子，文字的内容在组件创建时使用Props设置为了固定值，文字的闪烁状态则由<code>State</code>来控制。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React, &#123; Component &#125; <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; AppRegistry, Text, View &#125; <span class="keyword">from</span> <span class="string">'react-native'</span>;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Blink</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">  constructor(props) &#123;</span><br><span class="line">    <span class="keyword">super</span>(props);</span><br><span class="line">    <span class="keyword">this</span>.state = &#123;showText: <span class="literal">true</span>&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 每秒修改State</span></span><br><span class="line">    setInterval(() =&gt; &#123;</span><br><span class="line">      <span class="keyword">this</span>.setState(&#123; showText: !<span class="keyword">this</span>.state.showText &#125;);</span><br><span class="line">    &#125;, <span class="number">1000</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">let</span> display = <span class="keyword">this</span>.state.showText ? <span class="keyword">this</span>.props.text : <span class="string">' '</span>;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      <span class="xml"><span class="tag">&lt;<span class="title">Text</span>&gt;</span>&#123;display&#125;<span class="tag">&lt;/<span class="title">Text</span>&gt;</span></span><br><span class="line">    )</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BlinkApp</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      <span class="xml"><span class="tag">&lt;<span class="title">View</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="title">Blink</span> <span class="attribute">text</span>=<span class="value">'I love to blink'</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="title">Blink</span> <span class="attribute">text</span>=<span class="value">'Yes blinking is so great'</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="title">Blink</span> <span class="attribute">text</span>=<span class="value">'Why did they ever take this out of HTML'</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="title">Blink</span> <span class="attribute">text</span>=<span class="value">'Look at me look at me look at me'</span> /&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="title">View</span>&gt;</span></span><br><span class="line">    )</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">AppRegistry.registerComponent(<span class="string">'BlinkApp'</span>, () =&gt; BlinkApp);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>不要直接修改State属性值<br>赋值的形式唯一的地方只能在构造器中执行<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ConcreateCompnent</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">    constructor(props)&#123;</span><br><span class="line">        <span class="keyword">super</span>(props);</span><br><span class="line">        <span class="keyword">this</span>.State = &#123;...&#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>使用<code>setState()</code>函数修改属性<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 错误</span></span><br><span class="line"><span class="keyword">this</span>.state.name = <span class="string">'lucky'</span>;</span><br><span class="line"><span class="comment">// 正确</span></span><br><span class="line"><span class="keyword">this</span>.state.setState=&#123; &#123;name : <span class="string">'lucky'</span>&#125; &#125;;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>异步更新State</li>
+</ul>
+<p>为了性能，React会批处理连续多个<code>setState</code>操作。<br>因为<code>this.props</code>和<code>this.state</code>可能执行一步更新，所以调用<code>this.props</code>或<code>this.state</code>时的值并不正确。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 错误</span></span><br><span class="line"><span class="keyword">this</span>.setState(&#123;</span><br><span class="line">  counter: <span class="keyword">this</span>.state.counter + <span class="keyword">this</span>.props.increment,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>建议<code>setState</code>接收函数的形式来更新state。因为函数的形式会使用前一个<code>state</code>作为第一个参数，同时更新的<code>props</code>属性作为第二个参数。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 正确</span></span><br><span class="line"><span class="keyword">this</span>.setState((prevState, props) =&gt; (&#123;</span><br><span class="line">  counter: prevState.counter + props.increment</span><br><span class="line">&#125;));</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>合并更新State</li>
+</ul>
+<p>调用setState方法时，React会合并提供的state值。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ConcreateComponent</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">    constructor(props)&#123;</span><br><span class="line">        <span class="keyword">super</span>(props);</span><br><span class="line">        <span class="keyword">this</span>.state = &#123;</span><br><span class="line">            posts:[] ,</span><br><span class="line">            comments : [] , </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    componentDidMount()&#123;</span><br><span class="line">        fetchPosts().then( response =&gt; &#123;</span><br><span class="line">            <span class="keyword">this</span>.setState(&#123;</span><br><span class="line">                posts : response.posts</span><br><span class="line">            &#125;);   </span><br><span class="line">        &#125;);</span><br><span class="line">        </span><br><span class="line">        fetchComment().then( response =&gt; &#123;</span><br><span class="line">            <span class="keyword">this</span>.setState(&#123;</span><br><span class="line">                comments : response.comments</span><br><span class="line">            &#125;)</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>数据流向</li>
+</ul>
+<p>React中的数据流是单向的，只会从父组件传递到子组件。属性props（properties）是父子组件间进行状态传递的接口，React会向下遍历整个组件树，并重新渲染使用这个属性的组件。</p>
+
+            
+                
+
+            
+        </div>
+    </div>
+    <div class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/react-native/">react-native</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/05/22/React-Native基础（4）：组件引用Ref/"  data-tooltip="React-Native基础（4）：组件引用Ref">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/05/16/React-Native基础（1）：布局/" data-tooltip="React-Native基础（1）：布局">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至Google+" href="https://plus.google.com/share?url=http://blog.alexwan.cn/2017/05/18/React-Native基础（2）：聊聊Props和State/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+       
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至Twitter" href="https://twitter.com/intent/tweet?text=http://blog.alexwan.cn/2017/05/18/React-Native基础（2）：聊聊Props和State/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+
+         <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至新浪微博" href="http://www.jiathis.com/send/?webid=tsina&amp;appkey=&amp;uid=1850331&amp;url=http://blog.alexwan.cn/2017/05/18/React-Native基础（2）：聊聊Props和State/&amp;title=React-Native基础（2）：聊聊Props与States">
+                <i class="fa fa-weibo"></i>
+            </a>
+        </li>
+
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+            <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2017 alexwan. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="1">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/05/22/React-Native基础（4）：组件引用Ref/"  data-tooltip="React-Native基础（4）：组件引用Ref">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/05/16/React-Native基础（1）：布局/" data-tooltip="React-Native基础（1）：布局">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至Google+" href="https://plus.google.com/share?url=http://blog.alexwan.cn/2017/05/18/React-Native基础（2）：聊聊Props和State/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+       
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至Twitter" href="https://twitter.com/intent/tweet?text=http://blog.alexwan.cn/2017/05/18/React-Native基础（2）：聊聊Props和State/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+
+         <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" data-tooltip="分享至新浪微博" href="http://www.jiathis.com/send/?webid=tsina&amp;appkey=&amp;uid=1850331&amp;url=http://blog.alexwan.cn/2017/05/18/React-Native基础（2）：聊聊Props和State/&amp;title=React-Native基础（2）：聊聊Props与States">
+                <i class="fa fa-weibo"></i>
+            </a>
+        </li>
+
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="1">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://blog.alexwan.cn/2017/05/18/React-Native基础（2）：聊聊Props和State/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://blog.alexwan.cn/2017/05/18/React-Native基础（2）：聊聊Props和State/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://blog.alexwan.cn/2017/05/18/React-Native基础（2）：聊聊Props和State/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        <div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <h4 id="about-card-name">alexwan</h4>
+        
+            <h5 id="about-card-bio"><p>无限大な梦のあとの 何もない世の中じゃ!</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Android Developer</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                China ShangHai
+            </h5>
+        
+    </div>
+</div>
+
+        <div id="cover" style="background-image:url('http://imgbucket-1252300500.picsh.myqcloud.com/github/body_bg_page.jpg');"></div>
+
+    </body>
+    <!--SCRIPTS-->
+<script src="/assets/js/script.min.js" type="text/javascript"></script>
+<!--SCRIPTS END-->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'alexwan';
+        (function() {
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+
+
+
+</html>
