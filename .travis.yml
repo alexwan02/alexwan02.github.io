@@ -16,7 +16,7 @@ after_script:
   - git config --global user.email "alexwan0312@gmail.com"
   - git add .
   - git commit -m "travis ci auto build"
-  - git push "https://${Personal_access_tokens}@${REPO}" master:master
+  - git push -u "https://${Personal_access_tokens}@${REPO}" master:master
 
 branches:
   only: 
