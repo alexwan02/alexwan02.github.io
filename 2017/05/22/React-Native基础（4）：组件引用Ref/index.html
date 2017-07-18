@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          React-Native基础（4）：组件引用Ref - Alex Studio
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.alexwan.cn/2017/05/22/React-Native基础（4）：组件引用Ref/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Alex Studio</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#react-native" title="react-native">react-native</a>
+                        
+                    </div>
+                    <h1>React-Native基础（4）：组件引用Ref</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by AlexWan on
+                        2017-05-22
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>在典型的React数据流中，父组件与子组件的唯一交互方式就是通过Props。修改子组件，就需要使用新的Prop来重新渲染。但是在有些情况，需要在数据流之外，直接来执行子组件的修改操作。React提供了使用Ref方式来解决直接修改子组件或子DOM元素的问题。</p>
+<ul>
+<li>添加Ref到DOM元素<br><code>ref</code>是React组件一个特殊属性，使用<code>回调函数</code>作为属性，函数的接收组件的基本DOM元素作为它的参数。<figure class="highlight js"><table><tr><td class="code"><pre><div class="line">&lt;Component ref=&#123;(el) =&gt; <span class="keyword">this</span>.el = el &#125;/&gt;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>定义的回调函数会在组件加载和卸载时立即调用。<br>在组件卸载时函数中元素的值为<code>null</code>。<br>一个简单的例子<br><figure class="highlight js"><table><tr><td class="code"><pre><div class="line">...</div><div class="line">class CustomTextInput extends React.Component&#123;</div><div class="line">   <span class="keyword">constructor</span>(props)&#123;</div><div class="line">       <span class="keyword">super</span>(props);</div><div class="line">       <span class="keyword">this</span>.focus = <span class="keyword">this</span>.focus.bind(<span class="keyword">this</span>);</div><div class="line">   &#125;</div><div class="line">   </div><div class="line">   focus()&#123;</div><div class="line">       <span class="comment">// 获取文字焦点</span></div><div class="line">       <span class="keyword">this</span>.textInput.focus();</div><div class="line">   &#125;</div><div class="line">   </div><div class="line">   render()&#123;</div><div class="line">       <span class="comment">// 使用ref回调函数存储text input 元素的引用</span></div><div class="line">       <span class="keyword">return</span> (</div><div class="line">        &lt;div&gt;</div><div class="line">          &lt;input </div><div class="line">            type="text" </div><div class="line">            ref=&#123;(input) =&gt; &#123; this.textInput = input; &#125;&#125; /&gt;</div><div class="line">          &lt;input</div><div class="line">            type="button"</div><div class="line">            value="Focus the text input"</div><div class="line">            onClick=&#123;this.focus&#125; /&gt;</div><div class="line">        &lt;/div&gt;</div><div class="line">       );</div><div class="line">   &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="comment">// es6 箭头函数</span></div><div class="line">ref=&#123;input =&gt; <span class="keyword">this</span>.textInput = input&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>添加Ref到Class组件</li>
+</ul>
+<p>当为组件添加Ref回调函数，回调函数将使用自定义的组件作为它的参数。<br>例如：<br><figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">AutoFocusTextInput</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span></span>&#123;</div><div class="line">    <span class="keyword">constructor</span>(props)&#123;</div><div class="line">        <span class="keyword">this</span>.textInput.focus();</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    render()&#123;</div><div class="line">        <span class="keyword">return</span>(</div><div class="line">          <span class="xml"><span class="tag">&lt;<span class="name">CustomTextInput</span></span></span></div><div class="line">            <span class="attr">ref</span>=<span class="string">&#123;</span> (<span class="attr">input</span>) =&gt; &#123;this.textInput = input; &#125;&#125;</div><div class="line">            /&gt;</div><div class="line">        );</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这个方式只能用于以<code>class</code>方式声明的<code>CustomTextInput</code></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">CustomTextInput</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</div><div class="line">    <span class="comment">// ...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>Ref和函数组件</li>
+</ul>
+<p>因为函数式组件没有组件实例，所以不能够通过上面的方式来给函数组件添加ref。<br>通过两种方式来解决</p>
+<pre><code>1. 将函数组件转为Class组件。
+2. 在函数组件内部使用`ref`，这种方式同样适应于class组件。
+</code></pre><figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">CustomTextInput</span>(<span class="params">props</span>)</span>&#123;</div><div class="line">    <span class="comment">// 需要声明引用的textInput</span></div><div class="line">    <span class="keyword">let</span> textInput = <span class="literal">null</span>;</div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">handleClick</span>(<span class="params"></span>)</span>&#123;</div><div class="line">        textInput.focus();</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> (</div><div class="line">      &lt;div&gt;</div><div class="line">        &lt;input </div><div class="line">          text="text"</div><div class="line">          ref=&#123; (input) =&gt; &#123; textInput = input; &#125;&#125;</div><div class="line">          /&gt;</div><div class="line">        &lt;input </div><div class="line">          text="button"</div><div class="line">          value="Focus the text input"</div><div class="line">          onClick=&#123; handleClick &#125;</div><div class="line">          /&gt;</div><div class="line">      &lt;/div&gt;</div><div class="line">    );</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>暴露DOM的Ref给父组件</li>
+</ul>
+<p>在极少情况下，父组件需要访问子组件。因为破坏了组件的封装性，这种做法并不推荐，但是有时对于触发焦点和测量子DOM节点的位置或大小会有用。如果给子组件添加ref时，也并不是理想解决方案，因为ref回调函数的参数是子组件，而不是DOM节点元素，并且不适用函数式组件。<br>因此，在这些情况建议暴露子组件的特殊属性，子组件使用任意名称（如：<code>inputRef</code>）的函数类型的Prop，并把这个属性添加大DOM节点元素中，作为<code>ref</code>属性。就可以通过中间组件将父组件的ref函数传递给子组件中的DOM节点<br><figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">CustomTextInput</span>(<span class="params">props</span>)</span>&#123;</div><div class="line">  <span class="keyword">return</span> (</div><div class="line">    &lt;div&gt;</div><div class="line">      &lt;input ref=&#123;props.inputRef&#125;/&gt;</div><div class="line">    &lt;/div&gt;</div><div class="line">  );</div><div class="line">&#125;</div><div class="line"></div><div class="line">class Parent extends React.Component&#123;</div><div class="line">    render (</div><div class="line">      return (</div><div class="line">        &lt;CustomTextInput</div><div class="line">          inputRef=&#123;el =&gt; this.inputElement = el&#125;</div><div class="line">          /&gt;</div><div class="line">      );</div><div class="line">    )</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>上面代码中父组件使用<code>inputRef</code>属性将ref回调函数传递给中间组件<code>CustomTextInput</code>，<code>CustomTextInput</code>又将函数传给<code>&lt;input /&gt;</code>的ref属性。最终父组件获取到对<code>&lt;input /&gt;</code>的引用。这种形式不仅适用于Class组件，同样也适用于函数组件。<br>这种形式的另一个好处就是：对于深层的DOM节点同样有效。假设父组件不需要DOM节点引用，但是祖父组件想要获取子组件中DOM节点元素的引用，可以通过让祖父组件指定inputRef属性，传递给父组件，父组件再把<code>inputRef</code>转给<code>CustomTextInput</code>。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">CustomTextInput</span>(<span class="params">props</span>)</span>&#123;</div><div class="line">  <span class="keyword">return</span> (</div><div class="line">    &lt;div&gt;</div><div class="line">      &lt;input ref=&#123;props.inputRef&#125;/&gt;</div><div class="line">    &lt;/div&gt;</div><div class="line">  );</div><div class="line">&#125;</div><div class="line"></div><div class="line">class Parent extends React.Component&#123;</div><div class="line">    render (</div><div class="line">      return (</div><div class="line">        &lt;div&gt;</div><div class="line">          My input: &lt;CustomTextInput inputRef=&#123;props.inputRef&#125; /&gt;</div><div class="line">        &lt;/div&gt;</div><div class="line">      );</div><div class="line">    )</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">class GrandParent extends React.Component&#123;</div><div class="line">  render() &#123;</div><div class="line">    return (</div><div class="line">      &lt;Parent</div><div class="line">        inputRef=&#123;el =&gt; this.inputElement = el&#125;</div><div class="line">      /&gt;</div><div class="line">    );</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>综合考虑下，不建议暴露DOM节点。 因为破坏了组件的封装，而且需要子节点添加额外的属性。</p>
+</blockquote>
+<ul>
+<li>说明</li>
+</ul>
+<p>如果<code>ref</code>以内联函数形式定义，在更新时会被调用两次</p>
+<pre><code>- 第一次为函数的参数为null，第二次为DOM元素
+</code></pre><p>因为每次render时，都要创建一个新的函数实例，建议通过组件bind函数来定义ref回调函数。</p>
+<ul>
+<li><p>适应场景</p>
+<ol>
+<li>管理输入焦点，文字选择或者媒体播放时；</li>
+<li>触发必要的动画时；</li>
+<li>与第三方DOM库交互时；</li>
+</ol>
+</li>
+</ul>
+<p>避免使用在可用声明方式的情景下。如：通过定义<code>isOpen</code>的方式，避免暴露<code>Dialog</code>的<code>open</code>和<code>close</code>的方法。</p>
+<ul>
+<li>避免过度使用</li>
+</ul>
+<p>在使用<code>ref</code>时，一定要经过慎重思考，尤其是拥有State状态的组件。首先考虑使用Props</p>
+<p><a href="https://facebook.github.io/react/docs/refs-and-the-dom.html" target="_blank" rel="external">Refs and the DOM</a></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2017/06/21/Kotlin基础之函数/" data-toggle="tooltip" data-placement="top" title="Kotlin基础之函数">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2017/05/18/React-Native基础（2）：聊聊Props和State/" data-toggle="tooltip" data-placement="top" title="React-Native基础（2）：聊聊Props与States">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#react-native" title="react-native">react-native</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "alexwan02";
+    var disqus_identifier = "http://blog.alexwan.cn/2017/05/22/React-Native基础（4）：组件引用Ref/";
+    var disqus_url = "http://blog.alexwan.cn/2017/05/22/React-Native基础（4）：组件引用Ref/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Alex Studio 2017 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.alexwan.cn/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

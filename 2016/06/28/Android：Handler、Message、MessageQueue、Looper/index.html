@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Android：Handler、Message、MessageQueue、Looper - Alex Studio
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.alexwan.cn/2016/06/28/Android：Handler、Message、MessageQueue、Looper/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Alex Studio</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#android-aosp" title="android-aosp">android-aosp</a>
+                        
+                    </div>
+                    <h1>Android：Handler、Message、MessageQueue、Looper</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by AlexWan on
+                        2016-06-28
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>Android中引入消息事件驱动的机制。每个Thread通过ThreadLocal来绑定一个Looper对象，每个Looper对应一个消息队列MessageQueue，在创建一个Handler时，绑定当前线程的MessageQueue，来用来接收消息和分发处理消息。</p>
+<p><img src="http://res.cloudinary.com/dmfz9aun7/image/upload/v1467083788/android/android_message_mechanism.png" alt="img"></p>
+<p>Handler、Message、MessageQueue、Message关系图</p>
+<h2 id="一、Handler"><a href="#一、Handler" class="headerlink" title="一、Handler"></a>一、Handler</h2><h3 id="1-创建一个Handler"><a href="#1-创建一个Handler" class="headerlink" title="1.创建一个Handler"></a>1.创建一个Handler</h3><figure class="highlight java"><table><tr><td class="code"><pre><div class="line">Handler handler = <span class="keyword">new</span> Handler();</div></pre></td></tr></table></figure>
+<p>Handler在创建时，都做了什么呢？<br><figure class="highlight java"><figcaption><span>Handler.java</span></figcaption><table><tr><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Callback</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">handlerMessage</span><span class="params">(Message msg)</span></span>;</div><div class="line">&#125;</div><div class="line">...</div><div class="line"><span class="comment">/*---Handler构造器---*/</span></div><div class="line"><span class="comment">/**</span></div><div class="line">* Handler默认构造器，关联当前线程的Looper对象，</div><div class="line">* 如果当前线程Looper没有初始化， Handler则抛出异常</div><div class="line">*/</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">Handler</span><span class="params">()</span></span>&#123;</div><div class="line">    <span class="keyword">this</span>(<span class="keyword">null</span> , <span class="keyword">false</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line">* 关联当前线程Looper对象的Handler构造器，接受一个callback接口来处理Messages</div><div class="line">* 如果当前线程Looper没有初始化， Handler无法接收消息并抛出异常</div><div class="line">*/</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">Handler</span><span class="params">(Callback callback)</span></span>&#123;</div><div class="line">    <span class="keyword">this</span>(callback ,<span class="keyword">false</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line">* 使用提供的Looper 替换默认Looper的</div><div class="line">*/</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">Handler</span><span class="params">(Looper looper)</span> </span>&#123;</div><div class="line">    <span class="keyword">this</span>(looper, <span class="keyword">null</span>, <span class="keyword">false</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line">* 使用提供的Looper ，接受一个callback接口来处理消息</div><div class="line">*/</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">Handler</span><span class="params">(Looper looper, Callback callback)</span> </span>&#123;</div><div class="line">    <span class="keyword">this</span>(looper, callback, <span class="keyword">false</span>);</div><div class="line">&#125;</div><div class="line">...</div><div class="line"><span class="comment">/**</span></div><div class="line">* 默认Handler构造 最终会调用这个方法来初始化Handler对象</div><div class="line">*/</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">Handler</span><span class="params">(Callback callback  , <span class="keyword">boolean</span> async)</span></span>&#123;</div><div class="line">    <span class="keyword">if</span>(FIND_POTENTIAL_LEAKS)&#123;</div><div class="line">        <span class="keyword">final</span> Class&lt;? extends Handler&gt; klass = getClass();</div><div class="line">        <span class="keyword">if</span> ((klass.isAnonymousClass() || klass.isMemberClass() || klass.isLocalClass()) &amp;&amp;</div><div class="line">            (klass.getModifiers() &amp; Modifier.STATIC) == <span class="number">0</span>) &#123;</div><div class="line">            Log.w(TAG, <span class="string">"The following Handler class should be static or leaks might occur: "</span> +</div><div class="line">                klass.getCanonicalName());</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">// 获取当前线程绑定的Looper</span></div><div class="line">        mLooper = Looper.myLooper();</div><div class="line">        <span class="keyword">if</span>(mLooper == <span class="keyword">null</span>)&#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(</div><div class="line">                <span class="string">"Can't create handler inside thread that has not called Looper.prepare()"</span>);</div><div class="line">        &#125;</div><div class="line">        <span class="comment">// 绑定Looper的MessageQueue</span></div><div class="line">        mQueue = mLooper.mQueue;</div><div class="line">        mCallback = callback;</div><div class="line">        mAsynchronous = async;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line">* 指定Looper，Callback 初始化Handler</div><div class="line">* Handler默认为同步调用</div><div class="line">*/</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">Handler</span><span class="params">(Looper looper, Callback callback, <span class="keyword">boolean</span> async)</span> </span>&#123;</div><div class="line">    mLooper = looper;</div><div class="line">    mQueue = looper.mQueue;</div><div class="line">    mCallback = callback;</div><div class="line">    mAsynchronous = async;</div><div class="line">&#125;</div><div class="line">...</div></pre></td></tr></table></figure></p>
+<p>每个Handler都关联一个消息队列，消息队列被封装在Looper中，每个Looper又会关联一个Thread，也就是每个消息队列都会关联一个Thread。</p>
+<h3 id="2-发送消息"><a href="#2-发送消息" class="headerlink" title="2.发送消息"></a>2.发送消息</h3><p>Handler就是一个消息处理器，将消息投递给消息队列，然后再由对应的线程从消息队列中取出消息。<br>Handler发送消息分为postXXX和sendXXX方法，postXXX方法，接受Runnable对象作为参数<br><figure class="highlight java"><figcaption><span>Handler.java</span></figcaption><table><tr><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">// post</span></div><div class="line">...</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">post</span><span class="params">(Runnable r)</span></span>&#123;</div><div class="line">    <span class="keyword">return</span> sendMessageDelay(getPostMessage(r) , <span class="number">0</span>);</div><div class="line">&#125;</div><div class="line">...</div><div class="line"><span class="comment">// 通过getPostMessage方法把Runnable作为参数分装为Message</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> Message <span class="title">getPostMessage</span><span class="params">(Runnable r)</span></span>&#123;</div><div class="line">    Message m = Message.obtain();</div><div class="line">    m.callback = r;</div><div class="line">    <span class="keyword">return</span> m;</div><div class="line">&#125;</div><div class="line"></div></pre></td></tr></table></figure></p>
+<p>sendXXX方法用Message对象作为参数。<br>发送Message的方法最后都调用sendMessageAtTime方法，</p>
+<figure class="highlight java"><figcaption><span>Handler.java</span></figcaption><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">sendMessageAtTime</span><span class="params">(Message msg, <span class="keyword">long</span> uptimeMillis)</span> </span>&#123;</div><div class="line">    <span class="comment">// 获得绑定的MessageQueue</span></div><div class="line">    MessageQueue queue = mQueue;</div><div class="line">    <span class="keyword">if</span> (queue == <span class="keyword">null</span>) &#123;</div><div class="line">        RuntimeException e = <span class="keyword">new</span> RuntimeException(</div><div class="line">                <span class="keyword">this</span> + <span class="string">" sendMessageAtTime() called with no mQueue"</span>);</div><div class="line">        Log.w(<span class="string">"Looper"</span>, e.getMessage(), e);</div><div class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> enqueueMessage(queue, msg, uptimeMillis);</div><div class="line">&#125;</div><div class="line">...</div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">enqueueMessage</span><span class="params">(MessageQueue queue, Message msg, <span class="keyword">long</span> uptimeMillis)</span> </span>&#123;</div><div class="line">    <span class="comment">// 将Message target 与当前Handler对象绑定</span></div><div class="line">    msg.target = <span class="keyword">this</span>;</div><div class="line">    <span class="keyword">if</span> (mAsynchronous) &#123;</div><div class="line">        msg.setAsynchronous(<span class="keyword">true</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 调用MessageQueue的enqueueMessage方法，将消息加入消息队列中</span></div><div class="line">    <span class="keyword">return</span> queue.enqueueMessage(msg, uptimeMillis);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Handler发送消息，通过在初始化时绑定的MessageQueue对象，将要发送的消息加入到当线程的唯一的MessageQueue队列中。<br>那么Handler在哪里来处理从消息队列中发送出的消息呢？答案在Looper源码中</p>
+<h2 id="二、Looper"><a href="#二、Looper" class="headerlink" title="二、Looper"></a>二、Looper</h2><p>Looper 用来运行循环线程中消息队列，但是默认情况下Thread并没有关联的消息循环。Looper提供<code>prepare()</code>方法将一个Looper对象与Thread来进行关联。并调用<code>loop()</code>方法来开启消息队列的循环任务。比如下面是Looper与Thread关联的经典范例。<br><figure class="highlight java"><figcaption><span>Looper.java</span></figcaption><table><tr><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">LooperThread</span> <span class="keyword">extends</span> <span class="title">Thread</span></span>&#123;</div><div class="line">    <span class="keyword">public</span> Handler mHandler;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="comment">// init looper here</span></div><div class="line">        Looper.prepare();</div><div class="line">        mHandler = <span class="keyword">new</span> Handler()&#123;</div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span> </span>&#123;</div><div class="line">                <span class="comment">// 处理接收到的消息</span></div><div class="line">            &#125;</div><div class="line">        &#125;;</div><div class="line">         <span class="comment">// start loop message queue here actually</span></div><div class="line">         Looper.loop();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">... </div></pre></td></tr></table></figure></p>
+<p>Looper调用<code>prepare()</code>将当前线程与Looper对象进行关联</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="comment">/*</span></div><div class="line">* 构造方法为private ， 不能直接通过构造方法直接初始化</div><div class="line">* 初始化MessageQueue，与当前线程进行关联</div><div class="line">*/</div><div class="line"><span class="function"><span class="keyword">private</span> <span class="title">Looper</span><span class="params">(<span class="keyword">boolean</span> quitAllowed)</span> </span>&#123;</div><div class="line">    mQueue = <span class="keyword">new</span> MessageQueue(quitAllowed);</div><div class="line">    mThread = Thread.currentThread();</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line">* 初始化当前线程为Looper</div><div class="line">*/</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">prepare</span><span class="params">()</span> </span>&#123;</div><div class="line">    prepare(<span class="keyword">true</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 实际调用</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">prepare</span><span class="params">(<span class="keyword">boolean</span> quitAllowed)</span></span>&#123;</div><div class="line">    <span class="keyword">if</span> (sThreadLocal.get() != <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"Only one Looper may be created per thread"</span>);</div><div class="line">    &#125;</div><div class="line">    sThreadLocal.set(<span class="keyword">new</span> Looper(quitAllowed));</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Looper在初始化时，先通过ThreadLocal获取当前线程关联的Looper对象，判断是否Thread已经关联过Looper，如果已经关联，抛出异常。如果未关联，在将实例化一个新的Looper实例，并保存到ThreadLocal中<br>在实例化Looper中，创建MessageQueue对象，关联当前线程。</p>
+<h3 id="1-ThreadLocal"><a href="#1-ThreadLocal" class="headerlink" title="1.ThreadLocal"></a>1.ThreadLocal</h3><p>什么是ThreadLocal，ThreadLocal是一个关于创建线程局部变量的类。使用ThreadLocal创建的变量只能被当前线程访问，其他线程则无法访问和修改。</p>
+<ul>
+<li>实现单个线程单例以及当个线程上下文信息存储</li>
+<li>实现线程安全，非线程安全的对象使用ThreadLocal之后变为线程安全。因为每个线程都对应一个实例。</li>
+<li>承载一些线程相关的数据，避免在方法中来回传递参数</li>
+<li>ThreadLocal不会产生内存泄露，ThreadLocal选做Key时，是ThreadLocal实例的弱引用</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">// a simple threadlocal sample</span></div><div class="line"></div><div class="line">Thread t = <span class="keyword">new</span> Thread&#123;</div><div class="line">    ThreadLocal&lt;String&gt; mStringThreadLocal = <span class="keyword">new</span> ThreadLocal&lt;String&gt;()&#123;</div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>&#123;</div><div class="line">            <span class="keyword">super</span>.run();</div><div class="line">            mStringThreadLocal.set(<span class="string">"alexwan"</span>);</div><div class="line">            mStringThreadLocal.get();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">...</div><div class="line">t.start();</div></pre></td></tr></table></figure>
+<p>ThreadLocal的<code>set</code>方法把当前线程作为key，把需要存储的变量作为值存储在ThreadLocalMap中<br><figure class="highlight java"><figcaption><span>ThreadLocal</span></figcaption><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadLocal</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ThreadLocal</span><span class="params">()</span></span>&#123;&#125;</div><div class="line">    ...</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">set</span><span class="params">(T value)</span></span>&#123;</div><div class="line">        <span class="comment">// get current thread</span></div><div class="line">        Thread t = Thread.currentThread();</div><div class="line">        <span class="comment">// get thread local map values;</span></div><div class="line">        ThreadLocalMap map = getMap(t);</div><div class="line">        <span class="keyword">if</span>( map != <span class="keyword">null</span> )&#123;</div><div class="line">            map.set(<span class="keyword">this</span> , value);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="comment">// create local values map</span></div><div class="line">            createMap(t , value);</div><div class="line">         &#125;</div><div class="line">    &#125;</div><div class="line">    ...</div><div class="line">    <span class="function">ThreadLocalMap <span class="title">getMap</span><span class="params">(Thread t)</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> t.threadLocals;</div><div class="line">    &#125;</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>Looper 本地维护一个ThreadLocal对象，保证当前线程中Looper对象的唯一性，</p>
+<figure class="highlight java"><figcaption><span>Looper</span></figcaption><table><tr><td class="code"><pre><div class="line"><span class="keyword">static</span> <span class="keyword">final</span> ThreadLocal&lt;Looper&gt; sThreadLocal = <span class="keyword">new</span> ThreadLocal&lt;Looper&gt;();</div></pre></td></tr></table></figure>
+<h3 id="2-循环消息队列"><a href="#2-循环消息队列" class="headerlink" title="2.循环消息队列"></a>2.循环消息队列</h3><p>执行Looper.prepare()之后，可以在外部通过调用Looper.myLooper()获取当前线程关联的Looper对象。<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Looper <span class="title">myLooper</span><span class="params">()</span></span>&#123;</div><div class="line">    <span class="keyword">return</span> sThreadLocal.get();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>Looper初始化后，调用方法<code>loop()</code>开始执行循环消息的任务</p>
+<figure class="highlight java"><figcaption><span>Looper</span></figcaption><table><tr><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line">* 执行循环消息任务，调用quit()方法结束循环</div><div class="line">*/</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">loop</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="comment">// 获取当前线程关联的Looper对象  </span></div><div class="line">    <span class="keyword">final</span> Looper me = myLooper();</div><div class="line">    <span class="keyword">if</span> (me == <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"No Looper; Looper.prepare() wasn't called on this thread."</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// Looper实例化时创建的MessageQueue对象</span></div><div class="line">    <span class="keyword">final</span> MessageQueue queue = me.mQueue;</div><div class="line"></div><div class="line">    <span class="comment">// Make sure the identity of this thread is that of the local process,</span></div><div class="line">    <span class="comment">// and keep track of what that identity token actually is.</span></div><div class="line">    Binder.clearCallingIdentity();</div><div class="line">    <span class="keyword">final</span> <span class="keyword">long</span> ident = Binder.clearCallingIdentity();</div><div class="line"></div><div class="line">    <span class="keyword">for</span> (;;) &#123;</div><div class="line">        <span class="comment">// 无限循环消息队列，调用MessageQueue next()方法取出消息</span></div><div class="line">        Message msg = queue.next(); <span class="comment">// 可能会阻塞</span></div><div class="line">        <span class="keyword">if</span> (msg == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="comment">// No message indicates that the message queue is quitting.</span></div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">// This must be in a local variable, in case a UI event sets the logger</span></div><div class="line">        Printer logging = me.mLogging;</div><div class="line">        <span class="keyword">if</span> (logging != <span class="keyword">null</span>) &#123;</div><div class="line">            logging.println(<span class="string">"&gt;&gt;&gt;&gt;&gt; Dispatching to "</span> + msg.target + <span class="string">" "</span> +</div><div class="line">                    msg.callback + <span class="string">": "</span> + msg.what);</div><div class="line">        &#125;</div><div class="line">        <span class="comment">// 这里的target对象即是Handler，这里调用的Handler dispatchMessage()方法来处理</span></div><div class="line">        <span class="comment">// 从消息队列中取出的Message</span></div><div class="line">        msg.target.dispatchMessage(msg);</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (logging != <span class="keyword">null</span>) &#123;</div><div class="line">            logging.println(<span class="string">"&lt;&lt;&lt;&lt;&lt; Finished to "</span> + msg.target + <span class="string">" "</span> + msg.callback);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">// Make sure that during the course of dispatching the</span></div><div class="line">        <span class="comment">// identity of the thread wasn't corrupted.</span></div><div class="line">        <span class="keyword">final</span> <span class="keyword">long</span> newIdent = Binder.clearCallingIdentity();</div><div class="line">        <span class="keyword">if</span> (ident != newIdent) &#123;</div><div class="line">            Log.wtf(TAG, <span class="string">"Thread identity changed from 0x"</span></div><div class="line">                    + Long.toHexString(ident) + <span class="string">" to 0x"</span></div><div class="line">                    + Long.toHexString(newIdent) + <span class="string">" while dispatching to "</span></div><div class="line">                    + msg.target.getClass().getName() + <span class="string">" "</span></div><div class="line">                    + msg.callback + <span class="string">" what="</span> + msg.what);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        msg.recycleUnchecked();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div></pre></td></tr></table></figure>
+<p>Looper获取当前线程关联的Looper对象，通过Looper对象拿到Looper创建的MessageQueue消息队列，对消息队列开启无限循环。从MessageQueue中取消息，如果队列无消息，则等待新的消息。取到消息时，则由Masssge对象绑定的target来分发处理消息。在Handler分析的中Message的target关联就是发送消息的Handler对象。调用Handler的<code>dispatchMessage</code>方法让Handler处理Message</p>
+<figure class="highlight java"><figcaption><span>Handler</span></figcaption><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line">* Handle system messages here.</div><div class="line">*/</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">dispatchMessage</span><span class="params">(Message msg)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (msg.callback != <span class="keyword">null</span>) &#123;</div><div class="line">        handleCallback(msg);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">if</span> (mCallback != <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">if</span> (mCallback.handleMessage(msg)) &#123;</div><div class="line">                <span class="keyword">return</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        handleMessage(msg);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>dispatchMessage 只是一个分发的方法，如果callback不为空，表示是Handler是调用<code>postxxx</code>方法发送的消息，callback实际为Runnable对象，此时调用<code>handleCallback</code>方法，则执行callback的run方法。否则判断mCallback是否为空，mCallback是在创建Handler时传递的Callbacl接口对象。如果mCallback接口对象也为空，则具体实现由handler的方法<code>handleMessage</code>实现</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">handleCallback</span><span class="params">(Message message)</span> </span>&#123;</div><div class="line">    message.callback.run();</div><div class="line">&#125;</div><div class="line">...</div><div class="line"><span class="comment">/**</span></div><div class="line">* 子类具体实现</div><div class="line">*/</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span> </span>&#123;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="三、主线程MainThread"><a href="#三、主线程MainThread" class="headerlink" title="三、主线程MainThread"></a>三、主线程MainThread</h2><p>Android的程序入口为ActivityThread的main方法，而主线程的Looper也是在这里初始化</p>
+<figure class="highlight java"><figcaption><span>ActivityThread</span></figcaption><table><tr><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</div><div class="line">    ...</div><div class="line">    <span class="comment">// Make sure TrustedCertificateStore looks in the right place for CA certificates</span></div><div class="line">    <span class="keyword">final</span> File configDir = Environment.getUserConfigDirectory(UserHandle.myUserId());</div><div class="line">    TrustedCertificateStore.setDefaultUserDirectory(configDir);</div><div class="line"></div><div class="line">    Process.setArgV0(<span class="string">"&lt;pre-initialized&gt;"</span>);</div><div class="line">    <span class="comment">// 初始化主线程的Looper</span></div><div class="line">    Looper.prepareMainLooper();</div><div class="line"></div><div class="line">    ActivityThread thread = <span class="keyword">new</span> ActivityThread();</div><div class="line">    ...</div><div class="line"></div><div class="line">    <span class="comment">// End of event ActivityThreadMain.</span></div><div class="line">    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</div><div class="line">    <span class="comment">// 开启消息循环</span></div><div class="line">    Looper.loop();</div><div class="line">    ...</div><div class="line">&#125;</div><div class="line">...</div></pre></td></tr></table></figure>
+<p>主线程的消息队列在AcitivityThread的main中，调用Looper的静态方法prepareMainLooper()来创建，最后调用looper来启动消息循环。<br>在很多情况下，在线程中执行耗时任务，通过调用主线程Handler更新UI。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line">Handler handler = <span class="keyword">new</span> Handler(Looper.getMainLooper())&#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span> </span>&#123;</div><div class="line">        <span class="comment">// 更新界面UI TODO</span></div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">Thread thread = <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;       </div><div class="line">        <span class="comment">// 处理耗时任务</span></div><div class="line">        Message msg = <span class="keyword">new</span> Message();</div><div class="line">        <span class="comment">// message 设置处理的结果</span></div><div class="line">        <span class="comment">// 发送带有处理结果的消息</span></div><div class="line">        handler.sendMessage(msg);</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><p>Android的消息事件机制基本的流程：线程关联有且唯一的Looper对象，Looper对象中维护一个消息队列MessageQueue对象。通过Handler来发送或处理消息Message或Runnable的属性的Message，加入到队列中。Looper对象开启无限的消息循环，来取队列中Message，调用发送消息的Handler的消息分发方法，由开发者来具体处理业务或UI界面的操作。</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/07/17/Android：DataBinding-Guide/" data-toggle="tooltip" data-placement="top" title="Android：DataBinding Guide">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/06/05/Android：Activity的基础知识及启动过程/" data-toggle="tooltip" data-placement="top" title="Android：Activity的基础知识及启动过程">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#android-aosp" title="android-aosp">android-aosp</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "alexwan02";
+    var disqus_identifier = "http://blog.alexwan.cn/2016/06/28/Android：Handler、Message、MessageQueue、Looper/";
+    var disqus_url = "http://blog.alexwan.cn/2016/06/28/Android：Handler、Message、MessageQueue、Looper/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Alex Studio 2017 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.alexwan.cn/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

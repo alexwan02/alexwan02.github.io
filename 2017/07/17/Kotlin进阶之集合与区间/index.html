@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Kotlin进阶之集合与区间 - Alex Studio
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.alexwan.cn/2017/07/17/Kotlin进阶之集合与区间/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Alex Studio</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#kotlin" title="kotlin">kotlin</a>
+                        
+                    </div>
+                    <h1>Kotlin进阶之集合与区间</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by AlexWan on
+                        2017-07-17
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="集合"><a href="#集合" class="headerlink" title="集合"></a>集合</h1><p>与多数语言不一样，Kotlin区分可变与不可变集合（list，sets，maps等等）。精确控制什么时候可以编辑集合有利于减少BUG和设计良好的API。</p>
+<p>在这之前，理解只读的可变集合与实际不变的集合的区别很有必要。两者创建都很容易，但是类型系统表达却不相同。</p>
+<p>Kotlin的<code>List&lt;out T&gt;</code>类型是一个接口，提供只读操作如<code>size</code>，<code>get</code>等等。与Java相同，继承<code>Collection&lt;T&gt;</code>接口，<code>Collection&lt;T&gt;</code>继承<code>Iterable&lt;T&gt;</code>。<code>MutableList&lt;T&gt;</code>添加了修改数组的方法。同样模式还有<code>Set&lt;out T&gt;/MutableSet&lt;T&gt;</code>和<code>Map&lt;K, out V&gt;/MutableMap&lt;K, V&gt;</code></p>
+<p>List与Set的基础用法<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> numbers: MutableList&lt;<span class="built_in">Int</span>&gt; = mutableListOf(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</div><div class="line"><span class="keyword">val</span> readOnlyView: List&lt;<span class="built_in">Int</span>&gt; = numbers</div><div class="line">println(numbers) <span class="comment">// 输出"[1, 2, 3]"</span></div><div class="line">numbers.add(<span class="number">4</span>)   </div><div class="line">println(numbers) <span class="comment">// 输出"[1 , 2, 3, 4]"</span></div><div class="line">readOnlyView.clear() <span class="comment">// 不会通过编译</span></div><div class="line"></div><div class="line"><span class="keyword">val</span> strings = hashSetOf(<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>, <span class="string">"c"</span>)</div><div class="line">assert(strings.size == <span class="number">3</span>)</div></pre></td></tr></table></figure></p>
+<p>Kotlin没有创建列表或Set的专用语法，可以使用如<code>listOf()</code>，<code>mutableListOf()</code>，<code>setOf()</code>，<code>mutableSetOf()</code>创建。在非性能严格的代码中，可以使用简单的<a href="https://kotlinlang.org/docs/reference/idioms.html#read-only-map" target="_blank" rel="external">惯用语法</a>实现:<code>mapOf(a to b, c to d)</code>。</p>
+<blockquote>
+<p><code>readOnlyView</code>变量指向相同list，像基本List改变一样改变。如果唯一引用指向只读变量List，则认为集合整体不可变。</p>
+</blockquote>
+<p>创建不可变集合的一个简单方法：<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> items = listOf(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</div></pre></td></tr></table></figure></p>
+<p>目前，<code>listOf</code>方法使用数组List实现，但在未来可能会返回存储效率更高的完全不可变的集合类型。</p>
+<blockquote>
+<p>只读类型为<a href="https://kotlinlang.org/docs/reference/generics.html#variance" target="_blank" rel="external">协变量</a>，意味可是使用<code>List&lt;Rectangle&gt;</code>赋值给<code>List&lt;Shape&gt;</code>（假设<code>Rectangle</code>继承<code>Shape</code>）。在可变集合中则不被允许，因为在运行时，可变集合可能允许出错。</p>
+</blockquote>
+<p>有时希望及时返回集合快照给调用者，保证集合不变。</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Controller</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">val</span> _items = mutableListOf&lt;String&gt;()</div><div class="line">    <span class="keyword">val</span> items: List&lt;String&gt; <span class="keyword">get</span>() = _items.toList()</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>toList</code>扩展函数只是List的副本，返回的List保证不会改变。</p>
+<p>还应该熟悉List和Set的一些有用的扩展方法<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> items = listOf(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>)</div><div class="line">items.first() == <span class="number">1</span></div><div class="line">items.last() == <span class="number">4</span></div><div class="line">items.filter &#123; it % <span class="number">2</span> == <span class="number">0</span> &#125; <span class="comment">// 返回[2 , 4]</span></div><div class="line"></div><div class="line"><span class="keyword">val</span> rwList = mutableListOf(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</div><div class="line">rwList.requireNoNulls()        <span class="comment">// 返回 [1, 2, 3]</span></div><div class="line"><span class="keyword">if</span> (rwList.none &#123; it &gt; <span class="number">6</span> &#125;) println(<span class="string">"No items above 6"</span>)  <span class="comment">// 输出 "No items above 6"</span></div><div class="line"><span class="keyword">val</span> item = rwList.firstOrNull()</div></pre></td></tr></table></figure></p>
+<p>同样的还有其他如<code>排序</code>，<code>压缩</code>，<code>折叠</code>，<code>减少</code>等可能需要的实用方法。</p>
+<p>Map采取相同模式，可以像如下实例化和访问。</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> readWriteMap = hashMapOf(<span class="string">"foo"</span> to <span class="number">1</span>, <span class="string">"bar"</span> to <span class="number">2</span>)</div><div class="line">println(readWriteMap[<span class="string">"foo"</span>]) <span class="comment">// 输出"1"</span></div><div class="line"><span class="keyword">val</span> snapshot: Map&lt;String, <span class="built_in">Int</span>&gt; = HashMap(readWriteMap)</div></pre></td></tr></table></figure>
+<h1 id="区间"><a href="#区间" class="headerlink" title="区间"></a>区间</h1><p>使用<code>rangeTo</code>函数行成的区间表达式，可以使用<code>..</code>形式的操作符，并使用<code>in</code>或<code>!in</code>补全。Kotlin为任意比较类型定义的区间，对于整型基本类型则有自己最优化的实现。如：</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">if</span>( i <span class="keyword">in</span> <span class="number">1.</span><span class="number">.10</span>)&#123;  <span class="comment">// 与 1 &lt;= i &amp;&amp; i &lt;= 10相等</span></div><div class="line">    println(i)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>整形类型区间（<code>IntRange</code>，<code>LongRange</code>，<code>CharRange</code>）有个额外的特性：可以循环迭代。编译器可以将区间转为近似Java的<code>for</code>循环，而没有额外的开销。</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">for</span> ( i <span class="keyword">in</span> <span class="number">1.</span><span class="number">.4</span>) print(i) <span class="comment">// 输出 "1234"</span></div><div class="line"><span class="keyword">for</span> (i <span class="keyword">in</span> <span class="number">1.</span><span class="number">.4</span>) print(i) <span class="comment">//  无任何输出</span></div></pre></td></tr></table></figure>
+<p>如果希望逆序循环，可通过标准库中定义的<code>downTo</code>函数<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">for</span> (i <span class="keyword">in</span> <span class="number">4</span> downTo <span class="number">1</span>) print(i) <span class="comment">// 输出 "4321"</span></div></pre></td></tr></table></figure></p>
+<p>循环通过<code>step</code>函数来指定单循环步数<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">for</span>(i <span class="keyword">in</span> <span class="number">1.</span><span class="number">.4</span> step <span class="number">2</span>) print(i) <span class="comment">// 输出"13"</span></div><div class="line"><span class="keyword">for</span>(i <span class="keyword">in</span> <span class="number">4</span> downTo <span class="number">1</span> step <span class="number">2</span>) print(i) <span class="comment">// 输出"42"</span></div></pre></td></tr></table></figure></p>
+<p>使用<code>until</code>函数创建不包括结尾元素的循环迭代操作<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">for</span>( i <span class="keyword">in</span> <span class="number">1</span> until <span class="number">10</span> )&#123; <span class="comment">// i in [1 , 10) 不包括10</span></div><div class="line">    println(i)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h2><p>区间实现库中的一个通用的接口：<code>ClosedRange&lt;T&gt;</code></p>
+<p><code>ClosedRange&lt;T&gt;</code>表示数学意义上的闭合区间，为比较类型定义。有两个端点：<code>起始</code>和<code>结束</code>，两点都包含在区间内。主要操作符是<code>contains</code>，使用形式<code>in</code>和<code>!in</code></p>
+<p>整型数列(<code>IntProgression</code>，<code>LongProgression</code>，<code>CharProgression</code>)表示算数队列。数列使用<code>起始</code>元素，<code>末尾</code>元素和<code>非零步数</code>定义。首位元素为起始元素，子队列元素为前一个元素加上步数，末尾元素总要循环命中（除非队列为空）。</p>
+<p>队列为<code>Iterable&lt;N&gt;</code>子类，N表示<code>Int</code>，<code>Long</code>，<code>Char</code>，所以可以在<code>for</code>循环和像<code>map</code>，<code>filter</code>等函数中使用。队列循环近似与Java中的索引<code>for</code>循环<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">for</span> (int i = first; i != last; i += step) &#123;</div><div class="line">  <span class="comment">// ...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>对于整型，<code>..</code>操作符会创建实现<code>ClosedRange&lt;T&gt;</code>和<code>*Progression</code>接口的对象。如<code>IntRange</code>实现<code>ClosedRange&lt;Int&gt;</code>并继承<code>IntProgression</code>，因此所有为<code>IntProgression</code>定义的操作符都用于<code>IntRange</code>。<code>downTo()</code>和<code>step()</code>函数返回值为<code>*Progression</code>。</p>
+<p>使用<code>fromClosedRange</code>函数构建的队列，定义在它们的伴生对象中：<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">IntProgression.fromClosedRange(start, end, step)</div></pre></td></tr></table></figure></p>
+<p>队列末尾元素用于计算查找<code>step为正数</code>时不超过<code>end</code>值的最大值，或<code>step为负数</code>是不小于<code>end</code>的最小值<code>（last -  first） % step == 0</code>。</p>
+<h2 id="工具函数"><a href="#工具函数" class="headerlink" title="工具函数"></a>工具函数</h2><h3 id="rangeTo"><a href="#rangeTo" class="headerlink" title="rangeTo()"></a>rangeTo()</h3><p>整型的<code>rangeTo()</code>操作符就是调用<code>*Range</code>的构造方法<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Int</span></span>&#123;</div><div class="line">    <span class="comment">//...</span></div><div class="line">    <span class="keyword">operator</span> <span class="function"><span class="keyword">fun</span> <span class="title">rangeTo</span><span class="params">(other: <span class="type">Long</span>)</span></span>: LongRange = LongRange(<span class="keyword">this</span>, other)</div><div class="line">    <span class="comment">//...</span></div><div class="line">    <span class="keyword">operator</span> <span class="function"><span class="keyword">fun</span> <span class="title">rangeTo</span><span class="params">(other: <span class="type">Int</span>)</span></span>: IntRange = IntRange(<span class="keyword">this</span>, other)</div><div class="line">    <span class="comment">//...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>浮点数（<code>Double</code>，<code>Float</code>）没有定义<code>rangeTo</code>操作符，使用标准库提供的泛型<code>Comparable</code>类型替代。</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">operator</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;T: Comparable&lt;T&gt;</span>&gt; T.<span class="title">rangeTo</span><span class="params">(that: <span class="type">T</span>)</span></span>: ClosedRange&lt;T&gt;</div></pre></td></tr></table></figure>
+<p>这个函数的返回区间不能用于循环迭代。</p>
+<h3 id="downTo"><a href="#downTo" class="headerlink" title="downTo()"></a>downTo()</h3><p>为整型定义的<code>downTo()</code> 扩展函数，如：<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="built_in">Long</span>.<span class="title">downTo</span><span class="params">(other: <span class="type">Int</span>)</span></span>: LongProgression &#123;</div><div class="line">    <span class="keyword">return</span> LongProgression.fromClosedRange(<span class="keyword">this</span>, other.toLong(), <span class="number">-1</span>L)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="built_in">Byte</span>.<span class="title">downTo</span><span class="params">(other: <span class="type">Int</span>)</span></span>: IntProgression &#123;</div><div class="line">    <span class="keyword">return</span> IntProgression.fromClosedRange(<span class="keyword">this</span>.toInt(), other, <span class="number">-1</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="reversed"><a href="#reversed" class="headerlink" title="reversed()"></a>reversed()</h3><p>为每个<code>*Progression</code>类定义<code>reversed()</code>扩展函数，返回反转的数列<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> IntProgression.<span class="title">reversed</span><span class="params">()</span></span>: IntProgression &#123;</div><div class="line">    <span class="keyword">return</span> IntProgression.fromClosedRange(last, first, -step)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="step"><a href="#step" class="headerlink" title="step()"></a>step()</h3><p>为<code>*Progression</code>定义<code>step()</code>扩展函数，返回使用step值过滤后的数列。<code>step</code>值要求总要为正数，因此这个不会修改循环方向。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> IntProgression.<span class="title">step</span><span class="params">(step: <span class="type">Int</span>)</span></span>: IntProgression &#123;</div><div class="line">    <span class="keyword">if</span> (step &lt;= <span class="number">0</span>) <span class="keyword">throw</span> IllegalArgumentException(<span class="string">"Step must be positive, was: <span class="variable">$step</span>"</span>)</div><div class="line">    <span class="keyword">return</span> IntProgression.fromClosedRange(first, last, <span class="keyword">if</span> (<span class="keyword">this</span>.step &gt; <span class="number">0</span>) step <span class="keyword">else</span> -step)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> CharProgression.<span class="title">step</span><span class="params">(step: <span class="type">Int</span>)</span></span>: CharProgression &#123;</div><div class="line">    <span class="keyword">if</span> (step &lt;= <span class="number">0</span>) <span class="keyword">throw</span> IllegalArgumentException(<span class="string">"Step must be positive, was: <span class="variable">$step</span>"</span>)</div><div class="line">    <span class="keyword">return</span> CharProgression.fromClosedRange(first, last, <span class="keyword">if</span> (<span class="keyword">this</span>.step &gt; <span class="number">0</span>) step <span class="keyword">else</span> -step)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<blockquote>
+<p>函数返回的数列末尾值可能会与原队列末尾值不同，保证<code>(last - first) % step == 0</code>。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">(<span class="number">1.</span><span class="number">.12</span> step <span class="number">2</span>).last == <span class="number">11</span>  <span class="comment">// 队列 [1, 3, 5, 7, 9, 11]</span></div><div class="line">(<span class="number">1.</span><span class="number">.12</span> step <span class="number">3</span>).last == <span class="number">10</span>  <span class="comment">// 队列 [1, 4, 7, 10]</span></div><div class="line">(<span class="number">1.</span><span class="number">.12</span> step <span class="number">4</span>).last == <span class="number">9</span>   <span class="comment">// 队列 [1, 5, 9]</span></div></pre></td></tr></table></figure></p>
+</blockquote>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2017/07/17/Kotlin进阶之类型检查、This表达式/" data-toggle="tooltip" data-placement="top" title="Kotlin进阶之类型检查、This表达式">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2017/07/16/Kotlin进阶之解构声明/" data-toggle="tooltip" data-placement="top" title="Kotlin进阶之解构声明">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#kotlin" title="kotlin">kotlin</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "alexwan02";
+    var disqus_identifier = "http://blog.alexwan.cn/2017/07/17/Kotlin进阶之集合与区间/";
+    var disqus_url = "http://blog.alexwan.cn/2017/07/17/Kotlin进阶之集合与区间/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Alex Studio 2017 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.alexwan.cn/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

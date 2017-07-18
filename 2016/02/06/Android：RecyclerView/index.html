@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Android：RecyclerView - Alex Studio
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.alexwan.cn/2016/02/06/Android：RecyclerView/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Alex Studio</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                    </div>
+                    <h1>Android：RecyclerView</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by AlexWan on
+                        2016-02-06
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p><a href="http://enoent.fr/blog/2015/01/18/recyclerview-basics/" target="_blank" rel="external">RecyclerView basics</a></p>
+<h3 id="一、RecylerView-介绍"><a href="#一、RecylerView-介绍" class="headerlink" title="一、RecylerView 介绍"></a>一、RecylerView 介绍</h3><p><code>RecyclerView</code>是Android5.0之后V7包中的新特性。与<code>ListView</code>相似，但是比<code>ListView</code>更灵活，支持Android 2.1版本以上。<br>正如它的名字：当一个item隐藏的时候，隐藏的item会被再回收重用，绑定新的数据。而不是被销毁为新的item的创建新的布局。<br>RecylerView分为6个主要组件</p>
+<ol>
+<li><code>Adapter</code>：提供数据，类似<code>ListView</code>的</li>
+<li><code>ItemAnimator</code>：item的添加、删除、修改、移动的动画效果</li>
+<li><code>ItemDecoration</code>：添加图画或修改Item布局</li>
+<li><code>LayoutManager</code>：指定Item如何布局（List、Grid…）</li>
+<li><code>ViewHolder</code>：每个Item View的基础类</li>
+<li><code>RecylerView</code>：将所有的组件绑定</li>
+</ol>
+<div style="text-align:center"><br>    <img src="http://res.cloudinary.com/dmfz9aun7/image/upload/v1456548610/android/recyclerview_uml.png" style="width:80%;"><br></div>
+
+<h3 id="二、RecyclerView展示"><a href="#二、RecyclerView展示" class="headerlink" title="二、RecyclerView展示"></a>二、RecyclerView展示</h3><h4 id="1-准备"><a href="#1-准备" class="headerlink" title="1.准备"></a>1.准备</h4><p>Gradle添加 <code>RecyclerView</code>的supprt-v7包依赖<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line">compile <span class="string">'com.android.support:recyclerview-v7:21.0.3'</span></div></pre></td></tr></table></figure></p>
+<p>本篇文章也使用<code>CardViews</code>，因此建议添加对应的依赖<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line">compile <span class="string">'com.android.support:cardview-v7:21.0.3'</span></div></pre></td></tr></table></figure></p>
+<h4 id="2-BaseItem"><a href="#2-BaseItem" class="headerlink" title="2.BaseItem"></a>2.BaseItem</h4><p><code>BaseItem</code> 包含一个<code>title</code> 和一个<code>subtitle</code>属性。用来表示列表中每个<code>item</code><br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Item</span></span>&#123;</div><div class="line">  <span class="keyword">private</span> String title;</div><div class="line">  <span class="keyword">private</span> String subtitle;</div><div class="line">  Item(String title , String subtitle)&#123;</div><div class="line">    <span class="keyword">this</span>.title = title;</div><div class="line">    <span class="keyword">this</span>.subtitle = subtitle;</div><div class="line">  &#125;</div><div class="line">  <span class="function"><span class="keyword">public</span> String <span class="title">getTitle</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> title;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> String <span class="title">getSubtitle</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> subtitle;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="3-Item-Layout"><a href="#3-Item-Layout" class="headerlink" title="3.Item Layout"></a>3.Item Layout</h4><p>使用<code>CardView</code>作为Item的展示Layout。<code>CardView</code>是具有装饰的<code>FrameLayout</code>。<br><figure class="highlight xml"><table><tr><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">android.support.v7.widget.CardView</span></span></div><div class="line">  <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></div><div class="line">  <span class="attr">xmlns:app</span>=<span class="string">"http://schemas.android.com/apk/res-auto"</span></div><div class="line">  <span class="attr">android:layout_width</span>=<span class="string">"match_parent</span></div><div class="line">  android:layout_height="<span class="attr">match_parent</span>"</div><div class="line">  <span class="attr">app:contentPadding</span>=<span class="string">"8dp"</span></div><div class="line">  <span class="attr">app:cardUseCompatPadding</span>=<span class="string">"true"</span> &gt;</div><div class="line"></div><div class="line">  <span class="tag">&lt;<span class="name">LinearLayout</span></span></div><div class="line">      <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">      <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></div><div class="line">      <span class="attr">android:orientation</span>=<span class="string">"vertical"</span> &gt;</div><div class="line"></div><div class="line">      <span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line">          <span class="attr">android:id</span>=<span class="string">"@+id/title"</span></div><div class="line">          <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">          <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">          <span class="attr">android:singleLine</span>=<span class="string">"true"</span></div><div class="line">          <span class="attr">style</span>=<span class="string">"@style/Base.TextAppearance.AppCompat.Headline"</span> /&gt;</div><div class="line"></div><div class="line">      <span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line">          <span class="attr">android:id</span>=<span class="string">"@+id/subtitle"</span></div><div class="line">          <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">          <span class="attr">android:layout_height</span>=<span class="string">"0dp"</span></div><div class="line">          <span class="attr">android:layout_weight</span>=<span class="string">"1"</span></div><div class="line">          <span class="attr">style</span>=<span class="string">"@style/Base.TextAppearance.AppCompat.Subhead"</span> /&gt;</div><div class="line"></div><div class="line">  <span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;/<span class="name">android.support.v7.widget.CardView</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<h4 id="4-adapter"><a href="#4-adapter" class="headerlink" title="4.adapter"></a>4.adapter</h4><ol>
+<li><p>定义<code>ViewHolder</code>类，必须继承<code>RecyclerView.ViewHolder</code>。同时需要存储绑定数据时需要使用到的View的对象。<br>例子中我们需要两个TextView</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Adapter</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">Adapter</span>&lt;<span class="title">Adapter</span>.<span class="title">ViewHolder</span>&gt; </span>&#123;</div><div class="line">  <span class="meta">@SuppressWarnings</span>(<span class="string">"unused"</span>)</div><div class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = Adapter.class.getSimpleName();</div><div class="line"></div><div class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ViewHolder</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">ViewHolder</span> </span>&#123;</div><div class="line">    TextView title;</div><div class="line">    TextView subtitle;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ViewHolder</span><span class="params">(View itemView)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(itemView);</div><div class="line"></div><div class="line">        title = (TextView) itemView.findViewById(R.id.title);</div><div class="line">        subtitle = (TextView) itemView.findViewById(R.id.subtitle);</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>使用<code>Collection</code>存储对象的集合，简单起见，例子中使用<code>ArrayList</code>来存储列表数据。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Adapter</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">Adapter</span>&lt;<span class="title">Adapter</span>.<span class="title">ViewHolder</span>&gt; </span>&#123;</div><div class="line">  <span class="meta">@SuppressWarnings</span>(<span class="string">"unused"</span>)</div><div class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = Adapter.class.getSimpleName();</div><div class="line">  </div><div class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> ITEM_COUNT = <span class="number">50</span>;</div><div class="line">  <span class="keyword">private</span> List&lt;Item&gt; items;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="title">Adapter</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>();</div><div class="line"></div><div class="line">    <span class="comment">// 创建item的列表</span></div><div class="line">    items = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ITEM_COUNT; ++i) &#123;</div><div class="line">        items.add(<span class="keyword">new</span> Item(<span class="string">"Item "</span> + i, <span class="string">"This is the item number "</span> + i));</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  <span class="comment">// 省略ViewHolder的定义</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>实现<code>RecyclerView.Adapter</code>的方法。</p>
+</li>
+</ol>
+<ul>
+<li><p>onCreateViewHolder(ViewGroup parent, int viewType) </p>
+<p>  创建View，返回匹配的ViewHolder</p>
+</li>
+<li><p>onBindViewHolder(ViewHolder holder, int position) </p>
+<p>  根据Item的position，给ViewHolder绑定数据</p>
+</li>
+<li><p>getItemCount()</p>
+<p>  返回Adapter的item的数量</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Adapter</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">Adapter</span>&lt;<span class="title">Adapter</span>.<span class="title">ViewHolder</span>&gt; </span>&#123;</div><div class="line">  <span class="comment">// Attributes and constructor omitted</span></div><div class="line"></div><div class="line">  <span class="meta">@Override</span></div><div class="line">  <span class="function"><span class="keyword">public</span> ViewHolder <span class="title">onCreateViewHolder</span><span class="params">(ViewGroup parent, <span class="keyword">int</span> viewType)</span> </span>&#123;</div><div class="line">    View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item, parent, <span class="keyword">false</span>);</div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ViewHolder(v);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="meta">@Override</span></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBindViewHolder</span><span class="params">(ViewHolder holder, <span class="keyword">int</span> position)</span> </span>&#123;</div><div class="line">    <span class="keyword">final</span> Item item = items.get(position);</div><div class="line"></div><div class="line">    holder.title.setText(item.getTitle());</div><div class="line">    holder.subtitle.setText(item.getSubtitle());</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="meta">@Override</span></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getItemCount</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> items.size();</div><div class="line">  &#125;</div><div class="line"></div><div class="line"> <span class="comment">// 省略ViewHolder的定义</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="5-Bind-everything-together"><a href="#5-Bind-everything-together" class="headerlink" title="5. Bind everything together"></a>5. Bind everything together</h4><ol>
+<li><p>在Activity的布局文件中添加<code>RecyclerView</code></p>
+<figure class="highlight"><table><tr><td class="code"><pre><div class="line">&lt;RelativeLayout</div><div class="line">  xmlns:android="http://schemas.android.com/apk/res/android"</div><div class="line">  xmlns:tools="http://schemas.android.com/tools"</div><div class="line">  android:layout_width="match_parent"</div><div class="line">  android:layout_height="match_parent"</div><div class="line">  tools:context=".MainActivity" &gt;</div><div class="line"></div><div class="line">  &lt;android.support.v7.widget.RecyclerView</div><div class="line">    android:id="@+id/recycler_view"</div><div class="line">    android:layout_width="match_parent"</div><div class="line">    android:layout_height="match_parent" /&gt;</div><div class="line"></div><div class="line">&lt;/RelativeLayout&gt;</div></pre></td></tr></table></figure>
+</li>
+<li><p>使用<code>LinearLayoutManager</code>，<code>DefaultItemAnimator</code></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">ActionBarActivity</span> </span>&#123;</div><div class="line">  <span class="meta">@SuppressWarnings</span>(<span class="string">"unused"</span>)</div><div class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = MainActivity.class.getSimpleName();</div><div class="line"></div><div class="line">  <span class="meta">@Override</span></div><div class="line">  <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">    setContentView(R.layout.activity_main);</div><div class="line"></div><div class="line">    RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);</div><div class="line">    recyclerView.setAdapter(<span class="keyword">new</span> Adapter());</div><div class="line">    recyclerView.setItemAnimator(<span class="keyword">new</span> DefaultItemAnimator());</div><div class="line">    recyclerView.setLayoutManager(<span class="keyword">new</span> LinearLayoutManager(<span class="keyword">this</span>));</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>编译、运行</p>
+</li>
+</ol>
+<div style="text-align:center"><br>    <img src="http://res.cloudinary.com/dmfz9aun7/image/upload/v1456548620/android/recyclerview-1.png" style="width:35%;"><br></div>
+
+<h3 id="三、相同RecyclerView显示不同类型的View"><a href="#三、相同RecyclerView显示不同类型的View" class="headerlink" title="三、相同RecyclerView显示不同类型的View"></a>三、相同RecyclerView显示不同类型的View</h3><p>假设现在要显示两种类型的Item。如一个远程音乐的列表和一些离线的专辑。可以为他们指定行为，显示指定的信息。</p>
+<ol>
+<li><p>在Item中添加<code>active</code>属性</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Item</span> </span>&#123;</div><div class="line">  <span class="keyword">private</span> String title;</div><div class="line">  <span class="keyword">private</span> String subtitle;</div><div class="line">  <span class="keyword">private</span> <span class="keyword">boolean</span> active;</div><div class="line"></div><div class="line">  Item(String title, String subtitle, <span class="keyword">boolean</span> active) &#123;</div><div class="line">    <span class="keyword">this</span>.title = title;</div><div class="line">    <span class="keyword">this</span>.subtitle = subtitle;</div><div class="line">    <span class="keyword">this</span>.active = active;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> String <span class="title">getTitle</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> title;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> String <span class="title">getSubtitle</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> subtitle;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isActive</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> active;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>修改创建Item的方法，随机设定Item的<code>active</code>值，根据<code>active</code>来改变subtitle状态</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Adapter</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">Adapter</span>&lt;<span class="title">Adapter</span>.<span class="title">ViewHolder</span>&gt; </span>&#123;</div><div class="line">    <span class="comment">// 忽略参数</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Adapter</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>();</div><div class="line"></div><div class="line">        <span class="comment">// 创建Item</span></div><div class="line">        Random random = <span class="keyword">new</span> Random();</div><div class="line">        items = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ITEM_COUNT; ++i) &#123;</div><div class="line">            items.add(<span class="keyword">new</span> Item(<span class="string">"Item "</span> + i, <span class="string">"This is the item number "</span> + i, random.nextBoolean()));</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 忽略onCreateViewHolder</span></div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBindViewHolder</span><span class="params">(ViewHolder holder, <span class="keyword">int</span> position)</span> </span>&#123;</div><div class="line">        <span class="keyword">final</span> Item item = items.get(position);</div><div class="line"></div><div class="line">        holder.title.setText(item.getTitle());</div><div class="line">        holder.subtitle.setText(item.getSubtitle() + <span class="string">", which is "</span> +</div><div class="line">                (item.isActive() ? <span class="string">"active"</span> : <span class="string">"inactive"</span>));</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// …</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>学会显示不同String是个好的开始，但是我们不仅仅要满足于此。在Adapter中你可能会注意到<code>onCreateViewHolder(ViewGroup parent, int viewType)</code>中的viewType我们没有使用。这里的<code>viewType</code>可以用来实现这样的需求：修改ViewHolder的实例。我们必须告诉<code>Adapter</code>来确定Item的类型。通过复写<code>getItemViewType(int position)</code>方法实现。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Adapter</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">Adapter</span>&lt;<span class="title">Adapter</span>.<span class="title">ViewHolder</span>&gt; </span>&#123;</div><div class="line">  <span class="comment">// …</span></div><div class="line"></div><div class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TYPE_INACTIVE = <span class="number">0</span>;</div><div class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TYPE_ACTIVE = <span class="number">1</span>;</div><div class="line"></div><div class="line">  <span class="comment">// …</span></div><div class="line"></div><div class="line">  <span class="meta">@Override</span></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getItemViewType</span><span class="params">(<span class="keyword">int</span> position)</span> </span>&#123;</div><div class="line">    <span class="keyword">final</span> Item item = items.get(position);</div><div class="line"></div><div class="line">    <span class="keyword">return</span> item.isActive() ? TYPE_ACTIVE : TYPE_INACTIVE;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">// …</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>现在根据你的需求有多种可能：为每种类型的View创建不同的<code>ViewHolder</code>或为相同的<code>ViewHolder</code> inflate 不同的Layout。简单起见，这里使用相同的<code>ViewHolder</code> inflate 不同的Layout。我们对<code>inactive</code>的Item继续使用现在的Layout，对<code>active</code>的Item创建一个新的Layout</p>
+</li>
+</ol>
+<figure class="highlight xml"><figcaption><span>layout/item_active.xml</span></figcaption><table><tr><td class="code"><pre><div class="line"></div><div class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">android.support.v7.widget.CardView</span></span></div><div class="line">    <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></div><div class="line">    <span class="attr">xmlns:app</span>=<span class="string">"http://schemas.android.com/apk/res-auto"</span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></div><div class="line">    <span class="attr">app:contentPadding</span>=<span class="string">"8dp"</span></div><div class="line">    <span class="attr">app:cardUseCompatPadding</span>=<span class="string">"true"</span> &gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">LinearLayout</span></span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></div><div class="line">        <span class="attr">android:orientation</span>=<span class="string">"vertical"</span> &gt;</div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line">            <span class="attr">android:id</span>=<span class="string">"@+id/title"</span></div><div class="line">            <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">            <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">            <span class="attr">android:singleLine</span>=<span class="string">"true"</span></div><div class="line">            <span class="attr">android:textColor</span>=<span class="string">"@color/material_deep_teal_500"</span></div><div class="line">            <span class="attr">style</span>=<span class="string">"@style/Base.TextAppearance.AppCompat.Headline"</span> /&gt;</div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line">            <span class="attr">android:id</span>=<span class="string">"@+id/subtitle"</span></div><div class="line">            <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">            <span class="attr">android:layout_height</span>=<span class="string">"0dp"</span></div><div class="line">            <span class="attr">android:layout_weight</span>=<span class="string">"1"</span></div><div class="line">            <span class="attr">android:textColor</span>=<span class="string">"@color/material_blue_grey_900"</span></div><div class="line">            <span class="attr">style</span>=<span class="string">"@style/Base.TextAppearance.AppCompat.Subhead"</span> /&gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">android.support.v7.widget.CardView</span>&gt;</span></div><div class="line"></div></pre></td></tr></table></figure>
+<ol>
+<li>最后也是最重要：在<code>onCreateViewHolder</code>方法中根据<code>viewType</code>值Inflate不同的Layout</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Adapter</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">Adapter</span>&lt;<span class="title">Adapter</span>.<span class="title">ViewHolder</span>&gt; </span>&#123;</div><div class="line">  <span class="comment">// …</span></div><div class="line"></div><div class="line">  <span class="meta">@Override</span></div><div class="line">  <span class="function"><span class="keyword">public</span> ViewHolder <span class="title">onCreateViewHolder</span><span class="params">(ViewGroup parent, <span class="keyword">int</span> viewType)</span> </span>&#123;</div><div class="line">    <span class="keyword">final</span> <span class="keyword">int</span> layout = viewType == TYPE_INACTIVE ? R.layout.item : R.layout.item_active;</div><div class="line"></div><div class="line">    View v = LayoutInflater.from(parent.getContext()).inflate(layout, parent, <span class="keyword">false</span>);</div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ViewHolder(v);</div><div class="line">  &#125;</div><div class="line">  <span class="comment">// …</span></div><div class="line">&#125;</div><div class="line"></div></pre></td></tr></table></figure>
+<p>现在我们可以区分<code>active</code>和<code>inactive</code> Item了</p>
+<div style="text-align:center"><br>    <img src="http://res.cloudinary.com/dmfz9aun7/image/upload/v1456548620/android/recyclerview-active.png" style="width:35%;"><br></div>
+
+<h3 id="四、Layout-managers"><a href="#四、Layout-managers" class="headerlink" title="四、Layout managers"></a>四、Layout managers</h3><h4 id="1-LinearLayoutManager"><a href="#1-LinearLayoutManager" class="headerlink" title="1.LinearLayoutManager"></a>1.LinearLayoutManager</h4><p>这个也是上面我们用的Manager，复制了<code>ListView</code>的特性。<code>Layout managers</code>占用三个参数</p>
+<ul>
+<li><code>Context</code> 不能为空  </li>
+<li><code>int orientation</code> vertical（默认值）、horizontal</li>
+<li><code>boolean reverseLayout</code> 是否反转Layout</li>
+</ul>
+<p>下面是<code>反转</code> <code>水平方向</code>的LinearLayoutManager</p>
+<div style="text-align:center"><br>    <img src="http://res.cloudinary.com/dmfz9aun7/image/upload/v1456548621/android/recyclerview-linear-horizontal-reversed.png" style="width:35%;"><br></div>
+
+<p>设置反转Layout时显示最右边无需滑动</p>
+<h4 id="2-GridLayoutManager"><a href="#2-GridLayoutManager" class="headerlink" title="2.GridLayoutManager"></a>2.GridLayoutManager</h4><p>类似<code>GridView</code>。占用四个参数</p>
+<ul>
+<li><code>Context</code> 非空</li>
+<li><code>int spanCount</code> 非空</li>
+<li><code>int orientation</code> vertical（默认值）、horizontal</li>
+<li><code>boolean reverseLayout</code> 是否反转Layout</li>
+</ul>
+<p>下面是<code>spanCount</code>为3，<code>vertical</code>方向，<code>非反转</code>的GridLayoutManager</p>
+<div style="text-align:center"><br>    <img src="http://res.cloudinary.com/dmfz9aun7/image/upload/v1456548622/android/recyclerview-grid-3-vertical.png" style="width:35%;"><br></div>
+
+<p><code>注意</code>：GridLayoutManager的<code>reverseLayout</code>属性只反转设定的反向。如设置orientation为<code>vertical</code>时，只垂直反转，水平方向不变。</p>
+<div style="text-align:center"><br>    <img src="http://res.cloudinary.com/dmfz9aun7/image/upload/v1456548622/android/recyclerview-grid-3-vertical-reversed.png" style="width:35%;"><br></div>
+
+<h4 id="3-StaggeredGridLayoutManager"><a href="#3-StaggeredGridLayoutManager" class="headerlink" title="3.StaggeredGridLayoutManager"></a>3.StaggeredGridLayoutManager</h4><p>StaggeredGridLayoutManager是<code>GridLayoutManager</code>的加强版。截止到<code>support-v7 21.0.0.3</code>版本的包中，StaggeredGridLayoutManager仍然还有很多<a href="https://code.google.com/p/android/issues/detail?id=93711" target="_blank" rel="external">bug</a>和<a href="https://code.google.com/p/android/issues/detail?id=93156" target="_blank" rel="external">困扰的问题</a>。和其他几种LayoutManager相比，<code>StaggeredGridLayoutManager</code>看上去像是匆忙完成的。同时需要注意的是它不需要<code>Context</code>，但是<code>orientation</code> 不能省略。同<code>GridLayoutManager</code>一样，需要指定<code>span</code>的数量。构造器中不提供<code>reverse</code> 参数，可以用代码来实现。<br>下面是固定Span的Grid，我们可以让Item占用整行或整列。让我们看看如何实现。用之前例子中创建的 <code>active/inactive</code>属性的item list，让<code>active</code>属性的item占满整行。在<code>adapter</code> 绑定数据的时候，来实现。<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Adapter</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">Adapter</span>&lt;<span class="title">Adapter</span>.<span class="title">ViewHolder</span>&gt; </span>&#123;</div><div class="line">    <span class="comment">// …</span></div><div class="line">  <span class="meta">@Override</span></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBindViewHolder</span><span class="params">(ViewHolder holder, <span class="keyword">int</span> position)</span> </span>&#123;</div><div class="line">    <span class="keyword">final</span> Item item = items.get(position);</div><div class="line"></div><div class="line">    holder.title.setText(item.getTitle());</div><div class="line">    holder.subtitle.setText(item.getSubtitle() + <span class="string">", which is "</span> + (item.isActive() ? <span class="string">"active"</span> : <span class="string">"inactive"</span>));</div><div class="line"></div><div class="line">    <span class="comment">// Span the item if active</span></div><div class="line">    <span class="keyword">final</span> ViewGroup.LayoutParams lp = holder.itemView.getLayoutParams();</div><div class="line">    <span class="keyword">if</span> (lp <span class="keyword">instanceof</span> StaggeredGridLayoutManager.LayoutParams) &#123;</div><div class="line">        StaggeredGridLayoutManager.LayoutParams sglp = (StaggeredGridLayoutManager.LayoutParams) lp;</div><div class="line">        sglp.setFullSpan(item.isActive());</div><div class="line">        holder.itemView.setLayoutParams(sglp);</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">// …</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在代码判断如果LayoutManager是StaggeredGridLayoutManager的实例，来修改Layout参数。效果如图</p>
+<div style="text-align:center"><br>    <img src="http://res.cloudinary.com/dmfz9aun7/image/upload/v1456548621/android/recyclerview-staggered-grid.png" style="width:35%;"><br></div>
+
+<h3 id="五、Item点击响应"><a href="#五、Item点击响应" class="headerlink" title="五、Item点击响应"></a>五、Item点击响应</h3><p>与ListView 不同的是RecyclerView没有提供相关的点击响应事件的API，但是依然很容易来实现。现在我们需要监听每个Item的<code>click</code>和<code>long-click</code>事件.每个Item是由<code>ViewHolder</code>来显示的，每个<code>ViewHolder</code>是由根<code>View</code> 来初始化的。OK，用<code>View</code>来作为<code>click</code>和<code>long-click</code>事件的回调。最后只需要把<code>ViewHolder</code>和它的position对应起来即可，<code>RecyclerView.ViewHolder</code>已经提供对应的方法<del>getPosition()</del> ( getPosition() 方法废弃, 根据你的情况用<code>getLayoutPosition()</code> 或 <code>getAdapterPosition()</code>来替代 )来获取当前绑定的Item的postion<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Adapter</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">Adapter</span>&lt;<span class="title">Adapter</span>.<span class="title">ViewHolder</span>&gt; </span>&#123;</div><div class="line">  <span class="comment">// …</span></div><div class="line"></div><div class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ViewHolder</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">ViewHolder</span> <span class="keyword">implements</span> <span class="title">View</span>.<span class="title">OnClickListener</span>,</span></div><div class="line">        <span class="title">View</span>.<span class="title">OnLongClickListener</span> &#123;</div><div class="line">    <span class="meta">@SuppressWarnings</span>(<span class="string">"unused"</span>)</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = ViewHolder.class.getSimpleName();</div><div class="line"></div><div class="line">    TextView title;</div><div class="line">    TextView subtitle;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ViewHolder</span><span class="params">(View itemView)</span> </span>&#123;</div><div class="line">      <span class="keyword">super</span>(itemView);</div><div class="line"></div><div class="line">      title = (TextView) itemView.findViewById(R.id.title);</div><div class="line">      subtitle = (TextView) itemView.findViewById(R.id.subtitle);</div><div class="line"></div><div class="line">      itemView.setOnClickListener(<span class="keyword">this</span>);</div><div class="line">      itemView.setOnLongClickListener(<span class="keyword">this</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</div><div class="line">      Log.d(TAG, <span class="string">"Item clicked at position "</span> + getPosition());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onLongClick</span><span class="params">(View v)</span> </span>&#123;</div><div class="line">      Log.d(TAG, <span class="string">"Item long-clicked at position "</span> + getPosition());</div><div class="line">      <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="六、选择处理"><a href="#六、选择处理" class="headerlink" title="六、选择处理"></a>六、选择处理</h3><p><code>long-click</code>事件一个常用的模式是触发选择模式。再一次，<code>RecyclerView</code>没有帮助我们实现，但是实现起来也很简单。<br>分为三步</p>
+<ul>
+<li>维护一个选择状态</li>
+<li>更新选中的Item的View</li>
+<li>开启选择模式</li>
+</ul>
+<p>为了说明，我们添加一个选择Item的方式，然后移除选中的Item。</p>
+<h4 id="1-选择状态"><a href="#1-选择状态" class="headerlink" title="1.选择状态"></a>1.选择状态</h4><p>我们需要修改<code>Adapter</code>来维护一个选中的item list。<code>Adapter</code>需要提供一下列表参数</p>
+<ul>
+<li>选中的元素列表</li>
+<li>改变给定元素的选择状态</li>
+</ul>
+<p>我们加入额外的方法几个方法：</p>
+<ul>
+<li>检查指定的元素是否被选中</li>
+<li>清空选中</li>
+<li>提供选中元素的数量</li>
+</ul>
+<p>这里并不是随便选择这些方法，在下个部分我们需要它们。<br>我们注意到这五个方法都不是特定的Item，我们可以用普通方式写这些方法并重用<code>Adapter</code>的行为。<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">SelectableAdapter</span>&lt;<span class="title">VH</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">ViewHolder</span>&gt; <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">Adapter</span>&lt;<span class="title">VH</span>&gt; </span>&#123;</div><div class="line">  <span class="meta">@SuppressWarnings</span>(<span class="string">"unused"</span>)</div><div class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = SelectableAdapter.class.getSimpleName();</div><div class="line"></div><div class="line">  <span class="keyword">private</span> SparseBooleanArray selectedItems;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="title">SelectableAdapter</span><span class="params">()</span> </span>&#123;</div><div class="line">    selectedItems = <span class="keyword">new</span> SparseBooleanArray();</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">/**</span></div><div class="line">   * 指定对应位置的Item是否被选中</div><div class="line">   * <span class="doctag">@param</span> Item的position</div><div class="line">   * <span class="doctag">@return</span> 如果是选中返回true，否则返回false</div><div class="line">   */</div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isSelected</span><span class="params">(<span class="keyword">int</span> position)</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> getSelectedItems().contains(position);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">/**</span></div><div class="line">   * 给定postion的Item的选中状态触发器</div><div class="line">   * <span class="doctag">@param</span> position item 的 postion</div><div class="line">   */</div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">toggleSelection</span><span class="params">(<span class="keyword">int</span> position)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (selectedItems.get(position, <span class="keyword">false</span>)) &#123;</div><div class="line">      selectedItems.delete(position);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">      selectedItems.put(position, <span class="keyword">true</span>);</div><div class="line">    &#125;</div><div class="line">    notifyItemChanged(position);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">/**</span></div><div class="line">   * 清空所有Item的选中状态</div><div class="line">   */</div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">clearSelection</span><span class="params">()</span> </span>&#123;</div><div class="line">    List&lt;Integer&gt; selection = getSelectedItems();</div><div class="line">    selectedItems.clear();</div><div class="line">    <span class="keyword">for</span> (Integer i : selection) &#123;</div><div class="line">      notifyItemChanged(i);</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">/**</span></div><div class="line">   * 选中Item的数量</div><div class="line">   * <span class="doctag">@return</span> 选中Item的数量</div><div class="line">   */</div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getSelectedItemCount</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> selectedItems.size();</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">/**</span></div><div class="line">   * 被选中的Item的Id list</div><div class="line">   * <span class="doctag">@return</span> 被选中的Item的Id list</div><div class="line">   */</div><div class="line">  <span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">getSelectedItems</span><span class="params">()</span> </span>&#123;</div><div class="line">    List&lt;Integer&gt; items = <span class="keyword">new</span> ArrayList&lt;&gt;(selectedItems.size());</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; selectedItems.size(); ++i) &#123;</div><div class="line">      items.add(selectedItems.keyAt(i));</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> items;</div><div class="line">   &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>最后<code>Adapter</code>继承我们创建<code>SelectableAdapter</code><br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Adapter</span> <span class="keyword">extends</span> <span class="title">SelectableAdapter</span>&lt;<span class="title">Adapter</span>.<span class="title">ViewHolder</span>&gt; </span>&#123;</div><div class="line">  <span class="comment">// …</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="2-更新Item的View"><a href="#2-更新Item的View" class="headerlink" title="2.更新Item的View"></a>2.更新Item的View</h4><p>通知用户选中了一个Item，我们经常看到选中的View被覆盖某个颜色。在<code>item.xml</code>和<code>item_active.xml</code>中，我们添加一个<code>invisible</code>并带有颜色的View。因为这个View应该填充整个<code>CardView</code>，我们应该改变Layout的一些属性（将CardView的padding属性移动到LinearLayout中），View的颜色应该为透明的。<br>我们要用android Framework的<code>selectableItemBackground</code>为<code>CardView</code>的foreground设定属性值，来添加一个好看的触摸反馈。在Android 5.0以及以上，显示涟漪的效果，Android 5.0以下版本显示灰色。</p>
+<figure class="highlight xml"><figcaption><span>item.xml（item_active.xml做对应的修改）</span></figcaption><table><tr><td class="code"><pre><div class="line"></div><div class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">android.support.v7.widget.CardView</span></span></div><div class="line">    <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></div><div class="line">    <span class="attr">xmlns:app</span>=<span class="string">"http://schemas.android.com/apk/res-auto"</span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></div><div class="line">    <span class="attr">android:foreground</span>=<span class="string">"?android:attr/selectableItemBackground"</span></div><div class="line">    <span class="attr">app:cardUseCompatPadding</span>=<span class="string">"true"</span> &gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">LinearLayout</span></span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></div><div class="line">        <span class="attr">android:orientation</span>=<span class="string">"vertical"</span></div><div class="line">        <span class="attr">android:padding</span>=<span class="string">"8dp"</span> &gt;</div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line">            <span class="attr">android:id</span>=<span class="string">"@+id/title"</span></div><div class="line">            <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">            <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">            <span class="attr">android:singleLine</span>=<span class="string">"true"</span></div><div class="line">            <span class="attr">style</span>=<span class="string">"@style/Base.TextAppearance.AppCompat.Headline"</span> /&gt;</div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line">            <span class="attr">android:id</span>=<span class="string">"@+id/subtitle"</span></div><div class="line">            <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">            <span class="attr">android:layout_height</span>=<span class="string">"0dp"</span></div><div class="line">            <span class="attr">android:layout_weight</span>=<span class="string">"1"</span></div><div class="line">            <span class="attr">style</span>=<span class="string">"@style/Base.TextAppearance.AppCompat.Subhead"</span> /&gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">View</span></span></div><div class="line">        <span class="attr">android:id</span>=<span class="string">"@+id/selected_overlay"</span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></div><div class="line">        <span class="attr">android:background</span>=<span class="string">"@color/selected_overlay"</span></div><div class="line">        <span class="attr">android:visibility</span>=<span class="string">"invisible"</span> /&gt;</div><div class="line"></div><div class="line"><span class="tag">&lt;/<span class="name">android.support.v7.widget.CardView</span>&gt;</span></div><div class="line"></div></pre></td></tr></table></figure>
+<p>下一步决定什么时候显示这个效果，很明显需要 <code>Adapters</code>的<code>onBindViewHolder()</code>方法中。在<code>ViewHolder</code>中添加overlay view的属性</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Adapter</span> <span class="keyword">extends</span> <span class="title">SelectableAdapter</span>&lt;<span class="title">Adapter</span>.<span class="title">ViewHolder</span>&gt; </span>&#123;</div><div class="line">  <span class="comment">// …</span></div><div class="line"></div><div class="line">  <span class="meta">@Override</span></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBindViewHolder</span><span class="params">(ViewHolder holder, <span class="keyword">int</span> position)</span> </span>&#123;</div><div class="line">    <span class="keyword">final</span> Item item = items.get(position);</div><div class="line"></div><div class="line">    holder.title.setText(item.getTitle());</div><div class="line">    holder.subtitle.setText(item.getSubtitle() + <span class="string">", which is "</span> + (item.isActive() ? <span class="string">"active"</span> : <span class="string">"inactive"</span>));</div><div class="line"></div><div class="line">    <span class="comment">// Span the item if active</span></div><div class="line">    <span class="keyword">final</span> ViewGroup.LayoutParams lp = holder.itemView.getLayoutParams();</div><div class="line">    <span class="keyword">if</span> (lp <span class="keyword">instanceof</span> StaggeredGridLayoutManager.LayoutParams) &#123;</div><div class="line">      StaggeredGridLayoutManager.LayoutParams sglp = (StaggeredGridLayoutManager.LayoutParams) lp;</div><div class="line">      sglp.setFullSpan(item.isActive());</div><div class="line">      holder.itemView.setLayoutParams(sglp);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">//  高亮选中的Item</span></div><div class="line">    holder.selectedOverlay.setVisibility(isSelected(position) ? View.VISIBLE : View.INVISIBLE);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">// …</span></div><div class="line"></div><div class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ViewHolder</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">ViewHolder</span> <span class="keyword">implements</span> <span class="title">View</span>.<span class="title">OnClickListener</span>,</span></div><div class="line">        <span class="title">View</span>.<span class="title">OnLongClickListener</span> &#123;</div><div class="line">    <span class="meta">@SuppressWarnings</span>(<span class="string">"unused"</span>)</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = ViewHolder.class.getSimpleName();</div><div class="line"></div><div class="line">      TextView title;</div><div class="line">      TextView subtitle;</div><div class="line">      View selectedOverlay;</div><div class="line"></div><div class="line">      <span class="function"><span class="keyword">public</span> <span class="title">ViewHolder</span><span class="params">(View itemView)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(itemView);</div><div class="line"></div><div class="line">        title = (TextView) itemView.findViewById(R.id.title);</div><div class="line">        subtitle = (TextView) itemView.findViewById(R.id.subtitle);</div><div class="line">        selectedOverlay = itemView.findViewById(R.id.selected_overlay);</div><div class="line"></div><div class="line">        itemView.setOnClickListener(<span class="keyword">this</span>);</div><div class="line">        itemView.setOnLongClickListener(<span class="keyword">this</span>);</div><div class="line">      &#125;</div><div class="line">      <span class="comment">// …</span></div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="3-开启选中模式"><a href="#3-开启选中模式" class="headerlink" title="3.开启选中模式"></a>3.开启选中模式</h4><p>最后一步可能有点复杂，但也不是很难。我们需要将<code>click</code>和<code>long-click</code>返回给<code>Activity</code>。用<code>ViewHolder</code>暴露一个<code>Listener</code>，通过<code>Adapter</code>传递它，实现需求。<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Adapter</span> <span class="keyword">extends</span> <span class="title">SelectableAdapter</span>&lt;<span class="title">Adapter</span>.<span class="title">ViewHolder</span>&gt; </span>&#123;</div><div class="line">    <span class="comment">// …</span></div><div class="line"></div><div class="line">  <span class="keyword">private</span> ViewHolder.ClickListener clickListener;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="title">Adapter</span><span class="params">(ViewHolder.ClickListener clickListener)</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>();</div><div class="line"></div><div class="line">    <span class="keyword">this</span>.clickListener = clickListener;</div><div class="line"></div><div class="line">    <span class="comment">// 创建Item</span></div><div class="line">    Random random = <span class="keyword">new</span> Random();</div><div class="line">    items = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ITEM_COUNT; ++i) &#123;</div><div class="line">      items.add(<span class="keyword">new</span> Item(<span class="string">"Item "</span> + i, <span class="string">"This is the item number "</span> + i, random.nextBoolean()));</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="meta">@Override</span></div><div class="line">  <span class="function"><span class="keyword">public</span> ViewHolder <span class="title">onCreateViewHolder</span><span class="params">(ViewGroup parent, <span class="keyword">int</span> viewType)</span> </span>&#123;</div><div class="line">    <span class="keyword">final</span> <span class="keyword">int</span> layout = viewType == TYPE_INACTIVE ? R.layout.item : R.layout.item_active;</div><div class="line"></div><div class="line">    View v = LayoutInflater.from(parent.getContext()).inflate(layout, parent, <span class="keyword">false</span>);</div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ViewHolder(v, clickListener);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">// …</span></div><div class="line"></div><div class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ViewHolder</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">ViewHolder</span> <span class="keyword">implements</span> <span class="title">View</span>.<span class="title">OnClickListener</span>,</span></div><div class="line">          <span class="title">View</span>.<span class="title">OnLongClickListener</span> &#123;</div><div class="line">    <span class="meta">@SuppressWarnings</span>(<span class="string">"unused"</span>)</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = ViewHolder.class.getSimpleName();</div><div class="line"></div><div class="line">    TextView title;</div><div class="line">    TextView subtitle;</div><div class="line">    View selectedOverlay;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> ClickListener listener;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ViewHolder</span><span class="params">(View itemView, ClickListener listener)</span> </span>&#123;</div><div class="line">      <span class="keyword">super</span>(itemView);</div><div class="line"></div><div class="line">      title = (TextView) itemView.findViewById(R.id.title);</div><div class="line">      subtitle = (TextView) itemView.findViewById(R.id.subtitle);</div><div class="line">      selectedOverlay = itemView.findViewById(R.id.selected_overlay);</div><div class="line"></div><div class="line">      <span class="keyword">this</span>.listener = listener;</div><div class="line"></div><div class="line">      itemView.setOnClickListener(<span class="keyword">this</span>);</div><div class="line">      itemView.setOnLongClickListener(<span class="keyword">this</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</div><div class="line">      <span class="keyword">if</span> (listener != <span class="keyword">null</span>) &#123;</div><div class="line">        listener.onItemClicked(getPosition());</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onLongClick</span><span class="params">(View v)</span> </span>&#123;</div><div class="line">      <span class="keyword">if</span> (listener != <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">return</span> listener.onItemLongClicked(getPosition());</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ClickListener</span> </span>&#123;</div><div class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onItemClicked</span><span class="params">(<span class="keyword">int</span> position)</span></span>;</div><div class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onItemLongClicked</span><span class="params">(<span class="keyword">int</span> position)</span></span>;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>我们用<code>ActionMode</code>来区分选择模式和正常模式，当选择模式被激活时显示不同的<code>ActionBar</code>。实现<code>ActionMode.Callback</code>来激活选择模式。简单起见，<code>Activity</code>使用一个内部类来实现其接口，同时实现我们我们新创建的Click接口<code>Adapter.ViewHolder.ClickListener</code>。我们需要<code>Callback</code>来访问<code>Adapter</code>，所以把<code>Adapter</code>作为<code>Activity</code>的一个属性。<br>我们的Activity看上去变得复杂了。<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">ActionBarActivity</span> <span class="keyword">implements</span> <span class="title">Adapter</span>.<span class="title">ViewHolder</span>.<span class="title">ClickListener</span> </span>&#123;</div><div class="line">  <span class="meta">@SuppressWarnings</span>(<span class="string">"unused"</span>)</div><div class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = MainActivity.class.getSimpleName();</div><div class="line">  <span class="keyword">private</span> Adapter adapter;</div><div class="line">  <span class="keyword">private</span> ActionModeCallback actionModeCallback = <span class="keyword">new</span> ActionModeCallback();</div><div class="line">  <span class="keyword">private</span> ActionMode actionMode;</div><div class="line"></div><div class="line">  <span class="meta">@Override</span></div><div class="line">  <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">    setContentView(R.layout.activity_main);</div><div class="line"></div><div class="line">    adapter = <span class="keyword">new</span> Adapter(<span class="keyword">this</span>);</div><div class="line"></div><div class="line">    RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);</div><div class="line">    recyclerView.setAdapter(adapter);</div><div class="line">    recyclerView.setItemAnimator(<span class="keyword">new</span> DefaultItemAnimator());</div><div class="line">    recyclerView.setLayoutManager(<span class="keyword">new</span> StaggeredGridLayoutManager(<span class="number">3</span>, StaggeredGridLayoutManager.VERTICAL));</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="meta">@Override</span></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onItemClicked</span><span class="params">(<span class="keyword">int</span> position)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (actionMode != <span class="keyword">null</span>) &#123;</div><div class="line">      toggleSelection(position);</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="meta">@Override</span></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onItemLongClicked</span><span class="params">(<span class="keyword">int</span> position)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (actionMode == <span class="keyword">null</span>) &#123;</div><div class="line">      actionMode = startSupportActionMode(actionModeCallback);</div><div class="line">    &#125;</div><div class="line">    toggleSelection(position);</div><div class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">/**</span></div><div class="line">   * 触发Item的选中状态</div><div class="line">   *</div><div class="line">   * 如果选中的Item数量为0, 则关闭选中状态模式</div><div class="line">   * 注意：actionMode不能为空</div><div class="line">   *</div><div class="line">   * <span class="doctag">@param</span> position 触发选中状态的Item位置</div><div class="line">   */</div><div class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">toggleSelection</span><span class="params">(<span class="keyword">int</span> position)</span> </span>&#123;</div><div class="line">    adapter.toggleSelection(position);</div><div class="line">    <span class="keyword">int</span> count = adapter.getSelectedItemCount();</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (count == <span class="number">0</span>) &#123;</div><div class="line">      actionMode.finish();</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">      actionMode.setTitle(String.valueOf(count));</div><div class="line">      actionMode.invalidate();</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">ActionModeCallback</span> <span class="keyword">implements</span> <span class="title">ActionMode</span>.<span class="title">Callback</span> </span>&#123;</div><div class="line">    <span class="meta">@SuppressWarnings</span>(<span class="string">"unused"</span>)</div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String TAG = ActionModeCallback.class.getSimpleName();</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onCreateActionMode</span><span class="params">(ActionMode mode, Menu menu)</span> </span>&#123;</div><div class="line">      mode.getMenuInflater().inflate (R.menu.selected_menu, menu);</div><div class="line">      <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onPrepareActionMode</span><span class="params">(ActionMode mode, Menu menu)</span> </span>&#123;</div><div class="line">      <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onActionItemClicked</span><span class="params">(ActionMode mode, MenuItem item)</span> </span>&#123;</div><div class="line">      <span class="keyword">switch</span> (item.getItemId()) &#123;</div><div class="line">        <span class="keyword">case</span> R.id.menu_remove:</div><div class="line">          <span class="comment">// <span class="doctag">TODO:</span> 具体的移除Item操作</span></div><div class="line">          Log.d(TAG, <span class="string">"menu_remove"</span>);</div><div class="line">          mode.finish();</div><div class="line">          <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line"></div><div class="line">        <span class="keyword">default</span>:</div><div class="line">          <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="meta">@Override</span></div><div class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onDestroyActionMode</span><span class="params">(ActionMode mode)</span> </span>&#123;</div><div class="line">        adapter.clearSelection();</div><div class="line">        actionMode = <span class="keyword">null</span>;</div><div class="line">      &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>下图显示<code>Item5</code>被选中时的截图</p>
+<div style="text-align:center"><br>    <img src="http://res.cloudinary.com/dmfz9aun7/image/upload/v1456548622/android/recyclerview-selection.png" style="width:35%;"><br></div>
+
+<h3 id="七、改变数据"><a href="#七、改变数据" class="headerlink" title="七、改变数据"></a>七、改变数据</h3><p>想要更新View，，<code>Adapter</code>必须来发出数据发生了变化的通知。在<code>ListView</code>上，adapter只有一个可以使用的方法<code>notifyDataSetChanged()</code>。然而这个方法还不很理想：需要刷新所有的View，因为我们不能够确切知道什么发生了变化。而<code>RecyclerView.Adapter</code>提供多种方法：</p>
+<ul>
+<li>notifyItemChanged(int position)</li>
+<li>notifyItemInserted(int position)</li>
+<li>notifyItemRemoved(int position)</li>
+<li>notifyItemMoved(int fromPosition, int toPosition)</li>
+<li>notifyItemRangeChanged(int positionStart, int itemCount)</li>
+<li>notifyItemRangeInserted(int positionStart, int itemCount)</li>
+<li>notifyItemRangeRemoved(int positionStart, int itemCount)</li>
+<li>notifyDataSetChanged()</li>
+</ul>
+<p>我们可以知道Item或Items的变化、添加、移除、移动。<br>我们在<code>Adapter</code>中向外部类提供移除Item、Item List的两个<code>public</code>方法。如果直接移除一个Item，直接从列表移除即可。但是移除item list 并没有简单。举个例子，如果现在需要移除<code>[5 ,  8 , 9]</code> 三个位置的Item，当移除5位置的Item后，我们Item的list长度就会变短，因此list数据中原来的8变成了7。结果我们移除<code>[5 , 8 , 9]</code>三个位置的数据实际对应的是[5 , 7 , 7]。再考虑到一种情况如果是移除<code>[8 ， 9 ， 5]</code>三个位置的Item呢？<br>因此我们需要将提供需要移除的Item List进行逆序排序。这样我们就能简单调用<code>notifyItemRangeRemoved()</code>方法来移除item list。<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Adapter</span> <span class="keyword">extends</span> <span class="title">SelectableAdapter</span>&lt;<span class="title">Adapter</span>.<span class="title">ViewHolder</span>&gt; </span>&#123;</div><div class="line">    <span class="comment">// …</span></div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">removeItem</span><span class="params">(<span class="keyword">int</span> position)</span> </span>&#123;</div><div class="line">    items.remove(position);</div><div class="line">    notifyItemRemoved(position);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">removeItems</span><span class="params">(List&lt;Integer&gt; positions)</span> </span>&#123;</div><div class="line">    <span class="comment">// list逆序排序</span></div><div class="line">    Collections.sort(positions, <span class="keyword">new</span> Comparator&lt;Integer&gt;() &#123;</div><div class="line">      <span class="meta">@Override</span></div><div class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(Integer lhs, Integer rhs)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> rhs - lhs;</div><div class="line">      &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    <span class="comment">// 拆分排列后的list</span></div><div class="line">    <span class="keyword">while</span> (!positions.isEmpty()) &#123;</div><div class="line">      <span class="keyword">if</span> (positions.size() == <span class="number">1</span>) &#123;</div><div class="line">        removeItem(positions.get(<span class="number">0</span>));</div><div class="line">        positions.remove(<span class="number">0</span>);</div><div class="line">      &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">int</span> count = <span class="number">1</span>;</div><div class="line">        <span class="keyword">while</span> (positions.size() &gt; count &amp;&amp; positions.get(count).equals(positions.get(count - <span class="number">1</span>) - <span class="number">1</span>)) &#123;</div><div class="line">          ++count;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (count == <span class="number">1</span>) &#123;</div><div class="line">          removeItem(positions.get(<span class="number">0</span>));</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">          removeRange(positions.get(count - <span class="number">1</span>), count);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; count; ++i) &#123;</div><div class="line">          positions.remove(<span class="number">0</span>);</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">removeRange</span><span class="params">(<span class="keyword">int</span> positionStart, <span class="keyword">int</span> itemCount)</span> </span>&#123;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; itemCount; ++i) &#123;</div><div class="line">      items.remove(positionStart);</div><div class="line">    &#125;</div><div class="line">    notifyItemRangeRemoved(positionStart, itemCount);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">// …</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>最后在<code>Activity</code>中调用这两个方法，在<code>menu</code>菜单中创建<code>Remove</code>的操作。我们只需要在<code>Remove</code>菜单中调用<code>removeItems()</code>方法就可以了。我们可以在<code>click</code>中调用<code>removeItem()</code>方法来测试移除单个Item。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">ActionBarActivity</span> <span class="keyword">implements</span> <span class="title">Adapter</span>.<span class="title">ViewHolder</span>.<span class="title">ClickListener</span> </span>&#123;</div><div class="line">  <span class="comment">// …</span></div><div class="line"></div><div class="line">  <span class="meta">@Override</span></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onItemClicked</span><span class="params">(<span class="keyword">int</span> position)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (actionMode != <span class="keyword">null</span>) &#123;</div><div class="line">      toggleSelection(position);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">      adapter.removeItem(position);</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">// …</span></div><div class="line"></div><div class="line">  <span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">ActionModeCallback</span> <span class="keyword">implements</span> <span class="title">ActionMode</span>.<span class="title">Callback</span> </span>&#123;</div><div class="line">    <span class="comment">// …</span></div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onActionItemClicked</span><span class="params">(ActionMode mode, MenuItem item)</span> </span>&#123;</div><div class="line">      <span class="keyword">switch</span> (item.getItemId()) &#123;</div><div class="line">        <span class="keyword">case</span> R.id.menu_remove:</div><div class="line">          adapter.removeItems(adapter.getSelectedItems());</div><div class="line">          mode.finish();</div><div class="line">          <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line"></div><div class="line">        <span class="keyword">default</span>:</div><div class="line">          <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// …</span></div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这样我们就实现了移除Item功能了。与传统<code>notifyDataSetChanged()</code>的方法相比，我们还有额外的动画效果</p>
+<div style="text-align:center"><br>    <img src="http://res.cloudinary.com/dmfz9aun7/image/upload/v1456548665/android/recyclerview-remove.gif" style="width:35%;"><br></div>
+
+<h3 id="八、总结"><a href="#八、总结" class="headerlink" title="八、总结"></a>八、总结</h3><p><code>RecyclerView</code>使用相对<code>ListView</code>和<code>GridView</code>有一点复杂，但是提供了 viewholders、数据源、list等之间拆分的简单实现，动画效果提升了用户体验。<br>关于性能，对比<code>ListView</code>，两个都相似的实现了<code>ViewHolder</code>模式。然而用<code>RecyclerView</code>，你不得不选择<code>ViewHolder</code>模式。对于用户来说比没有使用<code>ViewHolder</code>有更好的体验，对于开发者来说，可以写出更好的代码。<br>同时，<code>RecyclerView</code>仍然有一些明显的不足（如：StaggeredGridLayoutManager），除此以外可以完美在项目中使用。</p>
+<p>示例代码：<a href="https://github.com/Kernald/recyclerview-sample" target="_blank" rel="external">GitHub</a></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/02/08/Android  React Native系列（一）：学习路径/" data-toggle="tooltip" data-placement="top" title="Android  React Native系列（一）：学习路径">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/01/31/Android：Material-Design笔记（一）/" data-toggle="tooltip" data-placement="top" title="Android：Material Design笔记（一）">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "alexwan02";
+    var disqus_identifier = "http://blog.alexwan.cn/2016/02/06/Android：RecyclerView/";
+    var disqus_url = "http://blog.alexwan.cn/2016/02/06/Android：RecyclerView/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Alex Studio 2017 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.alexwan.cn/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

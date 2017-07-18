@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Alex Studio
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.alexwan.cn/page/2/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Alex Studio</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<header class="intro-header" style="background-image: url('/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
+                <div class="site-heading">
+                    <h1>Alex Studio</h1>
+                    <!--<hr class="small">-->
+                    <span class="subheading">To Be A Lean Developer</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+<!-- Main Content -->
+<div class="container">
+    <div class="row">
+        
+
+<!-- USE SIDEBAR -->
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-1
+                col-md-8 col-md-offset-1
+                col-sm-12
+                col-xs-12
+                post-container
+            ">
+            
+                <!-- Main Content -->
+
+
+<div class="post-preview">
+
+    <a href="/2017/07/06/Kotlin基础之对象表达式与声明/">
+        <h2 class="post-title">
+            Kotlin基础之对象表达式与声明
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            对象声明与表达式有时需要创建类稍微修改的对象，不用显性声明类的子类。Java使用匿名内部类来处理，Kotlin使用对象表达式和对象声明概括。
+对象表达式创建继承某类的匿名类对象：window.addMouseListener(object: MouseAdapter()&#123;    override fun mouseClicked(e: MouseEvent)&#123;      ......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by AlexWan on
+        2017-07-06
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2017/07/06/Kotlin基础之扩展/">
+        <h2 class="post-title">
+            Kotlin基础之扩展
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            扩展Koltin提供与C#和Gosu类似的扩展类的功能，无须继承类或类似装饰者的设计模式。通过称为扩展的特殊声明实现。
+支持扩展函数和扩展属性
+扩展函数使用接收者类型在函数名前声明扩展函数（接收者类型为要扩展的类型）。
+为MutableList&lt;Int&gt;添加swap函数fun MutableList&lt;Int&gt;.swap(index1: Int , index2: In......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by AlexWan on
+        2017-07-06
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2017/07/03/Kotlin基础之泛型/">
+        <h2 class="post-title">
+            Kotlin基础之泛型
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            泛型与Java一样，Koltin的类也有类型参数class Box&lt;T&gt;(t: T)&#123;    var value = t&#125;
+常规来说，创建这样的类，需要提供具体的类型val box: Box&lt;Int&gt; = Box&lt;Int&gt;(1)
+当类型可以从构造参数或其他上下文中推断出时，可以忽略类型参数val box = Box(1) // 1 ha......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by AlexWan on
+        2017-07-03
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2017/07/03/Kotlin基础之数据类、密封类、嵌套类和枚举类/">
+        <h2 class="post-title">
+            Kotlin基础之数据类、密封类、嵌套类和枚举类
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            数据类我们经常创建只用来存储数据的类。在这样的类中，一些标准功能常由数据来驱动。这些类在Kotlin中使用data修饰符标记为数据类data class User(val name: String, val age: Int)
+编译器自动驱动在私有构造中声明的所有属性，生成为成员。
+
+equals()和hashCode()函数对
+User(name=John, age=42)形式的toStr......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by AlexWan on
+        2017-07-03
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2017/07/03/Kotlin基础之属性与字段、接口/">
+        <h2 class="post-title">
+            Kotlin基础之字段、接口
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            属性与字段属性声明Kotlin中类拥有属性。用var关键字声明为可变属性，或用val关键字声明为只读属性。
+class Address &#123;    var name: String = ...    var street: String = ...    var city: String = ...    var state: String? = ...    var zip: St......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by AlexWan on
+        2017-07-03
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2017/07/03/Kotlin基础之类、继承、可见性修饰符/">
+        <h2 class="post-title">
+            Kotlin基础之类、继承、可见性修饰符
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            类与继承类在Kotlin中使用class声明类
+class Invoice &#123;&#125;
+类声明由类名，类头部（指定类型参数，首要构造等）和用大括号包裹的类体组成。类头部和类体为可选；如果无类体，可省略花括号class Empty
+构造器Kotlin的类可以有一个首要构造器和多个次要构造器。首要构造是类头部的一部分，跟在类名之后（参数类型可选）class Person const......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by AlexWan on
+        2017-07-03
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2017/07/03/Kotlin基础之基础类型与包/">
+        <h2 class="post-title">
+            Kotlin基础之基础类型与包
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            基础类型在Kotlin中，一切皆对象从这种意义上来说，我们可以调用任何变量的属性和方法。有些内嵌类型的实现是经过优化的，但是对于开发者而言看上就是普通的类。这些类型有：数值类型，字符类型，boolean类型，数组类型
+数值类型Kotlin使用类似Java的方式处理数值类型，但是与Java不是完全相同。如：不支持数值的隐式扩大转换或在某些情况中字面常量会些许不同。
+Kotlin内嵌了以下几种数......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by AlexWan on
+        2017-07-03
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2017/07/03/Kotlin基础之跳转与条件循环表达式/">
+        <h2 class="post-title">
+            Kotlin基础之跳转与条件循环表达式
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            跳转Kotlin有三种结构的跳转表达式
+
+return. return默认返回最近的闭合函数或匿名函数
+break. 结束最近闭合循环
+continue. 执行最近闭合循环下一步
+
+所有跳转表达式可在大的表达式中使用val s = person.name ?: return
+跳转表达式的类型为Nothing类型
+Break和Continue 标注kotlin中任意表达式都可以用标注来标记，以......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by AlexWan on
+        2017-07-03
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2017/06/21/Kotlin基础之内联函数/">
+        <h2 class="post-title">
+            Kotlin基础之内联函数
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            内联函数使用高阶函数会给运行时带来一些坏处：每个函数都是一个对象，捕获闭包（如：访问函数体内的变量），内存分配（函数对象或Class），虚拟调用引入的运行过载。使用内联Lambda表达式在多数情况下可以消除这种过载。比如下面的函数就是这种情况下的很好的例子，lock()函数可以很容易地在调用点进行内联扩展。lock(l)&#123; foo() &#125;
+编译能够产生下面的代码，而不是创......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by AlexWan on
+        2017-06-21
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2017/06/21/Kotlin基础之高阶函数与Lambdas/">
+        <h2 class="post-title">
+            Kotlin基础之高阶函数与Lambdas
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            高阶函数在数学和计算机科学中，高阶函数是至少满足下列一个条件的函数：
+
+接受一个或多个函数作为输入
+输出一个函数定义一个高阶函数，参数为Lock类型对象和一个函数。函数执行时获取锁，运行函数参数，执行结束释放锁。
+
+fun &lt;T&gt; lock(lock: Lock , body: () -&gt; T)&#123;  lock.lock()  try&#123;    return......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by AlexWan on
+        2017-06-21
+    </p>
+
+</div>
+<hr>
+
+
+
+<!-- Pager -->
+
+<ul class="pager">
+    
+        <li class="previous">
+            <a href="/">&larr; Newer Posts</a>
+        </li>
+    
+    
+        <li class="next">
+            <a href="/page/3/">Older Posts &rarr;</a>
+        </li>
+    
+</ul>
+
+
+
+                <!-- 如果开启评论功能 -->
+                
+
+            </div>
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-3 col-lg-offset-0
+                col-md-3 col-md-offset-0
+                col-sm-12
+                col-xs-12
+                sidebar-container
+            ">
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                            
+                            <a href="/tags/#android" title="android" rel="2">android</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#android-aosp" title="android-aosp" rel="3">android-aosp</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#kotlin" title="kotlin" rel="21">kotlin</a>
+                            
+                        
+                            
+                            <a href="/tags/#react-native" title="react-native" rel="3">react-native</a>
+                            
+                        
+                            
+                            <a href="/tags/#okhttp3" title="okhttp3" rel="3">okhttp3</a>
+                            
+                        
+                            
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Short About -->
+                <section class="visible-md visible-lg">
+                    <hr><h5><a href="/about/">ABOUT ME</a></h5>
+                    <div class="short-about">
+
+                        
+                            <img src="/img/avatar.jpg" />
+                        
+
+                        
+
+                        <!-- SNS Link -->
+                        <ul class="list-inline">
+                            
+                            
+                            
+                                <li>
+                                    <a target="_blank" href="https://www.zhihu.com/people/alexwan02">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa  fa-stack-1x fa-inverse">知</i>
+                                        </span>
+                                    </a>
+                                </li>
+                            
+
+                            
+
+                            
+
+                            
+                                <li>
+                                    <a target="_blank"  href="https://github.com/alexwan02">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </li>
+                            
+                            
+                            
+                            
+                        </ul>
+                    </div>
+                </section>
+                
+                <!-- Friends Blog -->
+                
+            </div>
+        
+    </div>
+</div>
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Alex Studio 2017 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.alexwan.cn/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

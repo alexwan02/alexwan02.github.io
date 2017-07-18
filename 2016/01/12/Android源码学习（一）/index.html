@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Android源码学习（一）：Mac OSX开发环境搭建 - Alex Studio
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.alexwan.cn/2016/01/12/Android源码学习（一）/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Alex Studio</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#android" title="android">android</a>
+                        
+                    </div>
+                    <h1>Android源码学习（一）：Mac OSX开发环境搭建</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by AlexWan on
+                        2016-01-12
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p><a href="https://source.android.com/source/initializing.html#setting-up-a-mac-os-x-build-environment" target="_blank" rel="external">官网教程</a></p>
+<p><a href="http://iluhcm.com/2015/08/18/compile-newest-android-source-code-on-macosx/" target="_blank" rel="external">Mac OS X 10.10.3下android-5.1.1_r9 源码下载与编译</a></p>
+<p><a href="https://medium.com/@raminmahmoodi/build-android-5-0-lollipop-on-osx-10-10-yosemite-441bd00ee77a#.vxeycv4xr" target="_blank" rel="external">Build Android 5.0 Lollipop on OSX 10.10 Yosemite</a></p>
+<p><a href="http://www.liball.me/mac-10-10-build-android-4-4-4-for-nexus/" target="_blank" rel="external">Mac 10.10 编译android 4.4.4 for nexus</a></p>
+<p><a href="http://llzz.me/2015/06/17/Build-Android-5-0-Source/" target="_blank" rel="external">Build Android 5.0 Source</a></p>
+<h4 id="一、Mac-OSX-开发环境搭建"><a href="#一、Mac-OSX-开发环境搭建" class="headerlink" title="一、Mac OSX 开发环境搭建"></a>一、Mac OSX 开发环境搭建</h4><p>本文的Mac OSX的版本为 <code>OSX 10.11</code></p>
+<p>默认情况下，MacOs系统是大小写保留，但大小写不敏感的文件系统。这种文件系统不被git支持，会引起git一些命令行行为不正常，如 <code>git status</code>。因此建议将ASOP源码文件放在一个大小写敏感的工作环境中。可以使用磁盘镜像来建立一个这样的文件系统。</p>
+<h4 id="1、创建磁盘文件"><a href="#1、创建磁盘文件" class="headerlink" title="1、创建磁盘文件"></a>1、创建磁盘文件</h4><p>在MacOs系统中使用磁盘镜像创建一个大小写敏感的文件系统很简单。打开Mac自带的磁盘工具（Disk Utility），选择<code>New Image</code>，分配至少26G大小的空间；稍微大一点的空间可能会更好如<code>50G</code>。保证选择格式为<code>OSX 扩展（区分大小写，日志式）</code>的卷。</p>
+<div><br>    <img src="http://res.cloudinary.com/dmfz9aun7/image/upload/v1457867135/android/android_disk_img.jpg" style="height:350px"><br></div>
+
+<p>也可以通过shell命令行来创建磁盘镜像</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line">hdiutil create -type SPARSE -fs <span class="string">'Case-sensitive Journaled HFS+'</span> -size <span class="number">50</span>g ~/android.dmg</div></pre></td></tr></table></figure>
+<p>上面的命令行会创建一个<code>.dmg</code>（或<code>.dmg.sparseimage</code>）格式文件。以后可以用这个镜像来作为Android 开发环境的磁盘。<br>之后，如果需要更大的磁盘空间，可以用下面的命令行来改变磁盘镜像的大小<br><figure class="highlight"><table><tr><td class="code"><pre><div class="line"># hdiutil resize -size &lt;new-size-you-want&gt;g ~/android.dmg.sparseimage</div></pre></td></tr></table></figure></p>
+<p>对于名称为<code>android.dmg</code>的磁盘镜像，可以在<code>~/.bash_profile</code>文件中加入下面的辅助<code>function</code>来启动你的磁盘镜像</p>
+<ul>
+<li><p>当执行<code>mountAndroid</code>时挂载镜像</p>
+<figure class="highlight"><table><tr><td class="code"><pre><div class="line"># mount the android file image</div><div class="line">function mountAndroid &#123; hdiutil attach ~/android.dmg -mountpoint /Volumes/android; &#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>执行<code>umountAndroid</code>卸载镜像</p>
+<figure class="highlight"><table><tr><td class="code"><pre><div class="line"># unmount the android file image</div><div class="line">function umountAndroid() &#123; hdiutil detach /Volumes/android; &#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>镜像文件的地址要视你的本地具体的镜像的位置（本地的镜像地址在home的根目录中）。<br>磁盘镜像创建完毕</p>
+<h4 id="2、安装配置JDK"><a href="#2、安装配置JDK" class="headerlink" title="2、安装配置JDK"></a>2、安装配置JDK</h4><p>在安装和配置JDK的时候要根据你的Mac 系统的版本来决定你要选择的JDK版本和要编译的Android Source的分支（branch）。</p>
+<ul>
+<li><code>master</code>分支的<a href="https://android.googlesource.com/" target="_blank" rel="external">AOSP</a>需要Java 8.x 对应的<a href="http://www.oracle.com/technetwork/java/javase/downloads/java-archive-javase8-2177648.html#jdk-8u45-oth-JPR" target="_blank" rel="external">JDK 1.8</a></li>
+<li><code>5.0.x</code>分支的AOSP需要Java 7对应的版本<a href="https://www.oracle.com/technetwork/java/javase/downloads/java-archive-downloads-javase7-521261.html#jdk-7u71-oth-JPR" target="_blank" rel="external">JDK 1.7</a></li>
+<li><code>Gingerbread</code>到<code>KitKat</code>版本之间的Android版本需要下载安装Java 6 对应的 <a href="http://support.apple.com/kb/dl1572" target="_blank" rel="external">Java JDK</a></li>
+</ul>
+<h5 id="1-Master分支"><a href="#1-Master分支" class="headerlink" title="1) Master分支"></a>1) Master分支</h5><p>为了在Mac上编译最新的源码，需要运行<code>Mac OS X v10.10 (Yosemite)</code>或<code>更新</code>版本的Mac，和对应的<code>Xcode 4.5.2</code>及以上版本的Command Line Tools。</p>
+<h5 id="2-6-0-x分支"><a href="#2-6-0-x分支" class="headerlink" title="2) 6.0.x分支"></a>2) 6.0.x分支</h5><p>编译 6.0.x的AOSP 源码，需要系统版本为<code>Mac OS X v10.10 (Yosemite)</code>的Mac，和对应版本为<code>Xcode 4.5.2</code>与<code>Command Line Tools</code></p>
+<h5 id="3-5-0-x分支"><a href="#3-5-0-x分支" class="headerlink" title="3) 5.0.x分支"></a>3) 5.0.x分支</h5><p>编译 5.0.x的AOSP 源码，需要系统版本为<code>Mac OS X v10.8 (Mountain Lion)</code>的Mac，和对应版本为<code>Xcode 4.5.2</code>与<code>Command Line Tools</code></p>
+<h5 id="4-4-4-x分支"><a href="#4-4-4-x分支" class="headerlink" title="4) 4.4.x分支"></a>4) 4.4.x分支</h5><p>编译 4.4.x的AOSP 源码，需要系统版本为<code>Mac OS X v10.6 (Snow Leopard)</code>或<code>Mac OS X v10.7 (Lion)</code>的Mac，和对应版本为<code>Xcode 4.2</code>与<code>Command Line Tools</code>。</p>
+<h5 id="5-4-0-x以及更早的分支"><a href="#5-4-0-x以及更早的分支" class="headerlink" title="5) 4.0.x以及更早的分支"></a>5) 4.0.x以及更早的分支</h5><p>对于4.0.x以及更早版本的分支，需要系统版本为<code>Mac OS X v10.5 (Leopard)</code>或<code>Mac OS X v10.6 (Snow Leopard)</code>的Mac，同时要有<code>Mac OS X v10.5 SDK</code>的支持</p>
+<h4 id="3、安装需求工具"><a href="#3、安装需求工具" class="headerlink" title="3、安装需求工具"></a>3、安装需求工具</h4><ul>
+<li>安装Xcode</li>
+</ul>
+<p>从<a href="https://developer.apple.com/resources/cn/" target="_blank" rel="external">Apple Developer</a>网站来安装Xcode。建议<code>3.1.4</code>版本及以上的Xcode。版本<code>4.x</code>可能会引起一些问题。如果你未注册苹果开发者，则需要创建一个Apple ID来下载Xcode。</p>
+<ul>
+<li>安装<a href="http://www.macports.org/install.php" target="_blank" rel="external">MacPorts</a>（安装时间可能会比较长，耐心等待即可）</li>
+</ul>
+<p><code>注意：</code> 保证在<code>/usr/bin</code>上级路径中已有<code>/opt/local/bin</code>路径目录。如果没有，需要在<code>~/.bash_profile</code>文件中添加一下命令<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line">export PATH=/opt/local/bin:$PATH</div></pre></td></tr></table></figure></p>
+<p><code>注意：</code>如果home根目录中不存在.bash_profile 文件，需要手动创建一个。</p>
+<ul>
+<li>从MacPorts上获取<code>Git</code>、<code>GPG</code>等包<figure class="highlight java"><table><tr><td class="code"><pre><div class="line">$ POSIXLY_CORRECT=<span class="number">1</span> sudo port install gmake libsdl git gnupg</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>如果Mac系统版本为OS X v10.4，还需要安装<code>bison</code><br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line">$ POSIXLY_CORRECT=<span class="number">1</span> sudo port install bison</div></pre></td></tr></table></figure></p>
+<p>对于版本<code>ICS</code>（ Ice Cream Sandwich (4.0.x)）之前的Android，使用 gmake 3.82版本会有阻止android源码编译的bug，安装时请安装最新的gmake或者通过以下几步安装<code>3.81</code>版本。</p>
+<ol>
+<li><p>编辑<code>/opt/local/etc/macports/sources.conf</code>，添加一行</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line">file:<span class="comment">///Users/Shared/dports</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>在远程同步之前，创建目录</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line">$ mkdir /Users/Shared/dports</div></pre></td></tr></table></figure>
+</li>
+<li><p>在新的dports目录中运行</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line">$ portindex /Users/Shared/dports</div></pre></td></tr></table></figure>
+</li>
+<li><p>最后安装旧版本的gmake</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line">$ sudo port install gmake @<span class="number">3.81</span></div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="4、解除文件限制"><a href="#4、解除文件限制" class="headerlink" title="4、解除文件限制"></a>4、解除文件限制</h4><p>默认情况下，Mac系统限制了同时打开文件数，会限制编译进程的执行；在 ~/.bash_profile文件中添加以下命令来取消限制：<br><figure class="highlight"><table><tr><td class="code"><pre><div class="line"># set the number of open files to be 1024</div><div class="line">ulimit -S -n 1024</div></pre></td></tr></table></figure></p>
+<h4 id="5、自定义配置（可选）"><a href="#5、自定义配置（可选）" class="headerlink" title="5、自定义配置（可选）"></a>5、自定义配置（可选）</h4><p>使用<code>ccache</code>编译工具来加速<code>rebuilds</code>。如果你经常用<code>make clean</code>命令或切换不同开发版本，<code>ccache</code>很有用。</p>
+<ul>
+<li>在.bashrc（或类似）文件中加入下面命令<figure class="highlight java"><table><tr><td class="code"><pre><div class="line">export USE_CCACHE=<span class="number">1</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>默认情况<code>cache</code>会被存储在~/.ccache中。如果你的home目录在NFS或其他非本地文件系统上，你也可以在.bashrc文件中指定cache目录<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line">export CCACHE_DIR=&lt;path-to-your-cache-directory&gt;</div></pre></td></tr></table></figure></p>
+<p>建议缓存的大小为50-100GB，下载源码后需要先执行下面的命令<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line">prebuilts/misc/linux-x86/ccache/ccache -M <span class="number">50</span>G</div></pre></td></tr></table></figure></p>
+<p>如果是Mac系统，应该用darwin-x86来替换linux-x86<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line">prebuilts/misc/darwin-x86/ccache/ccache -M <span class="number">50</span>G</div></pre></td></tr></table></figure></p>
+<p>当编译<code>Ice Cream Sandwich (4.0.x)</code>及之前版本时，<code>ccache</code>则在不同的位置：<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line">prebuilt/linux-x86/ccache/ccache -M <span class="number">50</span>G</div></pre></td></tr></table></figure></p>
+<p>设置存储在CCACHE_DIR中，并且为持久化状态。</p>
+<h4 id="二、下载源码"><a href="#二、下载源码" class="headerlink" title="二、下载源码"></a>二、下载源码</h4><p>配置好开发环境后，就可以进行源码下载了。因为国内网络环境，国内开发者建议通过<a href="https://mirrors.tuna.tsinghua.edu.cn/help/AOSP/" target="_blank" rel="external">清华AOSP</a>来下载AOSP。用清华AOSP时建议用<code>repo git</code>来下载源码。</p>
+<h5 id="1-安装Repo"><a href="#1-安装Repo" class="headerlink" title="1.安装Repo"></a>1.安装Repo</h5><p>Repo是一个辅助Git管理Android版本及分支的工具.在安装repo前,需要新建一个文件夹~/bin(名字可随意定)并把这个文件夹放到PATH环境变量里,然后我们就可以把repo下载到这个文件夹里.</p>
+<ul>
+<li><p>保证你在home目录中有<code>bin/</code>的目录并且包含在你的路径中</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line">$ mkdir ~/bin</div><div class="line">$ PATH=~/bin:$PATH</div></pre></td></tr></table></figure>
+</li>
+<li><p>下载Repo工具并保证可以执行</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line">$ curl https:<span class="comment">//storage.googleapis.com/git-repo-downloads/repo &gt; ~/bin/repo</span></div><div class="line">$ chmod a+x ~/bin/repo</div></pre></td></tr></table></figure>
+</li>
+<li><p>建立工作目录（目录可以是任意指定的 ，Mac可以在挂载<code>Disk Image</code>中创建目录）</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line">mkdir WORKING_DIRECTORY</div><div class="line">cd WORKING_DIRECTORY</div></pre></td></tr></table></figure>
+</li>
+<li><p>配置Git的name 和 email。为了使用Gerrit Code-review工具，需要一个注册<a href="https://www.google.com/accounts" target="_blank" rel="external">Google账号</a>的email，保证email是激活状态能够收取到消息。(若为清华AOSP，Email随意)</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line">$ git config --global user.name <span class="string">"Your Name"</span></div><div class="line">$ git config --global user.email <span class="string">"you@example.com"</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>运行<code>repo init</code>来初始化代码仓库。必须为manifest指定一个URL，指定要下载的远程代码分支</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line">$ repo init -u https:<span class="comment">//android.googlesource.com/platform/manifest</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>上面初始的是<code>master</code>分支的代码，根据你的Mac系统版本来选择android源码版本，可以为之后编译工具减少不少的麻烦。用<code>-b</code>命令来选择分支。因为本文Mac系统版本为 Mac OSX 10.11，所以用的master分支的源码来进行源码学习。具体分支查看<a href="https://source.android.com/source/build-numbers.html#source-code-tags-and-builds" target="_blank" rel="external">Source Code Tags and Builds</a>。<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line">$ repo init -u https:<span class="comment">//android.googlesource.com/platform/manifest -b android-4.0.1_r1</span></div></pre></td></tr></table></figure></p>
+<p>国内开发者可以参考文章<a href="https://lug.ustc.edu.cn/wiki/mirrors/help/aosp" target="_blank" rel="external">Android 镜像使用帮助</a></p>
+<p>初始化成功后，会有<code>Repo is initialized in your working directory</code>的成功消息了。对应源码根目录会含有对应的<code>.repo</code>目录。</p>
+<ul>
+<li>下载源码：在上面指定<code>WORKING_DIRECTORY</code>根目录中用repo sync命令拉取android 源码，并下载到本地，<figure class="highlight java"><table><tr><td class="code"><pre><div class="line">$ repo sync</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>下载源码的时间特别漫长,中途可能会发生断开连接的现象。不过下载支持断点续传，停止时再用repo sync命令即可。<br>更多关于<a href="https://source.android.com/source/developing.html" target="_blank" rel="external">Repo command</a></p>
+<h4 id="三、编译源码"><a href="#三、编译源码" class="headerlink" title="三、编译源码"></a>三、编译源码</h4><p>源码下载完成后就可以进行编译工作了。源码下载成功后，会自动解压缩到<code>WORKING_DIRECTORY</code>目录中，如果你下载的源码不是在挂载的android磁盘镜像中，需要将<code>WORKING_DIRECTORY</code>中的源码拷贝到<code>/Volumes/android/</code>中，进行编译（command+c - command + v 即可）。</p>
+<ul>
+<li><p>进入源码根目录</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line">cd /Volumes/android</div></pre></td></tr></table></figure>
+</li>
+<li><p>执行envsetup.sh脚本初始化环境</p>
+  <figure class="highlight java"><table><tr><td class="code"><pre><div class="line">$ source build/envsetup.sh</div></pre></td></tr></table></figure>
+<p>  或</p>
+  <figure class="highlight java"><table><tr><td class="code"><pre><div class="line">$ . build/envsetup.sh</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>得到类似这面这样的提示信息</p>
+<div><br><img src="http://res.cloudinary.com/dmfz9aun7/image/upload/v1457874157/android/envsetup_sh.jpg" style="width:600px"><br></div>
+
+<ul>
+<li>选择编译的目标<br>用<code>lunch</code>选择要编译的目标，如：<figure class="highlight java"><table><tr><td class="code"><pre><div class="line">$ lunch aosp_arm-eng</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>表示编译后的版本为模拟器的版本。成功后得到类似下面这样的信息</p>
+<div><br><img src="http://res.cloudinary.com/dmfz9aun7/image/upload/v1457874467/android/lunch_build.jpg" style="width:600px"><br></div>
+
+<p>更多查看<a href="https://source.android.com/source/running.html" target="_blank" rel="external">Running Builds</a></p>
+<ul>
+<li>开始编译<figure class="highlight java"><table><tr><td class="code"><pre><div class="line">$ make -jN</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>其中N代表同时进行的任务数.官方建议任务数设置为线程数的1~2倍,比如我的机器是单CPU,四核,8线程,则最快的构建任务数是8~16。根据不同机器的性能，编译时长会有不同的差异。本文的Mac配置<code>MacBook Pro (2.2 GHz Intel Core i7/16 GB 1600 MHz DDR3)</code>编译一个半小时。在编译过程中可能会有因为各种问题而中断编译。在文章<a href="http://blog.alexwan1989.com/2016/03/04/Android%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0%EF%BC%9A%E7%BC%96%E8%AF%91%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E9%97%AE%E9%A2%98/" target="_blank" rel="external">Android源码学习（二）：编译问题总结</a>中对常遇到的问题进行了总结。<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line">**<span class="function">make completed <span class="title">successfully</span> <span class="params">(xx:xx (mm:ss)</span>)**</span></div></pre></td></tr></table></figure></p>
+<p>如果出现以上的提示，恭喜，表示你你已经编译成功。</p>
+<p>因为编译时选择的是aosp_arm-eng，所以用的是模拟器来进行调试<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line">$ emulator</div></pre></td></tr></table></figure></p>
+<p>模拟器启动很慢，大概10分钟这样模拟器运行成功。有资源的同学建议还是用真机来刷。具体的刷机参考<a href="https://source.android.com/source/building.html#flash-a-device" target="_blank" rel="external">Flash a Device</a>，这里就不详细说明了。</p>
+<h4 id="四、查看源码"><a href="#四、查看源码" class="headerlink" title="四、查看源码"></a>四、查看源码</h4><p>Mac下查看android源码，这里推荐<a href="https://www.sublimetext.com/" target="_blank" rel="external">Sublime Text</a>配合插件还是比较好用的，类似这样</p>
+<div><br><img src="http://res.cloudinary.com/dmfz9aun7/image/upload/v1457875178/android/sublime_text_android_source.jpg" style="width:650px"><br></div>
+
+<p>具体可以参考<a href="http://blog.csdn.net/wangbaochu/article/details/44836661" target="_blank" rel="external">Android 源码Mac-OSX查看工具Sublime-Text2</a><br>来安装<a href="https://packagecontrol.io/installation" target="_blank" rel="external">Package Control插件</a>和CTags Package：</p>
+<ul>
+<li><p>安装Package Control插件</p>
+<ol>
+<li>打开控制台：View-&gt;show console 或 ctrl + ~</li>
+<li>本文用是Sublime Text3 , 输入以下命令 <figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">import</span> urllib.request,os,hashlib; h = <span class="string">'2915d1851351e5ee549c20394736b442'</span> + <span class="string">'8bc59f460fa1548d1514676163dafc88'</span>; pf = <span class="string">'Package Control.sublime-package'</span>; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( <span class="string">'http://packagecontrol.io/'</span> + pf.replace(<span class="string">' '</span>, <span class="string">'%20'</span>)).read(); dh = hashlib.sha256(by).hexdigest(); print(<span class="string">'Error validating download (got %s instead of %s), please try manual install'</span> % (dh, h)) <span class="keyword">if</span> dh != <span class="function">h <span class="keyword">else</span> <span class="title">open</span><span class="params">(os.path.join( ipp, pf)</span>, 'wb' ).<span class="title">write</span><span class="params">(by)</span></span></div></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><p>安装CTags Package</p>
+<ol>
+<li>首先打开Sublime Text3，右键 -&gt; Preference -&gt; Packages Browse。查看是否已经安装了CTags Package，如果没有则继续下面步骤。</li>
+<li>右键 -&gt; Preference -&gt; Package control, 输入”install package”，它会找出你可以安装的插件，在列表中选择ctag插件进行安装</li>
+<li><p>修改函数跳转方式: 默认函数跳转：Ctrl+shift+左键; 跳转返回：Ctrl+shift+右键。修改方法：</p>
+ <figure class="highlight java"><table><tr><td class="code"><pre><div class="line">Perference-&gt;Package Settings-&gt;CTags-&gt;Mouse Binding Default-&gt;复制全部-&gt;粘贴到Perference-&gt;Package Settings-&gt;CTags-&gt;Mouse Binding User</div></pre></td></tr></table></figure>
+<p> 把里面的”ctrl+shift”，修改为“command”，这样就可以用“command+左键”跳转了</p>
+ <figure class="highlight java"><table><tr><td class="code"><pre><div class="line">[  </div><div class="line">&#123;  </div><div class="line">  <span class="string">"button"</span>: <span class="string">"button1"</span>,  </div><div class="line">  <span class="string">"count"</span>: <span class="number">1</span>,  </div><div class="line">  <span class="string">"press_command"</span>: <span class="string">"drag_select"</span>,  </div><div class="line">  <span class="string">"modifiers"</span>: [“command”],  </div><div class="line">  <span class="string">"command"</span>: <span class="string">"navigate_to_definition"</span>  </div><div class="line">&#125;,  </div><div class="line">&#123;</div><div class="line">  <span class="string">"button"</span>: <span class="string">"button2"</span>,  </div><div class="line">  <span class="string">"count"</span>: <span class="number">1</span>,  </div><div class="line">  <span class="string">"modifiers"</span>: [<span class="string">"command"</span>],  </div><div class="line">  <span class="string">"command"</span>: <span class="string">"jump_prev"</span>  </div><div class="line">&#125;  </div><div class="line">]</div></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><p>导入Android 源码工程</p>
+<ol>
+<li>在Sublime Text3工具栏点击 Project-&gt;Open Project, 选择Android源码根目录作为工程导入</li>
+<li>右键点击Side Bar中android 源码根目录，右键-&gt; CTgas: Rebuild Tags, 创建索引</li>
+<li>接下来就利用快捷键浏览代码了： <figure class="highlight java"><table><tr><td class="code"><pre><div class="line">Command+P：查找文件</div><div class="line">Command+R：查找方法</div><div class="line">Command+左键：文件或函数跳转        </div><div class="line">Command+右键：返回文件或函数跳转的原始位置</div></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+</ul>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/01/19/Android-WebView开发笔记（一）/" data-toggle="tooltip" data-placement="top" title="Android:WebView开发笔记（一）">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/01/11/Android网络Client：Retrofit(一)/" data-toggle="tooltip" data-placement="top" title="Android网络Client：Retrofit(一)">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#android" title="android">android</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "alexwan02";
+    var disqus_identifier = "http://blog.alexwan.cn/2016/01/12/Android源码学习（一）/";
+    var disqus_url = "http://blog.alexwan.cn/2016/01/12/Android源码学习（一）/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Alex Studio 2017 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.alexwan.cn/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

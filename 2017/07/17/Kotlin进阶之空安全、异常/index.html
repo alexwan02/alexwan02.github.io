@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Kotlin进阶之空安全、异常 - Alex Studio
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.alexwan.cn/2017/07/17/Kotlin进阶之空安全、异常/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Alex Studio</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#kotlin" title="kotlin">kotlin</a>
+                        
+                    </div>
+                    <h1>Kotlin进阶之空安全、异常</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by AlexWan on
+                        2017-07-17
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="空安全"><a href="#空安全" class="headerlink" title="空安全"></a>空安全</h1><h2 id="可为空类型和非空类型"><a href="#可为空类型和非空类型" class="headerlink" title="可为空类型和非空类型"></a>可为空类型和非空类型</h2><p>Koltin力求消除代码中空引用的问题（<a href="http://en.wikipedia.org/wiki/Tony_Hoare#Apologies_and_retractions" target="_blank" rel="external">价值10亿的错误</a>）。</p>
+<p>多数编程语言（包括Java）中一个常见难题：访问空引用的成员导致的空引用异常。Java中称为<code>NullPointerException</code>异常，简称NPE</p>
+<p>引起NPE异常的原因有：</p>
+<ul>
+<li>显性调用<code>throw NullPointerException()</code></li>
+<li>使用<code>!!</code>操作符</li>
+<li>外部Java代码引起的异常</li>
+<li>未初始化的数据（如：未初始化的this）</li>
+</ul>
+<p>Kolin对可以持有<code>null</code>和非空引用进行区分。如：<code>String</code>类型变量不能持有<code>null</code>引用：<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">var</span> a: String = <span class="string">"abc"</span></div><div class="line">a = <span class="literal">null</span> <span class="comment">// 编译出错</span></div></pre></td></tr></table></figure></p>
+<p>需要使用<code>String?:</code>来声明可为空的变量<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">var</span> b: String? = <span class="string">"abc"</span></div><div class="line">b = <span class="literal">null</span>  <span class="comment">// OK</span></div></pre></td></tr></table></figure></p>
+<p>那么，可以调用<code>a</code>的方法或属性，并保证不会引起NPE异常：<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> l = a.length</div></pre></td></tr></table></figure></p>
+<p>但是对于<code>b</code>，编译器则会报错<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> l = b.length <span class="comment">// 错误：变量b不能为空</span></div></pre></td></tr></table></figure></p>
+<p>为了能够使用b则需要进行一些调整。</p>
+<h2 id="null检查的条件语句"><a href="#null检查的条件语句" class="headerlink" title="null检查的条件语句"></a>null检查的条件语句</h2><h3 id="显式检查b是否为空"><a href="#显式检查b是否为空" class="headerlink" title="显式检查b是否为空"></a>显式检查<code>b</code>是否为空</h3><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> l = <span class="keyword">if</span>( b != <span class="literal">null</span> ) b.length <span class="keyword">else</span> <span class="number">-1</span></div></pre></td></tr></table></figure>
+<p>编译器跟踪执行检查的信息，允许在if中调用<code>length</code>属性，也支持复杂的条件语句<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">if</span>( b != <span class="literal">null</span> &amp;&amp; b.length &gt; <span class="number">0</span>)&#123;</div><div class="line">    print(<span class="string">"String of length <span class="subst">$&#123;b.length&#125;</span>"</span>)</div><div class="line">&#125; <span class="keyword">else</span> &#123;</div><div class="line">    print(<span class="string">"Empty string"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<blockquote>
+<p>只在b为<code>不可变</code>时有效（如在检查和使用之间不变的局部变量；或有<code>backing字段</code>且不可复写的<code>val</code>成员），因为b可能会在非空检查后变为<code>null</code></p>
+</blockquote>
+<h3 id="安全调用操作符"><a href="#安全调用操作符" class="headerlink" title="安全调用操作符"></a>安全调用操作符</h3><p>第二种可选择是使用<code>?.</code>安全调用操作符<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">b?.length</div></pre></td></tr></table></figure></p>
+<p>如果<code>b</code>不为空，返回<code>b.length</code>；否则返回<code>null</code>。表达式类型为<code>Int?</code>。</p>
+<p>安全调用在链式调用中会比较有用。如：假设有个<code>Bob</code>员工，对应一个部门（可能没有），部门有个主管，那么为了获取<code>部门主管</code>的名字，可以这样做:<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">bob?.department?.head?.name</div></pre></td></tr></table></figure></p>
+<p>如果上面任意属性为<code>null</code>，则结果都为<code>null</code>。</p>
+<p>如果只执行非空类型的操作，可用安全调用与<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/let.html" target="_blank" rel="external">let</a>关键字共同使用。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">cal listWithNulls: List&lt;String?&gt; = listOf(<span class="string">"A"</span> , <span class="literal">null</span>)</div><div class="line"><span class="keyword">for</span>(item <span class="keyword">in</span> listWithNulls)&#123;</div><div class="line">    item?.let&#123; println(it)&#125; <span class="comment">// 输出"A"并忽略空值</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="Elvis操作符"><a href="#Elvis操作符" class="headerlink" title="Elvis操作符"></a>Elvis操作符</h2><p>若有个可空引用<code>r</code>，则”r非空时使用r，否则使用其他非空值”</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> l: <span class="built_in">Int</span> = <span class="keyword">if</span>( b != <span class="literal">null</span> ) b.length <span class="keyword">else</span> <span class="number">-1</span></div></pre></td></tr></table></figure>
+<p>上面完整的<code>if</code>表达式可使用<code>?:</code>Elvis操作符替代<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> l: <span class="built_in">Int</span> = b?.length ?: <span class="number">-1</span></div></pre></td></tr></table></figure></p>
+<p><code>?:</code>表达式左边不为空时，则返回它的值，否则返回表达式左侧的值。只有在Elvis操作符左测为null时，才计算右侧表达式。</p>
+<blockquote>
+<p>因为<code>throw</code>和<code>return</code>在Kotlin中都是表达式，所以也可以在Elvis操作符右侧使用。因此方便用来检差函数参数。</p>
+</blockquote>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">foo</span><span class="params">(node: <span class="type">Node</span>)</span></span>: String? &#123;</div><div class="line">    <span class="keyword">val</span> parent = node.getParent() ?: <span class="keyword">return</span> <span class="literal">null</span></div><div class="line">    <span class="keyword">val</span> name = node.getName() ?: <span class="keyword">throw</span> IllegalArgumentException(<span class="string">"name expected"</span>)</div><div class="line">    <span class="comment">// ...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="操作符"><a href="#操作符" class="headerlink" title="!!操作符"></a><code>!!</code>操作符</h3><p>NPE爱好者的第三种可选择操作符：<code>b!!</code>。如果b非空时，返回b的值；否则抛出<code>NPE</code>异常<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> l = b!!.length</div></pre></td></tr></table></figure></p>
+<p>适用于需要显式判断的NPE时。</p>
+<h3 id="安全转换"><a href="#安全转换" class="headerlink" title="安全转换"></a>安全转换</h3><p>如果对象非目标类型，常规转换会抛出<code>ClassCastException</code>类型转换异常，另外选项是如果转换未成功，使用安全转换返回<code>null</code></p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> aInt: <span class="built_in">Int</span>? = a <span class="keyword">as</span>? <span class="built_in">Int</span></div></pre></td></tr></table></figure>
+<h3 id="可为空类型集合"><a href="#可为空类型集合" class="headerlink" title="可为空类型集合"></a>可为空类型集合</h3><p>如果有一个组可为空类型集合且需要过滤非空元素，可以使用<code>filterNotNull</code>操作符<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> nullableList: List&lt;<span class="built_in">Int</span>?&gt; = listOf(<span class="number">1</span> , <span class="number">2</span> , <span class="literal">null</span> , <span class="number">4</span>)</div><div class="line"></div><div class="line"><span class="keyword">val</span> intList: List&lt;<span class="built_in">Int</span>&gt; = nullableList.filterNotNull()</div></pre></td></tr></table></figure></p>
+<h1 id="异常"><a href="#异常" class="headerlink" title="异常"></a>异常</h1><h2 id="异常类"><a href="#异常类" class="headerlink" title="异常类"></a>异常类</h2><p>Kotlin中任意异常类都是<code>Throwable</code>子类。每个异常都具有<code>异常信息</code>，<code>堆栈信息</code>和<code>可选原因</code>。</p>
+<p>使用<code>throw</code>表达式抛出异常对象<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">throw</span> MyException(<span class="string">"Hi There!"</span>)</div></pre></td></tr></table></figure></p>
+<p>使用<code>try</code>表达式捕获异常<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">    <span class="comment">// 代码</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">catch</span> (e: SomeException) &#123;</div><div class="line">    <span class="comment">// 处理</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">finally</span> &#123;</div><div class="line">    <span class="comment">// 可选 finally 块</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><code>catch</code>块可以为0个或多个，<code>finally</code>块可忽略。但要至少要提供<code>catch</code>和<code>finally</code>其中一个。</p>
+<h2 id="Try是表达式"><a href="#Try是表达式" class="headerlink" title="Try是表达式"></a>Try是表达式</h2><p><code>try</code>为表达式（如：可以有返回值）<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> a: <span class="built_in">Int</span>? = <span class="keyword">try</span> &#123; parseInt(input) &#125; <span class="keyword">catch</span> (e: NumberFormatException ) &#123; <span class="literal">null</span> &#125;</div></pre></td></tr></table></figure></p>
+<p><code>try</code>表达式返回值为<code>try</code>块或<code>catch</code>（出现异常时）块中最后一个表达式的值。<code>finally</code>块不影响表达式结果</p>
+<h2 id="检查型异常"><a href="#检查型异常" class="headerlink" title="检查型异常"></a>检查型异常</h2><p>Kotlin不支持检查型异常</p>
+<p>如Java中<code>StringBuilder</code>类其中一个实现接口<code>Appendable</code></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="function">Appendable <span class="title">append</span><span class="params">(CharSequence csq)</span> <span class="keyword">throws</span> IOException</span>;</div></pre></td></tr></table></figure>
+<p>每次拼接<code>String</code>时，都要<code>catch</code>这些<code>IOExceptions</code>异常。所以使用时要手动捕获<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">    log.append(message)</div><div class="line">&#125; </div><div class="line"><span class="keyword">catch</span> (IOException e)&#123;</div><div class="line">    <span class="comment">// Must be safe</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><code>Effective Java</code>并不提倡这种方式，参考<a href="http://www.oracle.com/technetwork/java/effectivejava-136174.html" target="_blank" rel="external">Item 65: Don’t ignore exceptions</a></p>
+<p>Bruce Eckel说”<a href="http://www.mindview.net/Etc/Discussions/CheckedExceptions" target="_blank" rel="external">Java需要检查型异常么？</a>“</p>
+<blockquote>
+<p>Examination of small programs leads to the conclusion that requiring exception specifications could both enhance developer productivity and enhance code quality, but experience with large software projects suggests a different result – decreased productivity and little or no increase in code quality.</p>
+</blockquote>
+<p>其他关于检查型异常的引用</p>
+<ul>
+<li><a href="http://radio-weblogs.com/0122027/stories/2003/04/01/JavasCheckedExceptionsWereAMistake.html" target="_blank" rel="external">Java检查型异常是个失误</a>（Rod Waldhoff）</li>
+<li><a href="http://www.artima.com/intv/handcuffs.html" target="_blank" rel="external">检查型异常的问题</a>（Anders Hejlsberg）</li>
+</ul>
+<h2 id="Nothing类型"><a href="#Nothing类型" class="headerlink" title="Nothing类型"></a>Nothing类型</h2><p><code>throw</code>在Kotlin中是表达式，所以可以在Elvis表达式中使用<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> s = person.name ?: <span class="keyword">throw</span> IllegalArgumentException(<span class="string">"Name required"</span>)</div></pre></td></tr></table></figure></p>
+<p><code>throw</code>表达式返回类型为<code>Nothing类型</code>的特殊类型，这个类型没有值，经常用来标记无法到达的代码位置。可以使用<code>Nothing</code>类型无返回类型标记函数<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">fail</span><span class="params">(message: <span class="type">String</span>)</span></span>: <span class="built_in">Nothing</span> &#123;</div><div class="line">    <span class="keyword">throw</span> IllegalArgumentException(message)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>当调用这个函数时，编译则会知道函数调用之后的代码不再执行：<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> s = person.name ?: fail(<span class="string">"Name required"</span>)</div><div class="line">println(s) <span class="comment">// // 's' is known to be initialized at this point</span></div></pre></td></tr></table></figure></p>
+<h2 id="与Java交互"><a href="#与Java交互" class="headerlink" title="与Java交互"></a>与Java交互</h2><p>参考<a href="https://kotlinlang.org/docs/reference/java-interop.html" target="_blank" rel="external">Java交互小节</a></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2017/07/17/Kotlin进阶之类型安全建造器、类型别名/" data-toggle="tooltip" data-placement="top" title="Kotlin进阶之类型安全建造器、类型别名">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2017/07/17/Kotlin进阶之注解/" data-toggle="tooltip" data-placement="top" title="Kotlin进阶之注解">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#kotlin" title="kotlin">kotlin</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "alexwan02";
+    var disqus_identifier = "http://blog.alexwan.cn/2017/07/17/Kotlin进阶之空安全、异常/";
+    var disqus_url = "http://blog.alexwan.cn/2017/07/17/Kotlin进阶之空安全、异常/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Alex Studio 2017 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.alexwan.cn/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          深入理解OkHttp3的Interceptors（1） - Alex Studio
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.alexwan.cn/2017/04/23/深入理解OkHttp3的Interceptors/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Alex Studio</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#okhttp3" title="okhttp3">okhttp3</a>
+                        
+                    </div>
+                    <h1>深入理解OkHttp3的Interceptors（1）</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by AlexWan on
+                        2017-04-23
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <blockquote>
+<p>Version : okhttp:3.6.0</p>
+</blockquote>
+<p><code>Interceptors</code>是OkHttp3整个框架的核心，包含了请求监控、请求重写、调用重试等机制。它主要使用责任链模式，解决请求与请求处理之间的耦合。<br><img src="https://raw.githubusercontent.com/wiki/square/okhttp/interceptors@2x.png" alt="img"></p>
+<h2 id="1-1-责任链模式"><a href="#1-1-责任链模式" class="headerlink" title="1.1 责任链模式"></a>1.1 责任链模式</h2><p>将接收对象放入链中，按照链中顺序让多个对象处理请求。请求者不用知道具体是由谁处理。解决请求与接收之间的耦合，提高灵活性。<br>责任链负责对请求参数的解析，所有的扩展都是针对链中节点进行扩展。</p>
+<p>OkHttp3的Interceptors的责任链<br><img src="http://res.cloudinary.com/dmfz9aun7/image/upload/v1492487313/wechat/Interceptors_uml.jpg" alt="img"></p>
+<h2 id="1-2-OkHttp3链式流程"><a href="#1-2-OkHttp3链式流程" class="headerlink" title="1.2 OkHttp3链式流程"></a>1.2 OkHttp3链式流程</h2><p><img src="http://res.cloudinary.com/dmfz9aun7/image/upload/v1492482119/wechat/OkHttp3_Interceptor.jpg" alt="img"></p>
+<h2 id="2-1-RetryAndFollowUpInterceptor"><a href="#2-1-RetryAndFollowUpInterceptor" class="headerlink" title="2.1 RetryAndFollowUpInterceptor"></a>2.1 RetryAndFollowUpInterceptor</h2><p><code>RetryAndFollowUpInterceptor</code>用于尝试恢复失败和重定向的请求，最多支持跟踪20次重定向。创建streamAllocation维护请求的Connections、Streams、Calls，类似中介者模式，之后交给BridgeInterceptor节点处理请求。<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> Response <span class="title">intercept</span><span class="params">(Chain chain)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">  ...</div><div class="line">  <span class="comment">// 创建用于协调Connections、Streams、Call三者关系的streamAllocation</span></div><div class="line">  streamAllocation = <span class="keyword">new</span> StreamAllocation(</div><div class="line">      client.connectionPool(), createAddress(request.url()), callStackTrace);</div><div class="line">  <span class="comment">// 重定向次数</span></div><div class="line">  <span class="keyword">int</span> followUpCount = <span class="number">0</span>;</div><div class="line">  Response priorResponse = <span class="keyword">null</span>;</div><div class="line">  <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</div><div class="line">    <span class="comment">// 无限循环</span></div><div class="line">    ...</div><div class="line">    Response response = <span class="keyword">null</span>;</div><div class="line">    <span class="keyword">boolean</span> releaseConnection = <span class="keyword">true</span>;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">      response = ((RealInterceptorChain) chain).proceed(request, streamAllocation, <span class="keyword">null</span>, <span class="keyword">null</span>);</div><div class="line">      releaseConnection = <span class="keyword">false</span>;</div><div class="line">    &#125; <span class="keyword">catch</span> (RouteException e) &#123;</div><div class="line">      <span class="comment">// 连接路由失败，请求未发送</span></div><div class="line">      ...</div><div class="line">      releaseConnection = <span class="keyword">false</span>;</div><div class="line">      <span class="keyword">continue</span>;</div><div class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</div><div class="line">      <span class="comment">// 与服务端通信失败，请求已发送</span></div><div class="line">      ...</div><div class="line">      releaseConnection = <span class="keyword">false</span>;</div><div class="line">      <span class="keyword">continue</span>;</div><div class="line">    &#125; <span class="keyword">finally</span> &#123;</div><div class="line">      <span class="comment">// 释放资源</span></div><div class="line">      <span class="keyword">if</span> (releaseConnection) &#123;</div><div class="line">        ...</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 记录上一次的响应，一般出现在重定向情况时。</span></div><div class="line">    ...</div><div class="line">    <span class="comment">// 判断是否是重定向的响应</span></div><div class="line">    Request followUp = followUpRequest(response);</div><div class="line">    ...</div><div class="line">    <span class="keyword">if</span> (followUp == <span class="keyword">null</span>) &#123;</div><div class="line">      ...</div><div class="line">      <span class="comment">// 正常响应直接返回</span></div><div class="line">      <span class="keyword">return</span> response;</div><div class="line">    &#125;</div><div class="line">    ...</div><div class="line">    <span class="comment">// 检查是否能够继续重定向操作</span></div><div class="line">    ...</div><div class="line">    request = followUp;</div><div class="line">    priorResponse = response;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><code>RetryAndFollowUpInterceptor</code>处理下层链中节点返回的响应和抛出的异常。<br>依据返回的响应或抛出的异常，进行检查和恢复操作</p>
+<ol>
+<li>关闭已建立的Socket连接</li>
+<li>OkHttpClient是否关闭重连，默认开启重连</li>
+<li>请求是否已发送并且请求体不可重读，不可重连</li>
+<li>出现的致命的异常：请求协议异常、证书验证异常等</li>
+<li>是否有下一跳可尝试的路由。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">recover</span><span class="params">(IOException e, <span class="keyword">boolean</span> requestSendStarted, Request userRequest)</span> </span>&#123;</div><div class="line">  <span class="comment">// 关闭Socket</span></div><div class="line">  streamAllocation.streamFailed(e);</div><div class="line">  <span class="comment">// 如果Application层禁止重连，则直接失败</span></div><div class="line">  <span class="keyword">if</span> (!client.retryOnConnectionFailure()) <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">  <span class="comment">// 是否可以再次发送请求</span></div><div class="line">  <span class="keyword">if</span> (requestSendStarted &amp;&amp; userRequest.body() <span class="keyword">instanceof</span> UnrepeatableRequestBody) <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">  <span class="comment">// 致命异常则不可恢复</span></div><div class="line">  <span class="keyword">if</span> (!isRecoverable(e, requestSendStarted)) <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">  <span class="comment">// 没有可以再次尝试的路由</span></div><div class="line">  <span class="keyword">if</span> (!streamAllocation.hasMoreRoutes()) <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">  <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="2-2-BridgeInterceptor"><a href="#2-2-BridgeInterceptor" class="headerlink" title="2.2 BridgeInterceptor"></a>2.2 BridgeInterceptor</h2><p><code>BridgeInterceptor</code>是应用层与网络层节点的桥接，补全应用层请求的头部信息，调用之后网络与缓存数据处理，最后将响应返回给上层。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> Response <span class="title">intercept</span><span class="params">(Chain chain)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">  <span class="comment">// 重写请求头部，填充必要的头部信息</span></div><div class="line">  ...</div><div class="line">  <span class="comment">// 添加 "Accept-Encoding: gzip" header ，可以压缩请求数据</span></div><div class="line">  ...</div><div class="line">   requestBuilder.header(<span class="string">"Accept-Encoding"</span>, <span class="string">"gzip"</span>);</div><div class="line">  ...</div><div class="line"></div><div class="line">  <span class="comment">// 配置Cookie和代理信息</span></div><div class="line">  ...</div><div class="line">  requestBuilder.header(<span class="string">"Cookie"</span>, cookieHeader(cookies));</div><div class="line">  ...</div><div class="line">  requestBuilder.header(<span class="string">"User-Agent"</span>, Version.userAgent());</div><div class="line">  ...</div><div class="line">  <span class="comment">// 把新构建的请求向下传递处理</span></div><div class="line">  Response networkResponse = chain.proceed(requestBuilder.build());</div><div class="line">  <span class="comment">// 处理下层节点返回的响应，响应可能是缓存或者网络数据</span></div><div class="line">  HttpHeaders.receiveHeaders(cookieJar, userRequest.url(), networkResponse.headers());</div><div class="line"></div><div class="line">  Response.Builder responseBuilder = networkResponse.newBuilder()</div><div class="line">      .request(userRequest);</div><div class="line">  <span class="comment">// 响应数据解压</span></div><div class="line">  ...</div><div class="line">  <span class="keyword">return</span> responseBuilder.build();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="2-3-CacheInterceptor"><a href="#2-3-CacheInterceptor" class="headerlink" title="2.3 CacheInterceptor"></a>2.3 CacheInterceptor</h2><p>本地缓存和网络缓存，默认无缓存。</p>
+<ol>
+<li>读取本地缓存，根据请求缓存策略构建网络请求和缓存响应。</li>
+<li>按照请求缓存策略，返回缓存或传递给<code>ConnectInterceptor</code>执行下一步数据操作。</li>
+<li>处理返回的网络响应数据的缓存操作。<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> Response <span class="title">intercept</span><span class="params">(Chain chain)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">  <span class="comment">// 读取本地磁盘缓存</span></div><div class="line">  Response cacheCandidate = cache != <span class="keyword">null</span></div><div class="line">      ? cache.get(chain.request())</div><div class="line">      : <span class="keyword">null</span>;</div><div class="line"></div><div class="line">  ...</div><div class="line">  <span class="comment">// 缓存策略</span></div><div class="line">  CacheStrategy strategy = <span class="keyword">new</span> CacheStrategy.Factory(now, chain.request(), cacheCandidate).get();</div><div class="line">  Request networkRequest = strategy.networkRequest;</div><div class="line">  Response cacheResponse = strategy.cacheResponse;</div><div class="line"></div><div class="line">  <span class="comment">// 如果缓存未命中，则舍弃缓存</span></div><div class="line">  ...</div><div class="line"></div><div class="line">  <span class="comment">// 禁止网络请求且不存在缓存，返回504，请求失败</span></div><div class="line">  <span class="keyword">if</span> (networkRequest == <span class="keyword">null</span> &amp;&amp; cacheResponse == <span class="keyword">null</span>) &#123;</div><div class="line">    ...</div><div class="line">    <span class="keyword">return</span> ...;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">// 禁止网络请求，缓存存在，返回响应到上一级</span></div><div class="line">  <span class="keyword">if</span> (networkRequest == <span class="keyword">null</span>) &#123;</div><div class="line">    <span class="comment">// return Cache</span></div><div class="line">    ...</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  Response networkResponse = <span class="keyword">null</span>;</div><div class="line">  <span class="keyword">try</span> &#123;</div><div class="line">    networkResponse = chain.proceed(networkRequest);</div><div class="line">  &#125; <span class="keyword">finally</span> &#123;</div><div class="line">    <span class="comment">// 处理网络缓存失败时，释放缓存流</span></div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">// 本地存在缓存则检查响应状态码是否为304</span></div><div class="line">  <span class="keyword">if</span> (cacheResponse != <span class="keyword">null</span>) &#123;</div><div class="line">    <span class="keyword">if</span> (networkResponse.code() == HTTP_NOT_MODIFIED) &#123;</div><div class="line">      <span class="comment">// update cache</span></div><div class="line">      ...</div><div class="line">      <span class="keyword">return</span> response;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">      <span class="comment">// close cacheResponse </span></div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"> </div><div class="line">  <span class="comment">// 构建新响应</span></div><div class="line">  Response response = networkResponse.newBuilder()</div><div class="line">      .cacheResponse(stripBody(cacheResponse))</div><div class="line">      .networkResponse(stripBody(networkResponse))</div><div class="line">      .build();</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (HttpHeaders.hasBody(response)) &#123;</div><div class="line">    <span class="comment">// 响应缓存</span></div><div class="line">    CacheRequest cacheRequest = maybeCache(response, networkResponse.request(), cache);</div><div class="line">    response = cacheWritingResponse(cacheRequest, response);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">return</span> response;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="2-4-ConnectInterceptor"><a href="#2-4-ConnectInterceptor" class="headerlink" title="2.4 ConnectInterceptor"></a>2.4 ConnectInterceptor</h2><ol>
+<li>创建网络读写流必要的HttpCodec，用于请求编码和网络响应解码处理。</li>
+<li>复用或建立Socket连接RealConnection，用于网络数据传输。</li>
+<li>网络数据流具体处理细节交给CallServerInterceptor节点。<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> Response <span class="title">intercept</span><span class="params">(Chain chain)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">  ... </div><div class="line">  StreamAllocation streamAllocation = realChain.streamAllocation();</div><div class="line">  ...</div><div class="line">  <span class="comment">// 复用或创建新的RealConnection，并创建新的HttpCodec处理网络读写流。</span></div><div class="line">  HttpCodec httpCodec = streamAllocation.newStream(client, doExtensiveHealthChecks);</div><div class="line">  RealConnection connection = streamAllocation.connection();</div><div class="line">  <span class="comment">// 交给CallServerInterceptor处理网络流。</span></div><div class="line">  <span class="keyword">return</span> realChain.proceed(request, streamAllocation, httpCodec, connection);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="2-5-CallServerInterceptor"><a href="#2-5-CallServerInterceptor" class="headerlink" title="2.5 CallServerInterceptor"></a>2.5 CallServerInterceptor</h2><p>创建服务端的网络调用，向服务端发送请求并获取响应。<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> Response <span class="title">intercept</span><span class="params">(Chain chain)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">    <span class="comment">// 获取需要写请求和读响应的HttpCodec</span></div><div class="line">    ... </div><div class="line">    <span class="keyword">long</span> sentRequestMillis = System.currentTimeMillis();</div><div class="line">    <span class="comment">// 向服务端发送头部请求</span></div><div class="line">    ...</div><div class="line">    Response.Builder responseBuilder = <span class="keyword">null</span>;</div><div class="line">    <span class="comment">// 如果含有支持的方法请求体，则需要向服务端发送请求体</span></div><div class="line">    <span class="keyword">if</span> (HttpMethod.permitsRequestBody(request.method()) &amp;&amp; request.body() != <span class="keyword">null</span>) &#123;</div><div class="line">      <span class="comment">// 发送请求体</span></div><div class="line">      ...</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 结束请求</span></div><div class="line">    httpCodec.finishRequest();</div><div class="line">    </div><div class="line">    <span class="comment">// 如果头部响应未读取，则读取头部响应</span></div><div class="line">    <span class="keyword">if</span> (responseBuilder == <span class="keyword">null</span>) &#123;</div><div class="line">      responseBuilder = httpCodec.readResponseHeaders(<span class="keyword">false</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 构建响应体</span></div><div class="line">    ... </div><div class="line">    <span class="keyword">return</span> response;</div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
+<h2 id="2-6-自定义Interceptor"><a href="#2-6-自定义Interceptor" class="headerlink" title="2.6 自定义Interceptor"></a>2.6 自定义Interceptor</h2><p><code>OkHttp3</code>除了默认5种Interceptor实现，还可以添加<code>Application层</code>与<code>Network层</code>的interceptor。<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="meta">@OkHttpClient</span></div><div class="line">    <span class="comment">/*</span></div><div class="line">    * 添加应用层Interceptor</div><div class="line">    */</div><div class="line">    <span class="function"><span class="keyword">public</span> Builder <span class="title">addInterceptor</span><span class="params">(Interceptor interceptor)</span> </span>&#123;</div><div class="line">      interceptors.add(interceptor);</div><div class="line">      <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">/*</span></div><div class="line">    * 添加网络层Interceptor</div><div class="line">    */</div><div class="line">    <span class="function"><span class="keyword">public</span> List&lt;Interceptor&gt; <span class="title">networkInterceptors</span><span class="params">()</span> </span>&#123;</div><div class="line">      <span class="keyword">return</span> networkInterceptors;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<ol>
+<li>应用层Interceptors</li>
+</ol>
+<p><code>Application Interceptors</code>对每个请求只调用一次，处理<code>BridgeInterceptor</code>返回的响应。可以不调用Chain.proceed()或多次调用Chain.proceed()。</p>
+<ol>
+<li>网络层Interceptors</li>
+</ol>
+<p><code>Network Interceptors</code>在<code>ConnectInterceptor</code>与<code>CallServerInterceptor</code>之间调用。涉及到网络相关操作都会经过<code>Network Interceptors</code>，因此可以在缓存响应数据的之前对响应数据进行预处理。与<code>Application Interceptors</code>不同的是不支持短路处理，必须且只能调用一次<code>Chain.proceed()</code>方法，保证链式调用唯一。</p>
+<p>一个简单的LogInterceptors<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">LoggingInterceptor</span> <span class="keyword">implements</span> <span class="title">Interceptor</span> </span>&#123;</div><div class="line">  <span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> Response <span class="title">intercept</span><span class="params">(Interceptor.Chain chain)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">    Request request = chain.request();</div><div class="line"></div><div class="line">    <span class="keyword">long</span> t1 = System.nanoTime();</div><div class="line">    logger.info(String.format(<span class="string">"Sending request %s on %s%n%s"</span>,</div><div class="line">        request.url(), chain.connection(), request.headers()));</div><div class="line"></div><div class="line">    Response response = chain.proceed(request);</div><div class="line"></div><div class="line">    <span class="keyword">long</span> t2 = System.nanoTime();</div><div class="line">    logger.info(String.format(<span class="string">"Received response for %s in %.1fms%n%s"</span>,</div><div class="line">        response.request().url(), (t2 - t1) / <span class="number">1e6</span>d, response.headers()));</div><div class="line"></div><div class="line">    <span class="keyword">return</span> response;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2017/04/24/深入理解OkHttp3的DiskLruCache/" data-toggle="tooltip" data-placement="top" title="深入理解OkHttp3的DiskLruCache（2）">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/09/19/Android：DFM弹幕开发之基本配置/" data-toggle="tooltip" data-placement="top" title="Android：DFM弹幕开发之基本配置">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#okhttp3" title="okhttp3">okhttp3</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "alexwan02";
+    var disqus_identifier = "http://blog.alexwan.cn/2017/04/23/深入理解OkHttp3的Interceptors/";
+    var disqus_url = "http://blog.alexwan.cn/2017/04/23/深入理解OkHttp3的Interceptors/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Alex Studio 2017 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.alexwan.cn/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

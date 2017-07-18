@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Android:WebView开发笔记（一） - Alex Studio
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.alexwan.cn/2016/01/19/Android-WebView开发笔记（一）/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Alex Studio</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                    </div>
+                    <h1>Android:WebView开发笔记（一）</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by AlexWan on
+                        2016-01-19
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p><a href="http://kymjs.com/code/2015/05/03/01/" target="_blank" rel="external">讲解WebView</a></p>
+<p><a href="http://droidyue.com/blog/2014/07/09/override-javascript-alert-in-android/?hmsr=toutiao.io&amp;utm_medium=toutiao.io&amp;utm_source=toutiao.io" target="_blank" rel="external">技术小黑屋：WebView重写onJsAlert那些事</a></p>
+<p><a href="http://droidyue.com/blog/2014/11/23/block-web-resource-in-webview/?hmsr=toutiao.io&amp;utm_medium=toutiao.io&amp;utm_source=toutiao.io" target="_blank" rel="external">技术小黑屋：Android中WebView拦截替换网络请求数据</a></p>
+<h3 id="一、Android-WebView"><a href="#一、Android-WebView" class="headerlink" title="一、Android WebView"></a>一、Android WebView</h3><p>1.添加网络访问权限</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line">&lt;uses-permission android:name=<span class="string">"android.permission.INTERNET"</span> /&gt;</div></pre></td></tr></table></figure>
+<p>2.添加JavaScript支持<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line">WebView.getSettings().setJavaScriptEnabled(<span class="keyword">true</span>);</div></pre></td></tr></table></figure></p>
+<p>3.只在当前WebView进行跳转，则必须覆盖<code>WebViewClient</code>对象<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line">mWebView.setWebViewClient(<span class="keyword">new</span> WebViewClient()&#123;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">shouldOverrideUrlLoading</span><span class="params">(WebView view, String url)</span></span>&#123; </div><div class="line">		view.loadUrl(url);</div><div class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">	&#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<p>4.支持点击返回键回到上一页，而不是关闭当前Actvitiy或Fragment，则复写<code>onBackPress</code>方法。<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onKeyDown</span><span class="params">(<span class="keyword">int</span> keyCode, KeyEvent event)</span> </span>&#123;</div><div class="line">	<span class="keyword">if</span> ((keyCode == KEYCODE_BACK) &amp;&amp; mWebView.canGoBack()) &#123; </div><div class="line">		mWebView.goBack();</div><div class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">return</span> <span class="keyword">super</span>.onKeyDown(keyCode, event);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>5.调用页面Js方法<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebViewDemo</span> <span class="keyword">extends</span> <span class="title">Activity</span></span>&#123;</div><div class="line">	mWebView.addJavascriptInterface(<span class="keyword">new</span> Object() &#123;</div><div class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">clickOnAndroid</span><span class="params">()</span> </span>&#123;</div><div class="line">			mHandler.post(<span class="keyword">new</span> Runnable() &#123;</div><div class="line">				<span class="comment">// 在子线程中执行</span></div><div class="line">				<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123; </div><div class="line">					<span class="comment">// java 调用Js 方法</span></div><div class="line">					mWebView.loadUrl(<span class="string">"javascript:wave()"</span>);</div><div class="line">				&#125;</div><div class="line">			&#125;);</div><div class="line">		&#125;</div><div class="line">	&#125;, <span class="string">"demo"</span>); </div><div class="line">	</div><div class="line">	mWebView.loadUrl(<span class="string">"file:///android_asset/demo.html"</span>); 	</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>主要方法<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line">addJavascriptInterface(Object obj,String interfaceName)</div></pre></td></tr></table></figure></p>
+<p><code>addJavascriptInterface</code>将Java对象绑定到JavaScript对象中,<br><figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">&lt;html&gt;</div><div class="line">&lt;script language="javascript"&gt;</div><div class="line">  function wave() &#123;</div><div class="line">    document.getElementById("droid").src="android_waving.png";</div><div class="line">  &#125;</div><div class="line">&lt;/script&gt;</div><div class="line">&lt;body&gt;</div><div class="line">	<span class="comment">// js调用java方法</span></div><div class="line">  &lt;a onClick=<span class="string">"window.demo.clickOnAndroid()"</span>&gt;</div><div class="line">  &lt;img id="droid" src="android_normal.png" mce_src="android_normal.png"/&gt;&lt;br&gt; Click me! &lt;/a&gt;</div><div class="line">&lt;/body&gt;</div><div class="line">&lt;<span class="regexp">/html&gt;</span></div></pre></td></tr></table></figure></p>
+<h3 id="二、Js调用Android代码"><a href="#二、Js调用Android代码" class="headerlink" title="二、Js调用Android代码"></a>二、Js调用Android代码</h3><ol>
+<li><ul>
+<li>WebView主要用来解析和渲染界面。</li>
+<li>WebViewClient 处理通知、请求事件等。</li>
+<li>WebChromeClient辅助WebView处理Js的对话框、网站图标、标题等。</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line">webView.addJavascriptInterface(<span class="keyword">new</span> JavaScriperface(<span class="keyword">this</span>) , <span class="string">"android"</span>);</div><div class="line"><span class="comment">// 加载 htmlText 是以字符串的方式读取assets下的html内容</span></div><div class="line">webView.loadData(htmlText , <span class="string">"text/html"</span> , <span class="string">"utf-8"</span>);</div><div class="line"></div><div class="line"><span class="comment">// 返回上一页</span></div><div class="line">webview.goBack();</div></pre></td></tr></table></figure>
+<h3 id="三、WebView缓存"><a href="#三、WebView缓存" class="headerlink" title="三、WebView缓存"></a>三、WebView缓存</h3><p>1.加载网页时，webview会在<code>/data/data/包名</code>目录下生成database与cache两个文件夹。请求url的记录保存在<code>WebViewCache.db</code>，内容保存在WebViewCache文件夹下。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 启用缓存</span></div><div class="line"><span class="comment">// 优先使用缓存</span></div><div class="line">webView.getSetting.setCacheMode(WebSettings. LOAD_CACHE_ELSE_NETWORK);</div><div class="line"><span class="comment">// 不使用缓存</span></div><div class="line">webView.getSetting.setCacheMode(WebSettings.LOAD_NO_CACHE);</div></pre></td></tr></table></figure>
+<p>2.删除缓存<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">clearCacheFolder</span><span class="params">(File dir , <span class="keyword">long</span> numDays)</span></span>&#123;</div><div class="line">	<span class="keyword">int</span> deletedFiles = <span class="number">0</span>;</div><div class="line">	<span class="keyword">if</span>(dir != <span class="keyword">null</span> &amp;&amp; dir.isDirectory)&#123;</div><div class="line">		<span class="keyword">try</span>&#123;</div><div class="line">			<span class="keyword">for</span>(File child:dir.listFiles())&#123;</div><div class="line">				<span class="keyword">if</span>(child.isDirectory())&#123;</div><div class="line">					deletedFiles += clearCacheFolder(child , numDays);</div><div class="line">				&#125;</div><div class="line">				<span class="keyword">if</span>(child.lastModified() &lt; numDays)&#123;</div><div class="line">					<span class="keyword">if</span>(child.delete)&#123;</div><div class="line">						deleteFiles++;</div><div class="line">					&#125;</div><div class="line">				&#125;</div><div class="line">			&#125;</div><div class="line">		&#125;<span class="keyword">catch</span> (Exception e)&#123;</div><div class="line">			e.printStackTrace();	</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">return</span> deletedFiles;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="四、处理404"><a href="#四、处理404" class="headerlink" title="四、处理404"></a>四、处理404</h3><figure class="highlight java"><table><tr><td class="code"><pre><div class="line">webView.setWebViewClient(<span class="keyword">new</span> WebViewClient() &#123;</div><div class="line">	<span class="meta">@Override</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onReceivedError</span><span class="params">(WebView view, <span class="keyword">int</span> errorCode, String description, String failingUrl)</span> </span>&#123;</div><div class="line">		<span class="comment">// stop load and handle errorcode</span></div><div class="line">		<span class="keyword">if</span>(errorCode == <span class="number">404</span>)&#123;</div><div class="line">			<span class="comment">// load 404 </span></div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="五、判断是否滑动到底部"><a href="#五、判断是否滑动到底部" class="headerlink" title="五、判断是否滑动到底部"></a>五、判断是否滑动到底部</h3><ul>
+<li>getScrollY() 当前可见区域的距离整个页面顶端的距离，即当前内容滚动的距离</li>
+<li>getHeight() 当前WebView的高度</li>
+<li>getBottom() 当前WebView</li>
+<li>getContentHeight() 返回整个html页面的高度，不是当前页面的高度，因为webview的缩放</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 是否可以缩放</span></div><div class="line">webView.getSettings().setSupportZoom(<span class="keyword">true</span>);</div><div class="line"><span class="comment">// 是否显示缩放控制</span></div><div class="line">webView.getSettings().setBuildInZoomControls(<span class="keyword">true</span>);</div><div class="line"><span class="comment">// 默认缩放大小</span></div><div class="line">webView.getSettings(). setDefaultZoom(ZoomDensity.CLOSE);</div></pre></td></tr></table></figure>
+<p>当前整个页面的高度<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">int</span> currentHeight = webView.getContentHeight * getScale();</div><div class="line"><span class="keyword">boolean</span> isBottom = currentHeight - webView.getHeight() - webView.getScroll() &lt;= <span class="number">0</span></div></pre></td></tr></table></figure></p>
+<h3 id="六、服务器Session"><a href="#六、服务器Session" class="headerlink" title="六、服务器Session"></a>六、服务器Session</h3><figure class="highlight java"><table><tr><td class="code"><pre><div class="line">CookieManager manager = CookieManager.getInstance();</div><div class="line"><span class="comment">// 删除cookie</span></div><div class="line">manager.removeAllCookie();</div><div class="line"><span class="comment">// 获取cookie</span></div><div class="line">manager.getCookie(url);</div><div class="line"><span class="comment">// 设置cookie，覆盖之前的path，host，name的cookie</span></div><div class="line">manager.setCookie(url , cookie);</div></pre></td></tr></table></figure>
+<p>1.设置和清除SessionCookies</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line">*  同步本地cookie到Webview中</div><div class="line">*/</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">synCookies</span><span class="params">()</span></span>&#123;</div><div class="line">	<span class="keyword">if</span>(!CacheUtils.isLogin(<span class="keyword">this</span>)) <span class="keyword">return</span>;</div><div class="line">	CookiesSyncManager.createInstance(<span class="keyword">this</span>);</div><div class="line">	CookieManager manager = CookieManager.getInstance();</div><div class="line">	<span class="comment">// 是否发送和接收cookies，默认为true</span></div><div class="line">	manager.setAcceptCookie(<span class="keyword">true</span>);</div><div class="line">	<span class="comment">// 移除session cookie</span></div><div class="line">	manager.removeSessionCookies(<span class="keyword">new</span> ValueCallback&lt;Boolean&gt;()&#123;</div><div class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onReceiveValue</span><span class="params">(Boolean value)</span></span>&#123;</div><div class="line">				<span class="comment">//TODO</span></div><div class="line">			&#125;</div><div class="line">	&#125;);</div><div class="line">	String cookies = PreferenceHelper.readString(<span class="keyword">this</span> , key , key);</div><div class="line">	manager.setCookie(url , cookies);</div><div class="line">	CookieSyncManager.getInstance().sync();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>2.WebView本身也记录html缓存</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 清除缓存</span></div><div class="line">webview.clearCache(<span class="keyword">true</span>);</div><div class="line">webview.clearHistory();</div></pre></td></tr></table></figure>
+<h3 id="七、Android中WebView替换网络资源"><a href="#七、Android中WebView替换网络资源" class="headerlink" title="七、Android中WebView替换网络资源"></a>七、Android中WebView替换网络资源</h3><p><code>shouldInterceptRequest</code><br>通知主程序WebView处理资源文件，允许主程序返回处理后的数据。如果返回数据为null，WebView会自行加载网络资源，否则使用主程序提供的数据。回调是在子线程中处理，不能直接进行UI操作。<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="meta">@Deprecated</span></div><div class="line"><span class="function"><span class="keyword">public</span> WebResourceResponse <span class="title">shouldInterceptRequest</span><span class="params">(WebView view,</span></span></div><div class="line">        String url) &#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">&#125;</div><div class="line">	</div><div class="line"><span class="function"><span class="keyword">public</span> WebResourceResponse <span class="title">shouldInterceptRequest</span><span class="params">(WebView view,</span></span></div><div class="line">        WebResourceRequest request) &#123;</div><div class="line">    <span class="keyword">return</span> shouldInterceptRequest(view, request.getUrl().toString());</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>Example<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line">WebView webView = <span class="keyword">new</span> WebView(<span class="keyword">this</span>);</div><div class="line">webView.setWebViewClient(<span class="keyword">new</span> WebViewClient()&#123;</div><div class="line">	<span class="meta">@Override</span></div><div class="line">	<span class="function"><span class="keyword">public</span> WebResourceResponse <span class="title">shouldInterceptRequest</span><span class="params">(WebView view,</span></span></div><div class="line">            String url) &#123;</div><div class="line">		WebResourceResponse response = <span class="keyword">null</span>;</div><div class="line">		<span class="keyword">if</span>(url.contains(<span class="string">"logo"</span>))&#123;</div><div class="line">			InputStream localCopy = <span class="keyword">null</span>;</div><div class="line">			<span class="keyword">try</span>&#123;</div><div class="line">				localCopy = getAssets().open(<span class="string">"xx.png"</span>);</div><div class="line">				<span class="comment">// MIME类型，数据编码，数据(InputStream流形式)</span></div><div class="line">				response = <span class="keyword">new</span> WebResourceResponse(<span class="string">"image/png"</span> , <span class="string">"UTF-8"</span> , localCopy);</div><div class="line">			&#125; <span class="keyword">catch</span>(Exception e)&#123;</div><div class="line">				e.printStackTrace();</div><div class="line">			&#125; <span class="keyword">finally</span>&#123;</div><div class="line">				<span class="keyword">try</span>&#123;</div><div class="line">					<span class="keyword">if</span>(localCopy != <span class="keyword">null</span>)&#123;</div><div class="line">						localCopy.close();</div><div class="line">					&#125;</div><div class="line">				&#125;<span class="keyword">catch</span>(Exception e)&#123;</div><div class="line">					e.printStackTrace();</div><div class="line">				&#125;</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">        <span class="keyword">return</span> response;</div><div class="line">    &#125;</div><div class="line">&#125;)</div></pre></td></tr></table></figure></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/01/21/Android：WebView开发笔记（二）/" data-toggle="tooltip" data-placement="top" title="Android：WebView开发笔记（二）">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/01/12/Android源码学习（一）/" data-toggle="tooltip" data-placement="top" title="Android源码学习（一）：Mac OSX开发环境搭建">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "alexwan02";
+    var disqus_identifier = "http://blog.alexwan.cn/2016/01/19/Android-WebView开发笔记（一）/";
+    var disqus_url = "http://blog.alexwan.cn/2016/01/19/Android-WebView开发笔记（一）/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Alex Studio 2017 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.alexwan.cn/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

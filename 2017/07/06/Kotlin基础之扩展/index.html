@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Kotlin基础之扩展 - Alex Studio
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.alexwan.cn/2017/07/06/Kotlin基础之扩展/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Alex Studio</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#kotlin" title="kotlin">kotlin</a>
+                        
+                    </div>
+                    <h1>Kotlin基础之扩展</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by AlexWan on
+                        2017-07-06
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h1><p>Koltin提供与C#和Gosu类似的扩展类的功能，无须继承类或类似装饰者的设计模式。通过称为<code>扩展</code>的特殊声明实现。</p>
+<p>支持扩展函数和扩展属性</p>
+<h2 id="扩展函数"><a href="#扩展函数" class="headerlink" title="扩展函数"></a>扩展函数</h2><p>使用<strong>接收者类型</strong>在函数名前声明扩展函数（接收者类型为要扩展的类型）。</p>
+<p>为<code>MutableList&lt;Int&gt;</code>添加<code>swap</code>函数<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> MutableList<span class="type">&lt;Int&gt;</span>.<span class="title">swap</span><span class="params">(index1: <span class="type">Int</span> , index2: <span class="type">Int</span>)</span></span>&#123;</div><div class="line">    <span class="keyword">val</span> tmp = <span class="keyword">this</span>[index1] <span class="comment">// 'this' 对应list</span></div><div class="line">    <span class="keyword">this</span>[index1] = <span class="keyword">this</span>[index2]</div><div class="line">    <span class="keyword">this</span>[index2] = tmp</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>扩展函数中的<code>this</code>关键字对应<code>接收者对象</code>(在<code>.</code>之前的对象)。这样，就可以调用<code>MutableList&lt;Int&gt;</code>的<code>swap()</code>函数了。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> l = mutableListOf(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</div><div class="line">l.swap(<span class="number">0</span>, <span class="number">2</span>) <span class="comment">// 'this' inside 'swap()' will hold the value of 'l'</span></div></pre></td></tr></table></figure></p>
+<p>函数适应于任意<code>MutableList&lt;T&gt;</code>，因此也可以这样做：<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="type">&lt;T&gt;</span> MutableList<span class="type">&lt;T&gt;</span>.<span class="title">swap</span><span class="params">(index1: <span class="type">Int</span>, index2: <span class="type">Int</span>)</span></span> &#123;</div><div class="line">    <span class="keyword">val</span> tmp = <span class="keyword">this</span>[index1] <span class="comment">// 'this' 对应list</span></div><div class="line">    <span class="keyword">this</span>[index1] = <span class="keyword">this</span>[index2]</div><div class="line">    <span class="keyword">this</span>[index2] = tmp</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在函数名前声明泛型类型，参考<a href="https://kotlinlang.org/docs/reference/generics.html" target="_blank" rel="external">函数泛型</a></p>
+<h2 id="静态处理扩展"><a href="#静态处理扩展" class="headerlink" title="静态处理扩展"></a>静态处理扩展</h2><p>扩展实际不会修改扩展的类型。通过定义扩展，无须向类中插入新的成员，只要使用<code>点表达式</code>就可以给这个类型创建新的可调用函数。</p>
+<p>需要强调的是，扩展函数是静态分发，也就是说，扩展函数不是接收者类型虚拟的。意味着扩展函数由表达式类型调用时函数来决定，而不是由运行时的运行结果类型决定是否被调用。如：<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">open</span> <span class="class"><span class="keyword">class</span> <span class="title">C</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">D</span>: <span class="type">C</span></span>()</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> C.<span class="title">foo</span><span class="params">()</span></span> = <span class="string">"c"</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> D.<span class="title">foo</span><span class="params">()</span></span> = <span class="string">"d"</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">printFoo</span><span class="params">(c: <span class="type">C</span>)</span></span> &#123;</div><div class="line">    println(c.foo())</div><div class="line">&#125;</div><div class="line"></div><div class="line">printFoo(D())</div></pre></td></tr></table></figure></p>
+<p>例子中输出结果为”c”，所以扩展函数只被声明时类调用。</p>
+<p>如果类有成员函数与类的扩展函数有相同的名称和参数，则类成员函数具有较高的优先级。如：<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">foo</span><span class="params">()</span></span> &#123; println(<span class="string">"member"</span>) &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> C.<span class="title">foo</span><span class="params">()</span></span> &#123; println(<span class="string">"extension"</span>) &#125;</div></pre></td></tr></table></figure></p>
+<p>如果调用C类型的<code>c.foo()</code>，会输出”member”，而非”extension”。</p>
+<p>然而，如果有相同名称，但是签名不同（参数不同），则扩展函数会复写成员函数。</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">foo</span><span class="params">()</span></span> &#123; println(<span class="string">"member"</span>) &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> C.<span class="title">foo</span><span class="params">(i: <span class="type">Int</span>)</span></span> &#123; println(<span class="string">"extension"</span>) &#125;</div></pre></td></tr></table></figure>
+<p>调用<code>C().foo(1)</code>则会输出”extension”</p>
+<h2 id="可为空的接收者"><a href="#可为空的接收者" class="headerlink" title="可为空的接收者"></a>可为空的接收者</h2><p>扩展可用可为空的接收者定义。这样的扩展可被空值的对象变量调用，可在代码体中进行<code>this == null</code> 检查。所以Kotlin允许调用toString函数，而不用进行非空检查。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> Any?.<span class="title">toString</span><span class="params">()</span></span>: String &#123;</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">this</span> == <span class="literal">null</span>) <span class="keyword">return</span> <span class="string">"null"</span></div><div class="line">    <span class="comment">// after the null check, 'this' is autocast to a non-null type, so the toString() below</span></div><div class="line">    <span class="comment">// resolves to the member function of the Any class</span></div><div class="line">    <span class="keyword">return</span> toString()</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="扩展属性"><a href="#扩展属性" class="headerlink" title="扩展属性"></a>扩展属性</h2><p>与扩展函数相同，Kotlin还支持扩展属性<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> &lt;T&gt; List&lt;T&gt;.lastIndex: <span class="built_in">Int</span></div><div class="line">    <span class="keyword">get</span>() = size - <span class="number">1</span></div></pre></td></tr></table></figure></p>
+<blockquote>
+<p>因为扩展没有向类中插入成员，因此扩展属性没有有效方法来拥有一个<code>backing</code>字段。这也就解释了对于扩展属性，初始化是不允许的，只能通过显性提供getter和setter方法来定义</p>
+</blockquote>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> Foo.bar = <span class="number">1</span> <span class="comment">// 错。不允许为扩展属性进行初始化。</span></div></pre></td></tr></table></figure>
+<h2 id="伴生对象"><a href="#伴生对象" class="headerlink" title="伴生对象"></a>伴生对象</h2><p>如果类中定义伴生对象，也可以为伴生对象定义扩展函数和扩展属性<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span>&#123;</div><div class="line">    <span class="keyword">companion</span> <span class="keyword">object</span>&#123; &#125; <span class="comment">// 称为伴生</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> MyClass.Companion.<span class="title">foo</span><span class="params">()</span></span>&#123;</div><div class="line">    <span class="comment">// ..</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>与伴生对象常规成员类似，可以只使用类名作为限定符来调用方法。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">MyClass.foo()</div></pre></td></tr></table></figure></p>
+<h2 id="扩展作用域"><a href="#扩展作用域" class="headerlink" title="扩展作用域"></a>扩展作用域</h2><p>多数情况下在顶层定义扩展，如在包的根目录中<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">package</span> foo.bar</div><div class="line"> </div><div class="line"><span class="function"><span class="keyword">fun</span> Baz.<span class="title">goo</span><span class="params">()</span></span> &#123; ... &#125;</div></pre></td></tr></table></figure></p>
+<p>在声明的包外使用扩展，需要在调用出导入：<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">package</span> com.example.usage</div><div class="line"><span class="keyword">import</span> foo.bar.goo  <span class="comment">// 导入名称为"goo"的所有扩展</span></div><div class="line"><span class="keyword">import</span> foo.bar.*    <span class="comment">// 导入foo.bar中所有扩展</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">usage</span><span class="params">(baz: <span class="type">Baz</span>)</span></span>&#123;</div><div class="line">    baz.goo()</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>查看<a href="https://kotlinlang.org/docs/reference/packages.html#imports" target="_blank" rel="external">Imports</a>更多信息。</p>
+<h2 id="声明扩展作为成员"><a href="#声明扩展作为成员" class="headerlink" title="声明扩展作为成员"></a>声明扩展作为成员</h2><p>在一个类可以为另外一个类声明扩展，在这样扩展中，会有多个隐性接收者对象成员，无须修饰进行访问。声明扩展的类的实例被称为<code>分发接收者</code>，扩展方法对应的接收者类型实例被称为<code>扩展接收者</code>。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">D</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">bar</span><span class="params">()</span></span> &#123; ... &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">baz</span><span class="params">()</span></span> &#123; ... &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">fun</span> D.<span class="title">foo</span><span class="params">()</span></span> &#123;</div><div class="line">        bar()   <span class="comment">// calls D.bar</span></div><div class="line">        baz()   <span class="comment">// calls C.baz</span></div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">caller</span><span class="params">(d: <span class="type">D</span>)</span></span> &#123;</div><div class="line">        d.foo()   <span class="comment">// call the extension function</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>如果<code>分发接收者</code>和<code>扩展接收者</code>成员命名冲突，优先使用扩展接收者的成员。可以使用<a href="https://kotlinlang.org/docs/reference/this-expressions.html#qualified" target="_blank" rel="external">限定符</a>语法引用分发接收者成员。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">fun</span> D.<span class="title">foo</span><span class="params">()</span></span>&#123;</div><div class="line">        toString() <span class="comment">// 调用D.toString()</span></div><div class="line">        <span class="keyword">this</span><span class="symbol">@C</span>.toString() <span class="comment">// 调用C.toString()</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>声明为成员的扩展，可声明为<code>open</code>，被子类复写。意味着对于分发接收者类型，函数分发是虚的；对于扩展接收者类型，函数分发是静态的。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">open</span> <span class="class"><span class="keyword">class</span> <span class="title">D</span></span>&#123;</div><div class="line">    </div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">D1</span> : <span class="type">D</span></span>()&#123;</div><div class="line">    </div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">open</span> <span class="class"><span class="keyword">class</span> <span class="title">C</span> </span>&#123;</div><div class="line">    <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> D.<span class="title">foo</span><span class="params">()</span></span>&#123;</div><div class="line">        println(<span class="string">"D.foo in C"</span>)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> D1.<span class="title">foo</span><span class="params">()</span></span>&#123;</div><div class="line">        println(<span class="string">"D1.foo in C"</span>)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">caller</span><span class="params">(d: <span class="type">D</span>)</span></span>&#123;</div><div class="line">        d.foo() <span class="comment">// 调用扩展函数</span></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">C1</span> : <span class="type">C</span></span>()&#123;</div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> D.<span class="title">foo</span><span class="params">()</span></span>&#123;</div><div class="line">        println(<span class="string">"D.foo in C1"</span>)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">     <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> D1.<span class="title">foo</span><span class="params">()</span></span> &#123;</div><div class="line">        println(<span class="string">"D1.foo in C1"</span>)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div><div class="line"></div><div class="line">C().caller(D()) <span class="comment">// print "D.foo in C"</span></div><div class="line">C1().caller(D()) <span class="comment">// prints "D.foo in C1" - 分发接收者是虚拟处理的</span></div><div class="line">C().caller(D1()) <span class="comment">// prints "D.foo in C" - 扩展接收者是静态处理的</span></div></pre></td></tr></table></figure></p>
+<h2 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h2><p>在Java中，我们常用<code>*Utils</code>命名的类：<code>FileUtils</code>、<code>StringUtils</code>等等。<code>java.util.Collections</code>也一样。这些Utils类最让人讨厌的部分就是使用的代码像这样：<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="comment">// Java</span></div><div class="line">Collections.swap(list, Collections.binarySearch(list, Collections.max(otherList)), Collections.max(list))</div></pre></td></tr></table></figure></p>
+<p>静态导入调用方法，省略类名。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="comment">// Java</span></div><div class="line">swap(list, binarySearch(list, max(otherList)), max(list))</div></pre></td></tr></table></figure></p>
+<p>这样会有点好处，但是对于IDE的代码补全的帮助很少或没有帮助。如果能够像下面那样做，那么会更好：<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="comment">// Java</span></div><div class="line">list.swap(list.binarySearch(otherList.max()), list.max())</div></pre></td></tr></table></figure></p>
+<p>但是又不想实现list内部所有可能的方法，这也是扩展函数的有用的地方。</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2017/07/06/Kotlin基础之对象表达式与声明/" data-toggle="tooltip" data-placement="top" title="Kotlin基础之对象表达式与声明">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2017/07/03/Kotlin基础之泛型/" data-toggle="tooltip" data-placement="top" title="Kotlin基础之泛型">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#kotlin" title="kotlin">kotlin</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "alexwan02";
+    var disqus_identifier = "http://blog.alexwan.cn/2017/07/06/Kotlin基础之扩展/";
+    var disqus_url = "http://blog.alexwan.cn/2017/07/06/Kotlin基础之扩展/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Alex Studio 2017 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.alexwan.cn/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

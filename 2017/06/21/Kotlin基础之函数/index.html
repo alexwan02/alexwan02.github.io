@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Kotlin基础之函数 - Alex Studio
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.alexwan.cn/2017/06/21/Kotlin基础之函数/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Alex Studio</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#kotlin" title="kotlin">kotlin</a>
+                        
+                    </div>
+                    <h1>Kotlin基础之函数</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by AlexWan on
+                        2017-06-21
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="函数声明"><a href="#函数声明" class="headerlink" title="函数声明"></a>函数声明</h2><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="function">fun <span class="title">double</span><span class="params">(x: Int)</span>: Int </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="number">2</span>*x</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="函数调用"><a href="#函数调用" class="headerlink" title="函数调用"></a>函数调用</h2><ol>
+<li><p>类Java用法</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line">var result = <span class="keyword">double</span>(<span class="number">2</span>)</div></pre></td></tr></table></figure>
+</li>
+<li><p>使用冒号调用<br>创建Sample对象并调用foo函数</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line">Sample().foo()</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="中缀（Infix）表示法"><a href="#中缀（Infix）表示法" class="headerlink" title="中缀（Infix）表示法"></a>中缀（Infix）表示法</h2><p>中缀表示法（或中缀记法）是一个通用的算术或逻辑公式表示方法， 操作符是以中缀形式处于操作数的中间（例：3 + 4）</p>
+<p>在以下三种情况下，可以使用中缀表示法调用函数</p>
+<ul>
+<li>成员函数或扩展函数</li>
+<li>单个参数</li>
+<li>使用<code>infix</code>关键字标记的函数<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 定义Int扩展函数</span></div><div class="line">infix fun Int.sh(x : Int) : Int&#123;</div><div class="line">  </div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 使用中缀表示法调用函数</span></div><div class="line"><span class="number">1</span> sh <span class="number">2</span></div><div class="line"></div><div class="line"><span class="comment">// 相同的</span></div><div class="line"></div><div class="line"><span class="number">1</span>.sh(<span class="number">2</span>)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h2><p>函数参数的定义采用Pascal表示法：<code>name:type</code>。多个参数之间使用逗号分隔，每个参数必须要指定类型<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="function">fun <span class="title">powerOf</span><span class="params">(number: Int , exponent: Int)</span></span>&#123;</div><div class="line">  ...</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="默认值"><a href="#默认值" class="headerlink" title="默认值"></a>默认值</h2><p>函数参数可以设置默认值。用于对应参数缺省的情况下，降低函数重载数量。<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="function">fun <span class="title">read</span><span class="params">(b: Array&lt;Byte&gt; , off: Int = <span class="number">0</span> , len: Int = b.size)</span></span>&#123;</div><div class="line">  ...</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>默认值使用紧跟变量类型后的<code>=</code>来定义。<br>复写方法必须使用与父类相同的默认参数值。当复写带有默认值的方法时，必须要省略默认值。<br><figure class="highlight"><table><tr><td class="code"><pre><div class="line">open class A&#123;</div><div class="line">    open fun foo(i: Int = 10)&#123;</div><div class="line">      ...</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">class B : A()&#123;</div><div class="line">  // 不允许提供默认值</div><div class="line">  override fun foo(i: Int)&#123;</div><div class="line">    ... </div><div class="line">  &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="具名参数"><a href="#具名参数" class="headerlink" title="具名参数"></a>具名参数</h2><p>调用函数时可以提供参数的名称。在函数有大量有默认值参数时会很方便。</p>
+<p>假设有下面一个函数</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="function">fun <span class="title">reformat</span><span class="params">(str: String</span></span></div><div class="line">            normalizeCase: Boolean = <span class="keyword">true</span>,</div><div class="line">            upperCaseFirstLetter: Boolean = <span class="keyword">true</span>,</div><div class="line">            divideByCamelHumps: Boolean = <span class="keyword">false</span>,</div><div class="line">            wordSeparator: Char = <span class="string">' '</span>)</div></pre></td></tr></table></figure>
+<p>可以这样调用</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line">reformat(str)</div></pre></td></tr></table></figure>
+<p>不使用默认参数则需要这样调用</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line">reformat(str , <span class="keyword">true</span> , <span class="keyword">true</span> , <span class="keyword">false</span> , <span class="string">'_'</span>)</div></pre></td></tr></table></figure>
+<p>使用具名参数可以让代码可读性更好</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line">reformat(str,</div><div class="line">    normalizeCase = <span class="keyword">true</span>,</div><div class="line">    upperCaseFirstLetter = <span class="keyword">true</span>,</div><div class="line">    divideByCamelHumps = <span class="keyword">false</span>,</div><div class="line">    wordSeparator = <span class="string">'_'</span></div><div class="line">)</div></pre></td></tr></table></figure>
+<p>如果不需要所有参数<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line">reformat(str, wordSeparator = <span class="string">'_'</span>)</div></pre></td></tr></table></figure></p>
+<blockquote>
+<p>具名参数语法不适应于Java函数。因为Java字节码并不一直保存参数名称。</p>
+</blockquote>
+<h2 id="Unit-returning函数"><a href="#Unit-returning函数" class="headerlink" title="Unit-returning函数"></a>Unit-returning函数</h2><p>如果函数不返回值，则函数返回类型为<code>Unit</code>。<code>Unit</code>是唯一值为<code>Unit</code>的类型。Unit返回值不需要显式返回。<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="function">fun <span class="title">printHello</span><span class="params">(name: String?)</span>: Unit </span>&#123;</div><div class="line">    <span class="keyword">if</span> (name != <span class="keyword">null</span>)</div><div class="line">        println(<span class="string">"Hello $&#123;name&#125;"</span>)</div><div class="line">    <span class="keyword">else</span></div><div class="line">        println(<span class="string">"Hi there!"</span>)</div><div class="line">    <span class="comment">// `return Unit` 或 `return` 可选</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><code>Unit</code>返回类型声明为可选项目。上面代码等同于<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="function">fun <span class="title">printHello</span><span class="params">(name: String?)</span> </span>&#123;</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="单表达式函数"><a href="#单表达式函数" class="headerlink" title="单表达式函数"></a>单表达式函数</h2><p>当函数返回单个表达式，可省略花括号，可在<code>=</code>之后指定对应代码。<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="function">fun <span class="title">double</span><span class="params">(x: Int)</span>: Int </span>= x * <span class="number">2</span></div></pre></td></tr></table></figure></p>
+<p>可省略返回值类型，由编译器推测。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="function">fun <span class="title">double</span><span class="params">(x: Int)</span> </span>= x * <span class="number">2</span></div></pre></td></tr></table></figure>
+<h2 id="显式返回类型"><a href="#显式返回类型" class="headerlink" title="显式返回类型"></a>显式返回类型</h2><p>非Unit返回值且有代码块的函数必须显式指明返回值类型。<code>Kotlin</code>不会推断有代码块的函数的返回值类型，因为这些函数可能有复杂的控制流程， 返回类型对于编译器或阅读代码的开发者不是那么显而易见。</p>
+<h2 id="可变参数"><a href="#可变参数" class="headerlink" title="可变参数"></a>可变参数</h2><p>函数参数（一般最后一个）可以使用<code>vararg</code>修饰符设置为可变参数。<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line">fun &lt;T&gt; asList(vararg ts: T): List&lt;T&gt; &#123;</div><div class="line">    val result = ArrayList&lt;T&gt;()</div><div class="line">    <span class="keyword">for</span> (t in ts) <span class="comment">// ts is an Array</span></div><div class="line">        result.add(t)</div><div class="line">    <span class="keyword">return</span> result</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>允许函数使用可变数量的参数</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line">val list = asList(<span class="number">1</span> , <span class="number">2</span>, <span class="number">3</span>)</div></pre></td></tr></table></figure>
+<p>在函数中T类型的可变参数被视为T的一个数组。例如上面例子中的<code>ts</code>变量就是<code>Array&lt;out T&gt;</code></p>
+<p>函数中只能设置一个标记为<code>vararg</code>可变参数. 如果可变参数不是最后一个参数，则之后的参数可以使用具名参数语法传值；<br>可以通过在括号外以lambda方式传入函数类型的参数。<br>调用可变参数函数时，可以用一个一个方式传参（如：asList(1, 2, 3)）；或使用扩展操作符（前缀<code>*</code>）传入数组参数。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line">val a = arrayOf(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</div><div class="line">val list = asList(-<span class="number">1</span>, <span class="number">0</span>, *a, <span class="number">4</span>)</div></pre></td></tr></table></figure>
+<h2 id="函数作用域"><a href="#函数作用域" class="headerlink" title="函数作用域"></a>函数作用域</h2><p>在Kotlin中可以在文件顶部声明函数，意味着不必创建Class来持有函数。除此Kotlin函数还可以像成员函数和扩展函数一样在局部声明。</p>
+<h2 id="局部函数"><a href="#局部函数" class="headerlink" title="局部函数"></a>局部函数</h2><p>Kotlin支持局部函数，如在函数内部定义函数</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="function">fun <span class="title">dfs</span><span class="params">(graph: Graph)</span> </span>&#123;</div><div class="line">    <span class="function">fun <span class="title">dfs</span><span class="params">(current: Vertex, visited: Set&lt;Vertex&gt;)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (!visited.add(current)) <span class="keyword">return</span></div><div class="line">        <span class="keyword">for</span> (v in current.neighbors)</div><div class="line">            dfs(v, visited)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    dfs(graph.vertices[<span class="number">0</span>], HashSet())</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>局部函数可以访问外部函数的局部变量</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="function">fun <span class="title">dfs</span><span class="params">(graph: Graph)</span> </span>&#123;</div><div class="line">    val visited = HashSet&lt;Vertex&gt;()</div><div class="line">    <span class="function">fun <span class="title">dfs</span><span class="params">(current: Vertex)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (!visited.add(current)) <span class="keyword">return</span></div><div class="line">        <span class="keyword">for</span> (v in current.neighbors)</div><div class="line">            dfs(v)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    dfs(graph.vertices[<span class="number">0</span>])</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="成员函数"><a href="#成员函数" class="headerlink" title="成员函数"></a>成员函数</h2><p>成员函数：定义在Class或对象内部的函数。<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Sample</span>() </span>&#123;</div><div class="line">    <span class="function">fun <span class="title">foo</span><span class="params">()</span> </span>&#123; print(<span class="string">"Foo"</span>) &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>成员函数可以使用<code>.</code>操作符调用<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line">Sample().foo()</div></pre></td></tr></table></figure></p>
+<p>更多关于Class和复写成员函数查看<a href="https://kotlinlang.org/docs/reference/classes.html" target="_blank" rel="external"><code>Classes</code></a>和<a href="https://kotlinlang.org/docs/reference/classes.html#inheritance" target="_blank" rel="external"><code>Inheritance</code></a></p>
+<h2 id="泛型函数"><a href="#泛型函数" class="headerlink" title="泛型函数"></a>泛型函数</h2><p>函数在函数名前以<code>&lt;T&gt;</code>形式使用泛型。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line">fun &lt;T&gt; singletonList(item: T): List&lt;T&gt; &#123;</div><div class="line">    <span class="comment">// ...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>跟多关于泛型信息查看<a href="https://kotlinlang.org/docs/reference/generics.html" target="_blank" rel="external"><code>Generics</code></a></p>
+<h2 id="内联函数"><a href="#内联函数" class="headerlink" title="内联函数"></a>内联函数</h2><p>内联函数查看<a href="https://kotlinlang.org/docs/reference/inline-functions.html" target="_blank" rel="external"><code>Inline Functions</code></a></p>
+<h2 id="扩展函数"><a href="#扩展函数" class="headerlink" title="扩展函数"></a>扩展函数</h2><p>扩展函数查看<a href="https://kotlinlang.org/docs/reference/extensions.html" target="_blank" rel="external"><code>Extension Functions</code></a></p>
+<h2 id="高阶函数和Lambdas"><a href="#高阶函数和Lambdas" class="headerlink" title="高阶函数和Lambdas"></a>高阶函数和Lambdas</h2><p>高阶函数和Lambdas查看<a href="https://kotlinlang.org/docs/reference/lambdas.html" target="_blank" rel="external"><code>高阶函数和Lambdas</code></a></p>
+<h2 id="尾递归函数"><a href="#尾递归函数" class="headerlink" title="尾递归函数"></a>尾递归函数</h2><p><code>尾调用</code>是指一个函数里的最后一个动作是一个函数调用的情形：即这个调用的返回值直接被当前函数返回的情形。</p>
+<p>Kotlin支持尾递归形式的函数编程。目前尾递归只支持JVM后端。定义合格的尾递归，函数必须要在最后一步执行自身调用。当在递归操作后仍有要执行的代码时，或者在try/catch/finally块中都不适合使用尾递归函数。<br>当函数使用<code>tailrec</code>修饰符，满足必要形式，编译器会优化递归，保留快速、高效的迭代基准版本。<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="function">tailrec fun <span class="title">findFixPoint</span><span class="params">(x: Double = <span class="number">1.0</span>)</span>: Double</span></div><div class="line">        = <span class="keyword">if</span> (x == Math.cos(x)) <span class="function">x <span class="keyword">else</span> <span class="title">findFixPoint</span><span class="params">(Math.cos(x)</span>)</span></div></pre></td></tr></table></figure></p>
+<p>上面函数用于计算余弦的不动点（f(x) = x）。代码与下面相同<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> fun <span class="title">findFixPoint</span><span class="params">()</span>: Double </span>&#123;</div><div class="line">    var x = <span class="number">1.0</span></div><div class="line">    <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</div><div class="line">        val y = Math.cos(x)</div><div class="line">        <span class="keyword">if</span> (x == y) <span class="keyword">return</span> y</div><div class="line">        x = y</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2017/06/21/Kotlin基础之高阶函数与Lambdas/" data-toggle="tooltip" data-placement="top" title="Kotlin基础之高阶函数与Lambdas">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2017/05/22/React-Native基础（4）：组件引用Ref/" data-toggle="tooltip" data-placement="top" title="React-Native基础（4）：组件引用Ref">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#kotlin" title="kotlin">kotlin</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "alexwan02";
+    var disqus_identifier = "http://blog.alexwan.cn/2017/06/21/Kotlin基础之函数/";
+    var disqus_url = "http://blog.alexwan.cn/2017/06/21/Kotlin基础之函数/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Alex Studio 2017 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.alexwan.cn/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

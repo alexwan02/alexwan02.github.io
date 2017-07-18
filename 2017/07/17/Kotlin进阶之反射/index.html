@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Kotlin进阶之反射 - Alex Studio
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.alexwan.cn/2017/07/17/Kotlin进阶之反射/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Alex Studio</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#kotlin" title="kotlin">kotlin</a>
+                        
+                    </div>
+                    <h1>Kotlin进阶之反射</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by AlexWan on
+                        2017-07-17
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="Reflection"><a href="#Reflection" class="headerlink" title="Reflection"></a>Reflection</h1><p>反射是指计算机程序在运行时（Run time）可以访问、检测和修改它本身状态或行为的一种能力。Kotlin使函数和属性成为语言中<code>头等公民</code>，且以近似函数式或响应式方式内省属性和函数（如运行时属性名或类型；函数名或类型）</p>
+<blockquote>
+<p>在Java平台上，需要使用反射特性的运行时组件为独立的<code>JAR</code>文件（<code>kotlin-reflect.jar</code>），目的是降低不需要使用反射的应用包的大小。如果要使用反射，首先需要保证项目中已添加相应的<code>.jar</code>文件。</p>
+</blockquote>
+<h2 id="类引用"><a href="#类引用" class="headerlink" title="类引用"></a>类引用</h2><p>获取运行时类的引用时反射最基本的特性。使用class字面量语法来获取对静态已知Kotlin类引用。</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> c = MyClass::<span class="class"><span class="keyword">class</span></span></div></pre></td></tr></table></figure>
+<p>引用为<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html" target="_blank" rel="external">KClass</a>类型的值</p>
+<blockquote>
+<p>Kotlin类引用与Java类引用不一样，获取Java类引用，使用<code>KClass</code>实例的<code>.java</code>属性</p>
+<h2 id="约束类引用"><a href="#约束类引用" class="headerlink" title="约束类引用"></a>约束类引用</h2><p>将对象作为<code>::class</code>语法的接收者，来引用指定对象的类。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> widget: Widget = ...</div><div class="line">assert(widget <span class="keyword">is</span> GoodWidget) &#123; <span class="string">"Bad widget: <span class="subst">$&#123;widget::class.qualifiedName&#125;</span>"</span> &#125;</div></pre></td></tr></table></figure></p>
+</blockquote>
+<p>虽然接收者表达式的类型（<code>Widget</code>），但可获取确切的对象类引用（如：<code>GoodWidget</code>或<code>BadWidget</code>）。</p>
+<h2 id="函数引用"><a href="#函数引用" class="headerlink" title="函数引用"></a>函数引用</h2><p>假设声明了具名函数<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">isOdd</span><span class="params">(x: <span class="type">Int</span>)</span></span> = x % <span class="number">2</span> != <span class="number">0</span></div></pre></td></tr></table></figure></p>
+<p>除了可以直接调用<code>isOdd(5)</code>，还可以使用<code>::</code>操作符将函数作为值传给另外一个函数。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> numbers = listOf(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</div><div class="line">println(numbers.filter(::isOdd)) <span class="comment">// 输出[1 , 3]</span></div></pre></td></tr></table></figure></p>
+<p>这里<code>::isOdd</code>是函数类型（<code>(Int) -&gt; Boolean</code>）的值</p>
+<p>如果类型可以从上下文中推断出，<code>::</code>操作以重载的函数方式使用<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">isOdd</span><span class="params">(x: <span class="type">Int</span>)</span></span> = x % <span class="number">2</span> != <span class="number">0</span></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">isOdd</span><span class="params">(s: <span class="type">String</span>)</span></span> = s == <span class="string">"brillig"</span> || s == <span class="string">"slithy"</span> || s == <span class="string">"tove"</span></div><div class="line"><span class="keyword">val</span> numbers = listOf(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</div><div class="line">println(numbers.filter(::isOdd)) <span class="comment">// 指isOdd(x: Int)函数</span></div></pre></td></tr></table></figure></p>
+<p>或者，以把方法存储到指定明确类型的变量中方式提供必要上下文信息。</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> predicate: (String) -&gt; <span class="built_in">Boolean</span> = ::isOdd <span class="comment">// 指向isOdd(x: String)</span></div></pre></td></tr></table></figure>
+<p>如果要使用类成员或扩展函数，则需要对函数进行修饰，如<code>String::toCharArray</code>表示<code>String</code>类型的扩展函数：<code>String.() -&gt; CharArray</code></p>
+<h3 id="范例：函数组合"><a href="#范例：函数组合" class="headerlink" title="范例：函数组合"></a>范例：函数组合</h3><p>假设有下面函数<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="type">&lt;A, B, C&gt;</span> <span class="title">compose</span><span class="params">(f: (<span class="type">B</span>)</span></span> -&gt; C, g: (A) -&gt; B): (A) -&gt; C &#123;</div><div class="line">    <span class="keyword">return</span> &#123; x -&gt; f(g(x)) &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>返回两个传入两个函数的组合：<code>compose(f, g) = f(g(*))</code>。 应用：</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">length</span><span class="params">(s: <span class="type">String</span>)</span></span> = s.length</div><div class="line"></div><div class="line"><span class="keyword">val</span> oddLength = compose(::isOdd, ::length)</div><div class="line"><span class="keyword">val</span> strings = listOf(<span class="string">"a"</span>, <span class="string">"ab"</span>, <span class="string">"abc"</span>)</div><div class="line"></div><div class="line">println(strings.filter(oddLength))  <span class="comment">// 输出:"[a, abc]"</span></div></pre></td></tr></table></figure>
+<h2 id="属性引用"><a href="#属性引用" class="headerlink" title="属性引用"></a>属性引用</h2><p>Kotlin同样使用<code>::</code>操作符，访问Kotlin中属性。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">var</span> x = <span class="number">1</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">(args: <span class="type">Array</span>&lt;<span class="type">String</span>&gt;)</span></span> &#123;</div><div class="line">    println(::x.<span class="keyword">get</span>()) <span class="comment">// 输出 "1"</span></div><div class="line">    ::x.<span class="keyword">set</span>(<span class="number">2</span>)</div><div class="line">    println(x)         <span class="comment">// 输出 "2"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><code>::x</code>表达式赋值给<code>KProperty&lt;Int&gt;</code>类型的属性对象，可以使用<code>get</code>方法获取它的值，或者使用<code>name</code>属性检索属性名。具体信息查看<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-property/index.html" target="_blank" rel="external">KProperty类文档</a></p>
+<p>对于可变属性（如：<code>var y = 1</code>），<code>::y</code>返回<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-mutable-property/index.html" target="_blank" rel="external">KMutableProperty<int></int></a>类型的值，含有<code>set</code>方法。</p>
+<p>属性引用可用在不需要参数的函数出<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> strs = listOf(<span class="string">"a"</span>, <span class="string">"bc"</span>, <span class="string">"def"</span>)</div><div class="line">println(strs.map(String::length)) <span class="comment">// 输出[1, 2, 3]</span></div></pre></td></tr></table></figure></p>
+<p>访问类成员属性<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span></span>(<span class="keyword">val</span> p: <span class="built_in">Int</span>)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">(args: <span class="type">Array</span>&lt;<span class="type">String</span>&gt;)</span></span>&#123;</div><div class="line">    </div><div class="line">    <span class="keyword">val</span> prop = A::p</div><div class="line">    println(prop.<span class="keyword">get</span>(A(<span class="number">1</span>))</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>对于扩展属性<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> String.lastChar: <span class="built_in">Char</span></div><div class="line">    <span class="keyword">get</span>() = <span class="keyword">this</span>[length - <span class="number">1</span>]</div><div class="line">    </div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">(args: <span class="type">Array</span>&lt;<span class="type">String</span>&gt;)</span></span>&#123;</div><div class="line">    println(String::latChar.<span class="keyword">get</span>(<span class="string">"abc"</span>))  <span class="comment">// 输出 "c"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="与Java反射交互"><a href="#与Java反射交互" class="headerlink" title="与Java反射交互"></a>与Java反射交互</h3><p>在Java平台上，标准库包含与Java反射对象相互映射的反射类（查看包<code>kotlin.reflect.jvm</code>）。如：查找backing字段或充当Kotlin属性的getter函数的Java方法。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">import</span> kotlin.reflect.jvm.*</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span></span>(<span class="keyword">val</span> p: <span class="built_in">Int</span>)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">(args: <span class="type">Array</span>&lt;<span class="type">String</span>&gt;)</span></span>&#123;</div><div class="line">    println(A::p.javaGetter) <span class="comment">// 输出 "public final int A.getP()"</span></div><div class="line">    println(A::p.javaField)  <span class="comment">// 输出 "private final int A.p"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>使用<code>.kotlin</code>扩展属性来获取对应Java类的Kotlin类。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">getKClass</span><span class="params">(o: <span class="type">Any</span>)</span></span>: KClass&lt;Any&gt; = o.javaClass.kotlin</div></pre></td></tr></table></figure></p>
+<h2 id="构造器引用"><a href="#构造器引用" class="headerlink" title="构造器引用"></a>构造器引用</h2><p>Koltin可以像函数和属性一样来引用构造器，可以用在与构造器参数相同的函数类型对象处，并返回合适类型的对象。</p>
+<p>使用<code>::</code>操作符和类名引用构造器。</p>
+<p>下面的函数为使用无参函数作为函数参数，返回类型为<code>Foo</code><br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">funtion</span><span class="params">(factory: ()</span></span> -&gt; Foo)&#123;</div><div class="line">    <span class="keyword">val</span> x: Foo = factory()</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>使用<code>::Foo</code>（Foo类的无参构造器），则可以这样调用：<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">function(::Foo)</div></pre></td></tr></table></figure></p>
+<h2 id="约束函数与属性引用（Kotlin-1-1）"><a href="#约束函数与属性引用（Kotlin-1-1）" class="headerlink" title="约束函数与属性引用（Kotlin 1.1）"></a>约束函数与属性引用（Kotlin 1.1）</h2><p>引用可以指向特殊对象的实例方法<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> numberRegex = <span class="string">"\\d+"</span>.toRegex();</div><div class="line">println(numberRegex.matches(<span class="string">"29"</span>))  <span class="comment">// 输出"true"</span></div><div class="line"></div><div class="line"><span class="keyword">val</span> isNumber = numberRegex::matches</div><div class="line">println(isNumber(<span class="string">"29"</span>))   <span class="comment">// 输出"true"</span></div></pre></td></tr></table></figure></p>
+<p>与直接调用<code>matches</code>相反，存储对函数的引用。引用与接收者绑定，可以直接在函数表达式出调用或使用。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> strings = listOf(<span class="string">"abc"</span> , <span class="string">"124"</span> , <span class="string">"a70"</span>)</div><div class="line">println(strings.filter(numberRegex::matches)) <span class="comment">// 输出"[124]"</span></div></pre></td></tr></table></figure></p>
+<p>比较约束函数与对应未约束应用，约束引用有自己绑定的<code>接收者</code>，所以接收者类型不再是参数。</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> isNumber: (CharSequence) -&gt; <span class="built_in">Boolean</span> = numberRegex::matches</div><div class="line"></div><div class="line"><span class="keyword">val</span> matches: (Regex, CharSequence) -&gt; <span class="built_in">Boolean</span> = Regex::matches</div></pre></td></tr></table></figure>
+<p>属性引用也可以约束<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> prop = <span class="string">"abc"</span>::length</div><div class="line">println(prop.<span class="keyword">get</span>()) <span class="comment">// 输出"3"</span></div></pre></td></tr></table></figure></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2017/07/17/Kotlin进阶之注解/" data-toggle="tooltip" data-placement="top" title="Kotlin进阶之注解">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2017/07/17/Kotlin进阶之相等、操作符重载/" data-toggle="tooltip" data-placement="top" title="Kotlin进阶之相等、操作符重载">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#kotlin" title="kotlin">kotlin</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "alexwan02";
+    var disqus_identifier = "http://blog.alexwan.cn/2017/07/17/Kotlin进阶之反射/";
+    var disqus_url = "http://blog.alexwan.cn/2017/07/17/Kotlin进阶之反射/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Alex Studio 2017 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.alexwan.cn/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

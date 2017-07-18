@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Kotlin进阶之相等、操作符重载 - Alex Studio
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.alexwan.cn/2017/07/17/Kotlin进阶之相等、操作符重载/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Alex Studio</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#kotlin" title="kotlin">kotlin</a>
+                        
+                    </div>
+                    <h1>Kotlin进阶之相等、操作符重载</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by AlexWan on
+                        2017-07-17
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="相等"><a href="#相等" class="headerlink" title="相等"></a>相等</h1><p>Koltin有两种相等比较</p>
+<ul>
+<li>引用相等（指向同一个对象的引用）</li>
+<li>结构相等（<code>equals()</code>）</li>
+</ul>
+<h2 id="引用相等"><a href="#引用相等" class="headerlink" title="引用相等"></a>引用相等</h2><p>使用<code>===</code>（<code>!==</code>）操作符检查引用相等。如果<code>a</code>和<code>b</code>指向相同对象，则<code>a === b</code>为<code>true</code></p>
+<h2 id="结构相等"><a href="#结构相等" class="headerlink" title="结构相等"></a>结构相等</h2><p>结构相等使用<code>==</code>操作符。按照规定，<code>a == b</code>会被翻译为：<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">a?.equals(b) ?: (b === <span class="literal">null</span>)</div></pre></td></tr></table></figure></p>
+<p>如果<code>a</code>不为空，则调用<code>equals()</code>函数，否则检查<code>b</code>引用是否为空。</p>
+<blockquote>
+<p>非空检查<code>a == null</code>自动转化为<code>a === null</code></p>
+</blockquote>
+<h1 id="操作符重载"><a href="#操作符重载" class="headerlink" title="操作符重载"></a>操作符重载</h1><p>Kotlin支持为自定义实现预定义操作符。这些操作符有固定的符号表示（如<code>+</code>或<code>*</code>）和固定的<a href="https://kotlinlang.org/docs/reference/grammar.html#precedence" target="_blank" rel="external">优先级</a>。使用固定名称<a href="https://kotlinlang.org/docs/reference/functions.html#member-functions" target="_blank" rel="external">成员函数</a>或<a href="https://kotlinlang.org/docs/reference/extensions.html" target="_blank" rel="external">扩展函数</a>实现对应类型操作符。</p>
+<p>重载操作符的函数要用<code>operator</code>修饰符标记</p>
+<p>长远起见Koltin定义了重载不同操作的常规操作的规范。</p>
+<h2 id="一元操作符"><a href="#一元操作符" class="headerlink" title="一元操作符"></a>一元操作符</h2><table>
+<thead>
+<tr>
+<th>表达式</th>
+<th>转化为</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>+a</td>
+<td>a.unaryPlus()</td>
+</tr>
+<tr>
+<td>-a</td>
+<td>a.unaryMinus()</td>
+</tr>
+<tr>
+<td>!a</td>
+<td>a.not()</td>
+</tr>
+</tbody>
+</table>
+<p>表格说明了在编译器处理时，<code>+a</code>操作符要执行一下步骤</p>
+<ul>
+<li>确定<code>a</code>的类型，假设为<code>T</code></li>
+<li>查找<code>operator</code>修饰的<code>unaryPlus()</code>，调用者为<code>T</code>的无参函数。（可以是成员函数或者是扩展函数）</li>
+<li>如果没有对应函数，或函数有歧义，则编译失败</li>
+<li>如果找到对应函数，并且返回类型为<code>R</code>，则表达式<code>+a</code>类型为<code>R</code></li>
+</ul>
+<blockquote>
+<p>与其他操作符一样，<a href="https://kotlinlang.org/docs/reference/basic-types.html" target="_blank" rel="external">基本类型</a>的这些操作符会自动优化，不会引入额外开销</p>
+</blockquote>
+<p>如下面，重载一元减号操作符<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">data</span> <span class="class"><span class="keyword">class</span> <span class="title">Point</span></span>(<span class="keyword">val</span> x: <span class="built_in">Int</span> , <span class="keyword">val</span> y: <span class="built_in">Int</span>)</div><div class="line"></div><div class="line"><span class="keyword">operator</span> <span class="function"><span class="keyword">fun</span> Point.<span class="title">unaryMinus</span><span class="params">()</span></span> = Point(-x, -y)</div><div class="line"></div><div class="line"><span class="keyword">val</span> point = Point(<span class="number">10</span>, <span class="number">20</span>)</div><div class="line">println(-point)  <span class="comment">// 输出"(-10, -20)"</span></div></pre></td></tr></table></figure></p>
+<h2 id="自加和自减"><a href="#自加和自减" class="headerlink" title="自加和自减"></a>自加和自减</h2><table>
+<thead>
+<tr>
+<th>表达式</th>
+<th>转化为</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a++</td>
+<td>a.inc()</td>
+</tr>
+<tr>
+<td>a–</td>
+<td>a.dec() </td>
+</tr>
+</tbody>
+</table>
+<p><code>inc()</code>和<code>dec()</code>函数必须指定返回值，赋值给调用<code>++</code>、<code>--</code>操作符的变量。不应该改变调用<code>inc()</code>和<code>dec()</code>函数的对象。</p>
+<p>编译器执行以下步骤完成后缀形式（如<code>a++</code>）的操作。</p>
+<ul>
+<li>确定<code>a</code>的类型，假设为<code>T</code></li>
+<li>查找适应<code>T</code>类型，<code>operator</code>修饰的<code>inc()</code>无参函数，</li>
+<li>检查返回类型是否为<code>T</code>的子类</li>
+</ul>
+<p>计算表达式的作用</p>
+<ul>
+<li>存储初始值<code>a</code>的临时变量<code>a0</code></li>
+<li>将<code>a.inc()</code>赋值给<code>a</code></li>
+<li>返回<code>a0</code>作为表达式返回值</li>
+</ul>
+<p><code>a--</code>步骤同<code>a++</code></p>
+<p>对于前缀形式的<code>++a</code>和<code>--a</code>编译步骤相同， 作用</p>
+<ul>
+<li>将<code>a.inc()</code>赋值给<code>a</code></li>
+<li>将<code>a</code>的新值作为返回值</li>
+</ul>
+<h2 id="二元操作数"><a href="#二元操作数" class="headerlink" title="二元操作数"></a>二元操作数</h2><p>算数操作符</p>
+<table>
+<thead>
+<tr>
+<th>Expression</th>
+<th>转换为</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a + b</td>
+<td>a.plus(b)</td>
+</tr>
+<tr>
+<td>a - b</td>
+<td>a.minus(b)</td>
+</tr>
+<tr>
+<td>a * b</td>
+<td>a.times(b)</td>
+</tr>
+<tr>
+<td>a / b</td>
+<td>a.div(b)</td>
+</tr>
+<tr>
+<td>a % b</td>
+<td>a.rem(b), <del>a.mod(b) (deprecated)</del></td>
+</tr>
+<tr>
+<td>a..b</td>
+<td>a.rangeTo(b)</td>
+</tr>
+</tbody>
+</table>
+<p>编译器值只将表中操作表达式解析为<code>转换</code>列中形式。</p>
+<blockquote>
+<p><code>rem</code>操作符从Kotlin 1.1版本起替换1.1之前的<code>mod</code>操作符</p>
+</blockquote>
+<h2 id="范例"><a href="#范例" class="headerlink" title="范例"></a>范例</h2><p>如下面的Counter类复写<code>+</code>操作符，完成对指定值的累加操作<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">data</span> <span class="class"><span class="keyword">class</span> <span class="title">Counter</span></span>(<span class="keyword">val</span> dayIndex: <span class="built_in">Int</span>)&#123;</div><div class="line">    <span class="keyword">operator</span> <span class="function"><span class="keyword">fun</span> <span class="title">plus</span><span class="params">(increment: <span class="type">Int</span>)</span></span>: Counter&#123;</div><div class="line">        <span class="keyword">return</span> Counter(dayIndex + increment)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="in操作符"><a href="#in操作符" class="headerlink" title="in操作符"></a><code>in</code>操作符</h2><table>
+<thead>
+<tr>
+<th>表达式</th>
+<th>转换</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a in b</td>
+<td>b.contains(a)</td>
+</tr>
+<tr>
+<td>a !in b</td>
+<td>!b.contains(a)</td>
+</tr>
+</tbody>
+</table>
+<p><code>in</code>和<code>!in</code>操作符处理步骤相同，但是转换后的参数相反。</p>
+<h2 id="索引访问操作符"><a href="#索引访问操作符" class="headerlink" title="索引访问操作符"></a>索引访问操作符</h2><table>
+<thead>
+<tr>
+<th>表达式</th>
+<th>转换</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a[i]</td>
+<td>a.get(i)</td>
+</tr>
+<tr>
+<td>a[i, j]</td>
+<td>a.get(i, j)</td>
+</tr>
+<tr>
+<td>a[i_1, …, i_n]</td>
+<td>a.get(i_1, …, i_n)</td>
+</tr>
+<tr>
+<td>a[i] = b</td>
+<td>a.set(i, b)</td>
+</tr>
+<tr>
+<td>a[i, j] = b</td>
+<td>a.set(i, j, b)</td>
+</tr>
+<tr>
+<td>a[i_1, …, i_n] = b</td>
+<td>a.set(i_1, …, i_n, b)</td>
+</tr>
+</tbody>
+</table>
+<p>方括号转换为相同参数数量的<code>get</code>和<code>set</code>函数</p>
+<h2 id="Invoke操作符"><a href="#Invoke操作符" class="headerlink" title="Invoke操作符"></a>Invoke操作符</h2><table>
+<thead>
+<tr>
+<th>表达式</th>
+<th>转换</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a()</td>
+<td>a.invoke()</td>
+</tr>
+<tr>
+<td>a(i)</td>
+<td>a.invoke(i)</td>
+</tr>
+<tr>
+<td>a(i, j)</td>
+<td>a.invoke(i, j)</td>
+</tr>
+<tr>
+<td>a(i_1, …, i_n)</td>
+<td>a.invoke(i_1, …, i_n)</td>
+</tr>
+</tbody>
+</table>
+<p>括号转换为相同数量参数的<code>invoke</code>函数。</p>
+<h2 id="增强赋值"><a href="#增强赋值" class="headerlink" title="增强赋值"></a>增强赋值</h2><table>
+<thead>
+<tr>
+<th>表达式</th>
+<th>转换</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a += b</td>
+<td>a.plusAssign(b)</td>
+</tr>
+<tr>
+<td>a -= b</td>
+<td>a.minusAssign(b)</td>
+</tr>
+<tr>
+<td>a *= b</td>
+<td>a.timesAssign(b)</td>
+</tr>
+<tr>
+<td>a /= b</td>
+<td>a.divAssign(b)</td>
+</tr>
+<tr>
+<td>a %= b</td>
+<td>a.modAssign(b)</td>
+</tr>
+</tbody>
+</table>
+<p>对于赋值操作符（如<code>a += b</code>），编译器执行以下步骤</p>
+<ul>
+<li>如果提供表中右侧对应的函数<ul>
+<li>如果有对应的二元函数（如<code>plusAssign()</code>对应的<code>plus()</code>），则编译出错（歧义）</li>
+<li>返回值为<code>Unit</code>，否则出错</li>
+<li>生成<code>a.plusAssign(b)</code>代码</li>
+</ul>
+</li>
+<li>否则尝试为<code>a = a + b</code>生成代码（包括类型检查：<code>a + b</code>的类型必须为<code>a</code>的子类）</li>
+</ul>
+<blockquote>
+<p>在Kotlin中，赋值<strong>不是</strong>表达式</p>
+</blockquote>
+<h2 id="相等与不等操作符"><a href="#相等与不等操作符" class="headerlink" title="相等与不等操作符"></a>相等与不等操作符</h2><table>
+<thead>
+<tr>
+<th>表达式</th>
+<th>转换</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a == b</td>
+<td>a?.equals(b) ?: (b === null)</td>
+</tr>
+<tr>
+<td>a != b</td>
+<td>!(a?.equals(b) ?: (b === null))</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><code>===</code>和<code>!==</code>（一致性检查）不可以进行重载，所以不存在规定。</p>
+</blockquote>
+<p><code>==</code>操作符为特殊情况：转换为屏蔽<code>null</code>值的复杂表达式。<code>null == null</code>值为<code>true</code>，且非空x的<code>x == null</code>值为<code>false</code>，不调用<code>x.equals()</code></p>
+<h2 id="比较操作符"><a href="#比较操作符" class="headerlink" title="比较操作符"></a>比较操作符</h2><table>
+<thead>
+<tr>
+<th>表达式</th>
+<th>转换</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a &gt; b</td>
+<td>a.compareTo(b) &gt; 0</td>
+</tr>
+<tr>
+<td>a &lt; b</td>
+<td>a.compareTo(b) &lt; 0</td>
+</tr>
+<tr>
+<td>a &gt;= b</td>
+<td>a.compareTo(b) &gt;= 0</td>
+</tr>
+<tr>
+<td>a &lt;= b</td>
+<td>a.compareTo(b) &lt;= 0</td>
+</tr>
+</tbody>
+</table>
+<p>所有比较操作符转换为调用<code>compareTo</code>，返回类型为<code>Int</code></p>
+<h2 id="中缀调用命名函数"><a href="#中缀调用命名函数" class="headerlink" title="中缀调用命名函数"></a>中缀调用命名函数</h2><p>Koltin支持使用<a href="https://kotlinlang.org/docs/reference/functions.html#infix-notation" target="_blank" rel="external">中缀函数调用</a>模仿自定义中缀操作符。</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2017/07/17/Kotlin进阶之反射/" data-toggle="tooltip" data-placement="top" title="Kotlin进阶之反射">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2017/07/17/Kotlin进阶之类型检查、This表达式/" data-toggle="tooltip" data-placement="top" title="Kotlin进阶之类型检查、This表达式">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#kotlin" title="kotlin">kotlin</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "alexwan02";
+    var disqus_identifier = "http://blog.alexwan.cn/2017/07/17/Kotlin进阶之相等、操作符重载/";
+    var disqus_url = "http://blog.alexwan.cn/2017/07/17/Kotlin进阶之相等、操作符重载/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Alex Studio 2017 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.alexwan.cn/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Kotlin基础之内联函数 - Alex Studio
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.alexwan.cn/2017/06/21/Kotlin基础之内联函数/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Alex Studio</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#kotlin" title="kotlin">kotlin</a>
+                        
+                    </div>
+                    <h1>Kotlin基础之内联函数</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by AlexWan on
+                        2017-06-21
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="内联函数"><a href="#内联函数" class="headerlink" title="内联函数"></a>内联函数</h2><p>使用<a href="https://kotlinlang.org/docs/reference/lambdas.html" target="_blank" rel="external"><code>高阶函数</code></a>会给运行时带来一些坏处：每个函数都是一个对象，捕获闭包（如：访问函数体内的变量），内存分配（函数对象或Class），虚拟调用引入的运行过载。<br>使用内联Lambda表达式在多数情况下可以消除这种过载。比如下面的函数就是这种情况下的很好的例子，<code>lock()</code>函数可以很容易地在调用点进行内联扩展。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">lock(l)&#123; foo() &#125;</div></pre></td></tr></table></figure></p>
+<p>编译能够产生下面的代码，而不是创建一个函数对象参数，生成调用。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">l.lock()</div><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">    foo()</div><div class="line">&#125;</div><div class="line"><span class="keyword">finally</span> &#123;</div><div class="line">    l.unlock()</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>也是我们一开始想要的。<br>为了让编译器能够这样执行，需要用<code>inline</code>修饰符来标记<code>lock</code>函数<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> lock<span class="type">&lt;T&gt;</span><span class="params">(lock: <span class="type">Lock</span> , body: ()</span></span> -&gt; T): T&#123;</div><div class="line">  ...</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><code>inline</code>修饰符既影响函数对象本身，也影响传入的Lambda参数：两者都会被内联到调用点。</p>
+<p>编译预处理器对内联函数进行扩展，省去了参数压栈、生成汇编语言的CALL调用、返回参数、执行return等过程，从而提高了运行速度。<br>使用内联函数的优点，在函数被内联后编译器就可以通过上下文相关的优化技术对结果代码执行更深入的优化。<br>内联不是万能药，它以代码膨胀为代价，仅仅省去了函数调用的开销，从而提高程序的执行效率。</p>
+<blockquote>
+<p>函数调用开销并不包括执行函数体所需要的开销，而是仅指参数压栈、跳转、退栈和返回等操作。如果执行函数体内代码的时间比函数调用的开销大得多，那么内联函数的效率收益会笑很多。另一方面每一处内联函数的调用都要拷贝代码，将使程序的总代码增大、消耗更多的内存空间。</p>
+</blockquote>
+<h2 id="noinline"><a href="#noinline" class="headerlink" title="noinline"></a>noinline</h2><p>如果只需要在内联函数中内联部分Lambda表达式，可以使用<code>noinline</code>来标记不需要内联的参数。</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> <span class="title">foo</span><span class="params">(inlined: ()</span></span> -&gt; <span class="built_in">Unit</span>, <span class="keyword">noinline</span> notInlined: () -&gt; <span class="built_in">Unit</span>) &#123;</div><div class="line">  <span class="comment">// ...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>内联Lambda只能在内联函数中调用或作为内联参数，但<code>noinline</code>的Lambda可随意使用。</p>
+<blockquote>
+<p>没有内联函数参数和<a href="https://kotlinlang.org/docs/reference/inline-functions.html#reified-type-parameters" target="_blank" rel="external"><code>reified type parameters</code></a>的内联函数，编译器会发出警告，因为内联这样的函数不见得有好处。</p>
+</blockquote>
+<h2 id="非局部返回"><a href="#非局部返回" class="headerlink" title="非局部返回"></a>非局部返回</h2><p>在Kotlin中可以使用正常、无条件的<code>return</code>退出有名和匿名函数，也意味需要使用一个标签来退出Lambda，在Lambda中禁止使用赤裸<code>return</code>语句，因为Lambda不能够使闭合函数返回。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">foo</span><span class="params">()</span></span>&#123;</div><div class="line">    ordinaryFunction&#123;</div><div class="line">        </div><div class="line">        <span class="keyword">return</span> <span class="comment">// ERROR: can not make `foo` return here</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>如果Lambda传入内联函数，则返回也是被内联，所以允许<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">foo</span><span class="params">()</span></span>&#123;</div><div class="line">    inlineFunction &#123;</div><div class="line">        <span class="keyword">return</span> <span class="comment">// OK: the lambda is inlined</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这样的return（位于在Lambda中，但能够退出闭合函数）被称为非局部返回。Kotlin使用这种构造在有循环条件的闭合内联函数中<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">hasZeros</span><span class="params">(ints: <span class="type">List</span>&lt;<span class="type">Int</span>&gt;)</span></span>: <span class="built_in">Boolean</span>&#123;</div><div class="line">    ints.forEach&#123;</div><div class="line">        <span class="keyword">if</span>(it == <span class="number">0</span>) <span class="keyword">return</span> <span class="literal">true</span> <span class="comment">// returns from hasZeros</span></div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<blockquote>
+<p>一些内联函数可能不是从函数体中直接调用传入的Lambda参数，而是从其他的执行上下文，如本地对象或嵌套函数。在这些情况下，non-local 控制流则不允许出现在Lambda中。使用<code>crossinline</code>修饰符来标记。</p>
+</blockquote>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> <span class="title">f</span><span class="params">(<span class="keyword">crossinline</span> body: ()</span></span> -&gt; <span class="built_in">Unit</span>) &#123;</div><div class="line">    <span class="keyword">val</span> f = <span class="keyword">object</span>: Runnable &#123;</div><div class="line">        <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">run</span><span class="params">()</span></span> = body()</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// ...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>尚未在内联Lambda中支持break 和 continue 操作，Kotlin计划支持</p>
+</blockquote>
+<h2 id="具体化类型参数"><a href="#具体化类型参数" class="headerlink" title="具体化类型参数"></a>具体化类型参数</h2><p>有时需要访问传入函数中参数的类型</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="type">&lt;T&gt;</span> TreeNode.<span class="title">findParentOfType</span><span class="params">(clazz: <span class="type">Class</span>&lt;<span class="type">T</span>&gt;)</span></span>: T? &#123;</div><div class="line">    <span class="keyword">var</span> p = parent</div><div class="line">    <span class="keyword">while</span> (p != <span class="literal">null</span> &amp;&amp; !clazz.isInstance(p)) &#123;</div><div class="line">        p = p.parent</div><div class="line">    &#125;</div><div class="line">    <span class="meta">@Suppress(<span class="meta-string">"UNCHECKED_CAST"</span>)</span></div><div class="line">    <span class="keyword">return</span> p <span class="keyword">as</span> T?</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在上述代码中，沿着树结构，使用反射来检查节点是否有指定类型。可以执行，但是调用点，并不优美<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">treeNode.findParentOfType(MyTreeNode::<span class="class"><span class="keyword">class</span>.<span class="title">java</span>)</span></div></pre></td></tr></table></figure></p>
+<p>实际上想要只是简单给函数传入一个类型，如：<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">treeNode.findParentOfType&lt;MyTreeNode&gt;()</div></pre></td></tr></table></figure></p>
+<p>内联函数支持具体化参数类型，因此可以这样写：<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;<span class="keyword">reified</span> T&gt;</span> TreeNode.<span class="title">findParentOfType</span><span class="params">()</span></span>: T? &#123;</div><div class="line">    <span class="keyword">var</span> p = parent</div><div class="line">    <span class="keyword">while</span> (p != <span class="literal">null</span> &amp;&amp; p !<span class="keyword">is</span> T) &#123;</div><div class="line">        p = p.parent</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> p <span class="keyword">as</span> T?</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>使用<code>reified</code>修饰符限制参数类型，可以在内联函数中访问，就像是普通的Class。因为函数是内联的，不在需要反射，像<code>!is</code>和<code>as</code>的普通操作符执行。也可以像上述说的那样调用<code>myTree.findParentOfType&lt;MyTreeNodeType&gt;()</code></p>
+<p>尽管反射在很多情况不需要，仍需要使用它来具体话参数类型。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;<span class="keyword">reified</span> T&gt;</span> <span class="title">membersOf</span><span class="params">()</span></span> = T::<span class="class"><span class="keyword">class</span>.<span class="title">members</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">(s: <span class="type">Array</span>&lt;<span class="type">String</span>&gt;)</span></span> &#123;</div><div class="line">    println(membersOf&lt;StringBuilder&gt;().joinToString(<span class="string">"\n"</span>))</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>普通函数（未标记为内联）不可以有<code>reified</code>参数。不具有运行时表示的类型，不能用作具体化参数。<br>更多底层信息，参阅<a href="https://github.com/JetBrains/kotlin/blob/master/spec-docs/reified-type-parameters.md" target="_blank" rel="external"><code>spec document</code></a></p>
+<h2 id="内联属性"><a href="#内联属性" class="headerlink" title="内联属性"></a>内联属性</h2><p><code>inline</code>修饰符可以用在没有<code>Backing Filed</code>属性的访问函数。可以注解单独属性的访问函数。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> foo: Foo</div><div class="line">    <span class="keyword">inline</span> <span class="keyword">get</span>() = Foo()</div><div class="line"></div><div class="line"><span class="keyword">var</span> bar: Bar</div><div class="line">    <span class="keyword">get</span>() = ...</div><div class="line">    <span class="keyword">inline</span> <span class="keyword">set</span>(v) &#123; ... &#125;</div></pre></td></tr></table></figure></p>
+<p>甚至可以注解整个属性，让属性访问函数都变为内联函数<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">inline</span> <span class="keyword">var</span> bar: Bar</div><div class="line">    <span class="keyword">get</span>() = ...</div><div class="line">    <span class="keyword">set</span>(v) &#123; ... &#125;</div></pre></td></tr></table></figure></p>
+<p>在调用时，内联访问函数与常规内联函数一样调用。</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2017/07/03/Kotlin基础之跳转与条件循环表达式/" data-toggle="tooltip" data-placement="top" title="Kotlin基础之跳转与条件循环表达式">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2017/06/21/Kotlin基础之高阶函数与Lambdas/" data-toggle="tooltip" data-placement="top" title="Kotlin基础之高阶函数与Lambdas">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#kotlin" title="kotlin">kotlin</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "alexwan02";
+    var disqus_identifier = "http://blog.alexwan.cn/2017/06/21/Kotlin基础之内联函数/";
+    var disqus_url = "http://blog.alexwan.cn/2017/06/21/Kotlin基础之内联函数/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Alex Studio 2017 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.alexwan.cn/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

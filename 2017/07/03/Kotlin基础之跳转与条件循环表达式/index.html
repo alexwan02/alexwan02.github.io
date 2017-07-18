@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Kotlin基础之跳转与条件循环表达式 - Alex Studio
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.alexwan.cn/2017/07/03/Kotlin基础之跳转与条件循环表达式/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Alex Studio</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#kotlin" title="kotlin">kotlin</a>
+                        
+                    </div>
+                    <h1>Kotlin基础之跳转与条件循环表达式</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by AlexWan on
+                        2017-07-03
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="跳转"><a href="#跳转" class="headerlink" title="跳转"></a>跳转</h1><p>Kotlin有三种结构的跳转表达式</p>
+<ul>
+<li>return. return默认返回最近的闭合函数或<a href="https://kotlinlang.org/docs/reference/lambdas.html#anonymous-functions" target="_blank" rel="external"><code>匿名函数</code></a></li>
+<li>break. 结束最近闭合循环</li>
+<li>continue. 执行最近闭合循环下一步</li>
+</ul>
+<p>所有跳转表达式可在大的表达式中使用<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> s = person.name ?: <span class="keyword">return</span></div></pre></td></tr></table></figure></p>
+<p>跳转表达式的类型为<a href="https://kotlinlang.org/docs/reference/exceptions.html#the-nothing-type" target="_blank" rel="external"><code>Nothing类型</code></a></p>
+<h2 id="Break和Continue-标注"><a href="#Break和Continue-标注" class="headerlink" title="Break和Continue 标注"></a>Break和Continue 标注</h2><p>kotlin中任意表达式都可以用标注来标记，以<code>标识符</code>+<code>@</code>的形式来表示标注，如：<code>abc@</code> ，<code>fooBar@</code>都是有效的标注（<a href="https://kotlinlang.org/docs/reference/grammar.html#labelReference" target="_blank" rel="external"><code>参考语法</code></a>）。把标注放在表达式后，即完成对表达式的标记。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="symbol">loop@</span> <span class="keyword">for</span>(i <span class="keyword">in</span> <span class="number">1.</span><span class="number">.100</span>)&#123;</div><div class="line">  <span class="comment">// ...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>使用标注限制beak和continue<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="symbol">loop@</span> <span class="keyword">for</span>(i <span class="keyword">in</span> <span class="number">1.</span><span class="number">.100</span>)&#123;</div><div class="line">    <span class="keyword">for</span>(j <span class="keyword">in</span> <span class="number">1.</span><span class="number">.100</span>)&#123;</div><div class="line">        <span class="keyword">if</span>(...) <span class="keyword">break</span><span class="symbol">@loop</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>有限制标注的break表达式会跳转到标注对应的循环执行点。<code>continue</code>则执行对应循环的下一步迭代。</p>
+<h2 id="在标注处Return"><a href="#在标注处Return" class="headerlink" title="在标注处Return"></a>在标注处Return</h2><p>使用函数常量，局部函数和对象表达式，Kotlin可以实现内嵌函数。returns使用标注可以从外部函数返回，其中一个用处就是从Lambda表达式中返回。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">foo</span><span class="params">()</span></span>&#123;</div><div class="line">  ints.forEach&#123;</div><div class="line">    <span class="keyword">if</span>( it == <span class="number">0</span> ) <span class="keyword">return</span></div><div class="line">    print(it)</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><code>return表达式</code>从最近闭合函数中返回，如<code>foo</code></p>
+<blockquote>
+<p>非局部函数只支持传入<a href="https://kotlinlang.org/docs/reference/inline-functions.html" target="_blank" rel="external"><code>内联函数</code></a>的Lambda表达式。</p>
+</blockquote>
+<p>如果只想要从Lambda表达式返回，可以通过使用标注限制return<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">foo</span><span class="params">()</span></span>&#123;</div><div class="line">    ints.forEach <span class="symbol">lit@</span>&#123;</div><div class="line">        <span class="keyword">if</span>( it == <span class="number">0</span> ) <span class="keyword">return</span><span class="symbol">@lit</span></div><div class="line">        print(it)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>上面即可实现只从Lambda表达式中返回，更为方便的是：可以使用隐式标注，标注与调用Lambda表达式的函数名相同。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">foo</span><span class="params">()</span></span>&#123;</div><div class="line">    ints.forEach &#123;</div><div class="line">      <span class="keyword">if</span>( it == <span class="number">0</span> ) <span class="keyword">return</span><span class="symbol">@forEach</span></div><div class="line">      print(it)</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>这种情况下，可以使用<a href="https://kotlinlang.org/docs/reference/lambdas.html#anonymous-functions" target="_blank" rel="external"><code>匿名函数</code></a>来替换Lambda表达式。匿名函数中的返回语句只返回匿名函数本身。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">foo</span><span class="params">()</span></span>&#123;</div><div class="line">  ints.forEach(<span class="function"><span class="title">fun</span><span class="params">(value: <span class="type">Int</span>)</span></span>&#123;</div><div class="line">      <span class="keyword">if</span>( value == <span class="number">0</span> ) <span class="keyword">return</span> value</div><div class="line">      print(value)</div><div class="line">  &#125;)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>有返回值时，解析器优先处理限制返回语句，如：<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">return</span><span class="symbol">@a</span> <span class="number">1</span></div></pre></td></tr></table></figure></p>
+<p>表示在标注<code>a</code>处返回<code>1</code>而不是返回标注的表达式<code>@a 1</code></p>
+<h1 id="条件循环"><a href="#条件循环" class="headerlink" title="条件循环"></a>条件循环</h1><h2 id="if-表达式"><a href="#if-表达式" class="headerlink" title="if 表达式"></a>if 表达式</h2><p>在Kotlin中，if为表达式，如返回具体值。不支持三目运算（condition ? then : else ），因为普通的if表达式即能完成三目的目的。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 经典方式</span></div><div class="line"><span class="keyword">var</span> max = a</div><div class="line"><span class="keyword">if</span>( a &lt; b ) max = b</div><div class="line"></div><div class="line"><span class="comment">// 与else</span></div><div class="line"><span class="keyword">var</span> max: <span class="built_in">Int</span></div><div class="line"><span class="keyword">if</span>(a &gt; b)&#123;</div><div class="line">    max = a</div><div class="line">&#125; <span class="keyword">else</span> &#123;</div><div class="line">    max = b</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 表达式</span></div><div class="line"><span class="keyword">val</span> max = <span class="keyword">if</span>( a &gt; b ) a <span class="keyword">else</span> b</div></pre></td></tr></table></figure></p>
+<p>如果条件分支是代码块，则最后一个表达式为代码块的值<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> max = <span class="keyword">if</span>(a &gt; b)&#123;</div><div class="line">    print(<span class="string">"Choose a"</span>)</div><div class="line">    a</div><div class="line">&#125; <span class="keyword">else</span> &#123;</div><div class="line">    print(<span class="string">"Choose b"</span>)</div><div class="line">    b</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>如果使用if作为表达式非条件语句时（如：返回if表达式的值或将if赋值给变量），则须有else条件分支。详见<a href="https://kotlinlang.org/docs/reference/grammar.html#if" target="_blank" rel="external"><code>if语法</code></a></p>
+<h2 id="When表达式"><a href="#When表达式" class="headerlink" title="When表达式"></a>When表达式</h2><p><code>when</code>替代了<code>switch</code>操作符。when的一个简单形式：<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">when</span>(x)&#123;</div><div class="line">  <span class="number">1</span> -&gt; print(<span class="string">" x == 1"</span>)</div><div class="line">  <span class="number">2</span> -&gt; print(<span class="string">" x == 2"</span>)</div><div class="line">  <span class="keyword">else</span> -&gt; &#123;  <span class="comment">// Note the block</span></div><div class="line">    print(<span class="string">"x is neither 1 nor 2"</span>)</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>when按照顺便比较参数与分支条件直到满足条件。when可以用作表达式或语句。用作表达式时，满足条件的分支对应值则是整个表达式的值。用作语句时，分支的值都会被忽略（如<code>if</code>相似，每个分支都可以是代码块，分支的值是代码块中最后一个表达式的值。）</p>
+<p>如果没有满足条件的分支，则执行else分支。when用作表达式时，必须要有else分支，除非编译器可以证明所有分支条件都被覆盖到。</p>
+<p>如果多个分支处理方式相同，则可以使用逗号组合这些分支：<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">when</span>(x)&#123;</div><div class="line">  <span class="number">0</span> , <span class="number">1</span> -&gt; print(<span class="string">"x == 0 or x == 1"</span>)</div><div class="line">  <span class="keyword">else</span> -&gt; print(<span class="string">"otherwise"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>可以使用任意（不仅仅是常量）表达式作为分支条件<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">when</span>(x)&#123;</div><div class="line">  parseInt(s) -&gt; print(<span class="string">"s encodes x"</span>)</div><div class="line">  <span class="keyword">else</span> -&gt; print(<span class="string">"s does not encode x"</span>)</div><div class="line"> </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>分支条件可以检查集合或<a href="https://kotlinlang.org/docs/reference/ranges.html" target="_blank" rel="external"><code>range</code></a>是否存在指定的参数值<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">when</span>(x)&#123;</div><div class="line">    <span class="keyword">in</span> <span class="number">1.</span><span class="number">.10</span> -&gt; print(<span class="string">"x is in the range"</span>)</div><div class="line">    <span class="keyword">in</span> validNumbers -&gt; print(<span class="string">"x is valid"</span>)</div><div class="line">    !<span class="keyword">in</span> <span class="number">10.</span><span class="number">.20</span> -&gt; print(<span class="string">"x is outsize the range"</span>)</div><div class="line">    <span class="keyword">else</span> -&gt; print(<span class="string">"none of the above"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>也可以用来检查是否是指定的类型参数，因为<a href="https://kotlinlang.org/docs/reference/typecasts.html#smart-casts" target="_blank" rel="external"><code>智能转换</code></a>，不使用类型检查就可以访问类型的属性和方法。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">hasPrefix</span><span class="params">(x: <span class="type">Any</span>)</span></span> = <span class="keyword">when</span>(x)&#123;</div><div class="line">    <span class="keyword">is</span> String -&gt; x.startWith(<span class="string">"prefix"</span>)</div><div class="line">    <span class="keyword">else</span> -&gt; <span class="literal">false</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><code>when</code>也可以替代<code>if-else</code>if控制链。如果没有任何参数，分支条件则是简单boolean表达式，表达式值为true时则执行对应分支。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">when</span> &#123;</div><div class="line">    x.isOdd() -&gt; print(<span class="string">"x is odd"</span>)</div><div class="line">    x.isEven() -&gt; print(<span class="string">"x is even"</span>)</div><div class="line">    <span class="keyword">else</span> -&gt; print(<span class="string">"x is funny"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>跟多关于When,查看<a href="https://kotlinlang.org/docs/reference/grammar.html#when" target="_blank" rel="external"><code>when语法</code></a></p>
+<h2 id="for循环"><a href="#for循环" class="headerlink" title="for循环"></a>for循环</h2><p>for循环能够迭代提供迭代器的任意对象。语法：<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">for</span>(item <span class="keyword">in</span> collection) print(item)</div></pre></td></tr></table></figure></p>
+<p>循环体可以是代码块<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">for</span>(item <span class="keyword">in</span> collection)&#123;</div><div class="line">  <span class="comment">// ...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>for循环能够迭代任何提供迭代器的对象</p>
+<ul>
+<li>有成员或扩展函数<code>iterator()</code>，并且返回类型为：<ul>
+<li>有成员或扩展函数<code>next()</code> 且</li>
+<li>有成员或扩展函数<code>hasNex()</code>，返回类型为Boolean</li>
+</ul>
+</li>
+</ul>
+<p>这三个函数都被标记为<code>operator</code></p>
+<p>迭代数组的<code>for</code>循环被会编译成基于index的循环，而无须创建一个迭代器对象。</p>
+<p>使用index来迭代数组或列表<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">for</span>( i <span class="keyword">in</span> array.indices)&#123;</div><div class="line">  print(array[i])</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<blockquote>
+<p><code>iteration through a range</code>会被编译优化，无须创建额外对象。</p>
+</blockquote>
+<p>可用<code>withIndex</code>库函数实现index迭代<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">for</span>((index, value) <span class="keyword">in</span> array.withIndex())&#123;</div><div class="line">    println(<span class="string">"the element at <span class="variable">$index</span> is $ value"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>查看<a href="https://kotlinlang.org/docs/reference/grammar.html#for" target="_blank" rel="external"><code>for循环语法</code></a></p>
+<h2 id="While循环"><a href="#While循环" class="headerlink" title="While循环"></a>While循环</h2><p>while 和 do..while<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">while</span>(x &gt; <span class="number">0</span>)&#123;</div><div class="line">    x--</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">do</span>&#123;</div><div class="line">  <span class="keyword">val</span> y = retrieveData()</div><div class="line">&#125; <span class="keyword">while</span> ( y != <span class="literal">null</span>)  <span class="comment">// a little different</span></div></pre></td></tr></table></figure></p>
+<p>查看<a href="https://kotlinlang.org/docs/reference/grammar.html#while" target="_blank" rel="external"><code>while语法</code></a></p>
+<h2 id="break与continue"><a href="#break与continue" class="headerlink" title="break与continue"></a>break与continue</h2><p>Kotlin支持循环break和continue操作，参考<code>跳转</code>一节中的文档。</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2017/07/03/Kotlin基础之基础类型与包/" data-toggle="tooltip" data-placement="top" title="Kotlin基础之基础类型与包">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2017/06/21/Kotlin基础之内联函数/" data-toggle="tooltip" data-placement="top" title="Kotlin基础之内联函数">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#kotlin" title="kotlin">kotlin</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "alexwan02";
+    var disqus_identifier = "http://blog.alexwan.cn/2017/07/03/Kotlin基础之跳转与条件循环表达式/";
+    var disqus_url = "http://blog.alexwan.cn/2017/07/03/Kotlin基础之跳转与条件循环表达式/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Alex Studio 2017 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.alexwan.cn/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

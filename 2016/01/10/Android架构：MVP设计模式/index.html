@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Android架构：MVP设计模式 - Alex Studio
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.alexwan.cn/2016/01/10/Android架构：MVP设计模式/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Alex Studio</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                    </div>
+                    <h1>Android架构：MVP设计模式</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by AlexWan on
+                        2016-01-10
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p><a href="http://www.jianshu.com/p/7567ed0d1853?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=writer_share&amp;utm_source=weibo" target="_blank" rel="external">[译]Android开发中的MVP架构
+</a></p>
+<p><a href="http://kymjs.com/code/2015/11/09/01/?hmsr=toutiao.io&amp;utm_medium=toutiao.io&amp;utm_source=toutiao.io" target="_blank" rel="external">用MVP架构开发Android应用</a></p>
+<p><a href="https://github.com/alexwan1989/android-tech-frontier/blob/master/androidweekly%2F%E4%B8%80%E7%A7%8D%E5%9C%A8android%E4%B8%AD%E5%AE%9E%E7%8E%B0MVP%E6%A8%A1%E5%BC%8F%E7%9A%84%E6%96%B0%E6%80%9D%E8%B7%AF%2Freadme.md" target="_blank" rel="external">一种在android中实现MVP模式的新思路</a></p>
+<h3 id="一、MVP是什么"><a href="#一、MVP是什么" class="headerlink" title="一、MVP是什么"></a>一、MVP是什么</h3><p>MVP代表Model，View和Presenter</p>
+<ol>
+<li>View层负责处理用户事件和视图部分的展示。在Android中，它可能是Activity或者Fragment类。</li>
+<li>Model层负责访问数据。数据可以是远端的Server API，本地数据库或者SharedPreference等。</li>
+<li>Presenter层是连接（或适配）View和Model的桥梁。</li>
+</ol>
+<p><strong>核心</strong></p>
+<p>高层接口不能，不应该，并且必须不了解底层接口的细节，是（面向）抽象的，并且是细节隐藏的。</p>
+<h3 id="二、分层"><a href="#二、分层" class="headerlink" title="二、分层"></a>二、分层</h3><h4 id="1-View-UI-Thread"><a href="#1-View-UI-Thread" class="headerlink" title="1.View/UI Thread"></a>1.View/UI Thread</h4><ol>
+<li>所有的细节所在</li>
+<li>如数据库细节，Web框架细节，等等</li>
+</ol>
+<h4 id="2-Presenter-Adapter-Controllers"><a href="#2-Presenter-Adapter-Controllers" class="headerlink" title="2.Presenter/Adapter Controllers"></a>2.Presenter/Adapter Controllers</h4><ol>
+<li>将Use Case和Entity中的数据转换成格式最方便的数据</li>
+<li>外部系统，如数据库或网页能够方便的使用这些数据</li>
+<li>完全包含GUI的MVC架构</li>
+</ol>
+<h4 id="3-UserCase-Business-Logic"><a href="#3-UserCase-Business-Logic" class="headerlink" title="3.UserCase/Business Logic"></a>3.UserCase/Business Logic</h4><ol>
+<li>包含特定于应用程序的业务规则</li>
+<li>精心编排流入Entity或从Entity流出的数据</li>
+<li>指挥Entity直接使用项目范围内的业务规则，从而实现Use Case的目标</li>
+</ol>
+<h4 id="4-Entity-Data-eg-Json，SQL"><a href="#4-Entity-Data-eg-Json，SQL" class="headerlink" title="4.Entity/Data(eg. Json，SQL)"></a>4.Entity/Data(eg. Json，SQL)</h4><ol>
+<li>可以是一个持有方法函数的对象</li>
+<li>可以是一组数据结构或方法函数</li>
+<li>它并不重要，能在项目中被不同应用程序使用即可</li>
+</ol>
+<p>这些模式的动机都是一样的。那就是如何避免复杂混乱的代码，让执行单元测试变得容易，创造高质量应用程序。</p>
+<h3 id="三、实现"><a href="#三、实现" class="headerlink" title="三、实现"></a>三、实现</h3><h4 id="1-AndroidMVP"><a href="#1-AndroidMVP" class="headerlink" title="1.AndroidMVP"></a>1.<a href="https://github.com/antoniolg/androidmvp" target="_blank" rel="external">AndroidMVP</a></h4><p>(1).首先需要定义一个View层接口，让View实现类Activity(Fragment)实现<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">LoginView</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">showProgress</span><span class="params">()</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">hideProgress</span><span class="params">()</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setUsernameError</span><span class="params">()</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setPasswordError</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>(2).定义一个Presenter实现接口，让Presenter实现类实现；Presenter中通过构造时传入的视图层对象操作View</p>
+<p><code>LoginPresenter</code><br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">LoginPresenter</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">validateCredentials</span><span class="params">(String username, String password)</span></span>;</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">onDestroy</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><code>LoginPresenterImpl</code><br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoginPresenterImpl</span> <span class="keyword">implements</span> <span class="title">LoginPresenter</span>, <span class="title">OnLoginFinishedListener</span> </span>&#123;	</div><div class="line">    <span class="keyword">private</span> LoginView loginView;</div><div class="line">    ...</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LoginPresenterImpl</span><span class="params">(LoginView loginView)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.loginView = loginView;</div><div class="line">        <span class="keyword">this</span>.loginInteractor = <span class="keyword">new</span> LoginInteractorImpl();</div><div class="line">    &#125;</div><div class="line">	</div><div class="line">    <span class="meta">@Override</span> </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">validateCredentials</span><span class="params">(String username, String password)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (loginView != <span class="keyword">null</span>) &#123;</div><div class="line">            loginView.showProgress();</div><div class="line">        &#125;</div><div class="line">        loginInteractor.login(username, password, <span class="keyword">this</span>);</div><div class="line">    &#125;</div><div class="line">	</div><div class="line">    <span class="meta">@Override</span> </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onDestroy</span><span class="params">()</span> </span>&#123;</div><div class="line">        loginView = <span class="keyword">null</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>(3).在View实现类Activity(Fragment)中包含Presenter对象，并在Presenter创建的时候传一个View对象<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">A</span> <span class="keyword">extends</span> <span class="title">Activity</span> <span class="keyword">implements</span> <span class="title">LoginView</span>, <span class="title">OnClickListener</span> </span>&#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="comment">// ...</span></div><div class="line">        <span class="comment">// 省略初始化控件</span></div><div class="line">        <span class="comment">// ...</span></div><div class="line">        presenter = <span class="keyword">new</span> LoginPresenterImpl(<span class="keyword">this</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="comment">//...省略众多接口方法</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="2-Activity和Fragment"><a href="#2-Activity和Fragment" class="headerlink" title="2. Activity和Fragment"></a>2. Activity和Fragment</h4><p>Activity 有一个很复杂的生命周期(fragment的生命周期可能会更复杂), 而这些生命周期很有可能对你项目的业务逻辑有非常重大的影响. Activity 可以获取上下文环境和多种android系统服务. Activity中发送Intent，启动Service和执行FragmentTransisitons等。而这些特性在我看来绝不应该是视图层应该涉及的领域(视图的功能就是现实数据和从用户那里获取输入数据，在理想的情况下，视图应该避免业务逻辑).Activity和Fragment不适合作为View</p>
+<ol>
+<li>Activity和Fragment作为presenters</li>
+</ol>
+<p>(1). 去除所有的view</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">IBaseView</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">(LayoutInflater inflater , ViewGroup viewGroup)</span></span>;</div><div class="line">    <span class="function">View <span class="title">getView</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>(2). 创建一个presenter基类 (Activity)<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">BasePresenterActivity</span>&lt;<span class="title">V</span> <span class="keyword">extends</span> <span class="title">IBaseView</span>&gt; <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</div><div class="line">    <span class="keyword">protected</span> V view;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            view = getViewClass().newInstance();</div><div class="line">            view.init(getLayoutInflater(), <span class="keyword">null</span>);</div><div class="line">            setContentView(view.getView());</div><div class="line">            onBindView();</div><div class="line">        &#125; <span class="keyword">catch</span> (InstantiationException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125; <span class="keyword">catch</span> (IllegalAccessException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onResume</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onResume();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDestroy</span><span class="params">()</span> </span>&#123;</div><div class="line">        onDestroyView();</div><div class="line">        view = <span class="keyword">null</span>;</div><div class="line">        <span class="keyword">super</span>.onDestroy();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 获取View对应的Class</div><div class="line">     * <span class="doctag">@return</span> View类</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> Class&lt;V&gt; <span class="title">getViewClass</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 绑定View</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onBindView</span><span class="params">()</span></span>&#123;&#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 清除View</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDestroyView</span><span class="params">()</span></span>&#123;&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>(3). 创建一个基本的presenter(Fragment)<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">BasePresenterFragment</span>&lt;<span class="title">V</span> <span class="keyword">extends</span> <span class="title">IBaseView</span>&gt; <span class="keyword">extends</span> <span class="title">Fragment</span> </span>&#123;</div><div class="line">    <span class="keyword">protected</span> V view;</div><div class="line">    <span class="keyword">protected</span> TabLayout tabLayout;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> View <span class="title">onCreateView</span><span class="params">(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        View view = <span class="keyword">null</span>;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            <span class="keyword">this</span>.view = getViewClass().newInstance();</div><div class="line">            <span class="keyword">this</span>.view.init(inflater , container);</div><div class="line">            view = <span class="keyword">this</span>.view.getView();</div><div class="line">            onBindView();</div><div class="line">        &#125; <span class="keyword">catch</span> (java.lang.InstantiationException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125; <span class="keyword">catch</span> (IllegalAccessException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> view;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onDestroyView</span><span class="params">()</span> </span>&#123;</div><div class="line">        onDestroyVU();</div><div class="line">        <span class="keyword">this</span>.view = <span class="keyword">null</span>;</div><div class="line">        <span class="keyword">super</span>.onDestroyView();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDestroyVU</span><span class="params">()</span></span>&#123;&#125;</div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onBindView</span><span class="params">()</span></span>&#123;&#125;</div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">setTabLayout</span><span class="params">(TabLayout tabLayout)</span></span>&#123;&#125;;</div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> Class&lt;V&gt; <span class="title">getViewClass</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>(4). 使用<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line">* MainActivityView</div><div class="line">*/</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">IMainActivityView</span> <span class="keyword">implements</span> <span class="title">IBaseView</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> View mView;</div><div class="line">    <span class="meta">@Bind</span>(R.id.tool_bar)</div><div class="line">    Toolbar mToolbar;</div><div class="line">    <span class="meta">@Bind</span>(R.id.drawer_layout)</div><div class="line">    DrawerLayout mDrawerLayout;</div><div class="line">    <span class="meta">@Bind</span>(R.id.root_layout)</div><div class="line">    CoordinatorLayout mRootLayout;</div><div class="line">    ActionBarDrawerToggle drawerToggle;</div><div class="line">    <span class="meta">@Bind</span>(R.id.navigation)</div><div class="line">    NavigationView navigationView;</div><div class="line">    <span class="meta">@Bind</span>(R.id.tab_layout)</div><div class="line">    TabLayout tabLayout;</div><div class="line">    <span class="meta">@Bind</span>(R.id.fab_btn)</div><div class="line">    FloatingActionButton fabBtn;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(LayoutInflater inflater, ViewGroup viewGroup)</span> </span>&#123;</div><div class="line">        mView = inflater.inflate(R.layout.activity_main, viewGroup, <span class="keyword">false</span>);</div><div class="line">        ButterKnife.bind(<span class="keyword">this</span>, mView);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> View <span class="title">getView</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> mView;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 初始化界面</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> activity activity</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initViews</span><span class="params">(<span class="keyword">final</span> MainActivity activity)</span> </span>&#123;</div><div class="line">        <span class="comment">// toolbar</span></div><div class="line">        activity.setSupportActionBar(mToolbar);</div><div class="line">        ActionBar actionBar = activity.getSupportActionBar();</div><div class="line">        <span class="keyword">if</span> (actionBar != <span class="keyword">null</span>) &#123;</div><div class="line">            actionBar.setDisplayShowHomeEnabled(<span class="keyword">true</span>);</div><div class="line">            actionBar.setDisplayShowTitleEnabled(<span class="keyword">true</span>);</div><div class="line">            actionBar.setDisplayHomeAsUpEnabled(<span class="keyword">true</span>);</div><div class="line">        &#125;</div><div class="line">        <span class="comment">// drawer toggle</span></div><div class="line">        <span class="keyword">this</span>.drawerToggle = <span class="keyword">new</span> ActionBarDrawerToggle(activity, mDrawerLayout, R.string.tool_name, R.string.tool_name);</div><div class="line">        drawerToggle.setDrawerIndicatorEnabled(<span class="keyword">true</span>);</div><div class="line">        mDrawerLayout.setDrawerListener(drawerToggle);</div><div class="line">        navigationView.setCheckedItem(R.id.main_frame);</div><div class="line">        <span class="comment">// fragment</span></div><div class="line">        <span class="keyword">final</span> HomeFragment homeFragment = <span class="keyword">new</span> HomeFragment();</div><div class="line">        homeFragment.setTabLayout(tabLayout);</div><div class="line">        <span class="keyword">final</span> SettingFragment settingFragment = <span class="keyword">new</span> SettingFragment();</div><div class="line">        <span class="keyword">final</span> FragmentTransaction transaction = activity.getSupportFragmentManager().beginTransaction();</div><div class="line">        transaction.replace(R.id.frame_layout , homeFragment).commit();</div><div class="line">        <span class="comment">// navigation</span></div><div class="line">        navigationView.setNavigationItemSelectedListener(<span class="keyword">new</span> OnNavigationItemSelectedListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onNavigationItemSelected</span><span class="params">(MenuItem item)</span> </span>&#123;</div><div class="line">                <span class="keyword">int</span> id = item.getItemId();</div><div class="line">                mDrawerLayout.closeDrawers();</div><div class="line">                navigationView.setCheckedItem(id);</div><div class="line">                FragmentTransaction transaction = activity.getSupportFragmentManager().beginTransaction();</div><div class="line">                <span class="keyword">switch</span> (id) &#123;</div><div class="line">                    <span class="keyword">case</span> R.id.main_frame:</div><div class="line">                        tabLayout.setVisibility(View.VISIBLE);</div><div class="line">                        transaction.replace(R.id.frame_layout , homeFragment).commit();</div><div class="line">                        <span class="keyword">break</span>;</div><div class="line">                    <span class="keyword">case</span> R.id.message_frame:</div><div class="line">                        tabLayout.setVisibility(View.GONE);</div><div class="line">                        transaction.replace(R.id.frame_layout , settingFragment).commit();</div><div class="line">                        <span class="keyword">break</span>;</div><div class="line">                    <span class="keyword">case</span> R.id.search_frame:</div><div class="line">                        tabLayout.setVisibility(View.GONE);</div><div class="line">                        transaction.replace(R.id.frame_layout , settingFragment).commit();</div><div class="line">                        <span class="keyword">break</span>;</div><div class="line">                    <span class="keyword">default</span>:</div><div class="line">                        <span class="keyword">break</span>;</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onPostCreate</span><span class="params">()</span> </span>&#123;</div><div class="line">        drawerToggle.syncState();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onConfigurationChanged</span><span class="params">(Configuration newConfig)</span> </span>&#123;</div><div class="line">        drawerToggle.onConfigurationChanged(newConfig);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onOptionsItemSelected</span><span class="params">(MenuItem item)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> drawerToggle.onOptionsItemSelected(item);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>MainActivity继承封装View接口的BasePresenterActivity，实现Presenter具体业务逻辑<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">BasePresenterActivity</span>&lt;<span class="title">IMainActivityView</span>&gt; </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> FragmentTransaction transaction;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        </div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onBindView</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onBindView();</div><div class="line">        view.initViews(<span class="keyword">this</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDestroyView</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onDestroyView();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onPostCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onPostCreate(savedInstanceState);</div><div class="line">        view.onPostCreate();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onConfigurationChanged</span><span class="params">(Configuration newConfig)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onConfigurationChanged(newConfig);</div><div class="line">        view.onConfigurationChanged(newConfig);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onCreateOptionsMenu</span><span class="params">(Menu menu)</span> </span>&#123;</div><div class="line">        getMenuInflater().inflate(R.menu.navigation_menu , menu);</div><div class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.onCreateOptionsMenu(menu);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onOptionsItemSelected</span><span class="params">(MenuItem item)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span>(view.onOptionsItemSelected(item))</div><div class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">        <span class="keyword">int</span> id = item.getItemId();</div><div class="line">        <span class="keyword">switch</span> (id)&#123;</div><div class="line">            <span class="keyword">case</span> R.id.main_frame:</div><div class="line">                transaction.add(<span class="keyword">new</span> HomeFragment() , <span class="string">"home_fragment"</span>);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> R.id.oauth_frame:</div><div class="line">                Intent intent = <span class="keyword">new</span> Intent(MainActivity.<span class="keyword">this</span>, WBAuthActivity.class);</div><div class="line">                MainActivity.<span class="keyword">this</span>.startActivity(intent);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">default</span>:</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.onOptionsItemSelected(item);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> Class&lt;IMainActivityView&gt; <span class="title">getViewClass</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> IMainActivityView.class;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>Code：<a href="https://github.com/wangwei1121/iweibo" target="_blank" rel="external">Github</a></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/01/11/Android网络Client：Retrofit(一)/" data-toggle="tooltip" data-placement="top" title="Android网络Client：Retrofit(一)">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/01/10/Java设计模式（一）：观察者模式/" data-toggle="tooltip" data-placement="top" title="Java设计模式（一）：观察者模式">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "alexwan02";
+    var disqus_identifier = "http://blog.alexwan.cn/2016/01/10/Android架构：MVP设计模式/";
+    var disqus_url = "http://blog.alexwan.cn/2016/01/10/Android架构：MVP设计模式/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Alex Studio 2017 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.alexwan.cn/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

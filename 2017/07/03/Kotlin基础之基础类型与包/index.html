@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Kotlin基础之基础类型与包 - Alex Studio
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.alexwan.cn/2017/07/03/Kotlin基础之基础类型与包/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Alex Studio</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#kotlin" title="kotlin">kotlin</a>
+                        
+                    </div>
+                    <h1>Kotlin基础之基础类型与包</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by AlexWan on
+                        2017-07-03
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="基础类型"><a href="#基础类型" class="headerlink" title="基础类型"></a>基础类型</h1><p>在Kotlin中，一切皆对象从这种意义上来说，我们可以调用任何变量的属性和方法。有些内嵌类型的实现是经过优化的，但是对于开发者而言看上就是普通的类。这些类型有：数值类型，字符类型，boolean类型，数组类型</p>
+<h2 id="数值类型"><a href="#数值类型" class="headerlink" title="数值类型"></a>数值类型</h2><p>Kotlin使用类似Java的方式处理数值类型，但是与Java不是完全相同。如：不支持数值的隐式扩大转换或在某些情况中字面常量会些许不同。</p>
+<p>Kotlin内嵌了以下几种数值类型</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Bit width</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Double</td>
+<td>64</td>
+</tr>
+<tr>
+<td>Float</td>
+<td>32</td>
+</tr>
+<tr>
+<td>Long</td>
+<td>64</td>
+</tr>
+<tr>
+<td>Int</td>
+<td>32</td>
+</tr>
+<tr>
+<td>Short</td>
+<td>16</td>
+</tr>
+<tr>
+<td>Byte</td>
+<td>18</td>
+</tr>
+</tbody>
+</table>
+<p>在Kotlin中，字符常量不属于数值类型</p>
+<h2 id="字面常量"><a href="#字面常量" class="headerlink" title="字面常量"></a>字面常量</h2><p>整型的字面常量</p>
+<ul>
+<li>十进制：123<ul>
+<li>Long类型后缀L表示：123L</li>
+</ul>
+</li>
+<li>十六进制：0x0F</li>
+<li>二进制：0b00001011</li>
+</ul>
+<blockquote>
+<p>不支持八进制</p>
+</blockquote>
+<p>支持浮点型数值的常规字符</p>
+<ul>
+<li>Double：<code>123.5</code> ，<code>123.5e10</code></li>
+<li>Float使用<code>f</code>或<code>F</code>标记：<code>123.5f</code></li>
+</ul>
+<h2 id="数字常量中的下划线"><a href="#数字常量中的下划线" class="headerlink" title="数字常量中的下划线"></a>数字常量中的下划线</h2><p>可以在数字中使用下划线，让数字可读性更好。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> oneMillion = <span class="number">1</span>_000_000</div><div class="line"><span class="keyword">val</span> creditCardNumber = <span class="number">1234</span>_5678_9012_3456L</div><div class="line"><span class="keyword">val</span> socialSecurityNumber = <span class="number">999</span>_99_9999L</div><div class="line"><span class="keyword">val</span> hexBytes = <span class="number">0xFF</span>_EC_DE_5E</div><div class="line"><span class="keyword">val</span> bytes = <span class="number">0</span>b11010010_01101001_10010100_10010010</div></pre></td></tr></table></figure></p>
+<h2 id="表示法"><a href="#表示法" class="headerlink" title="表示法"></a>表示法</h2><p>在Java平台，数字物理存储为JVM的原始类型，除非需要一个可以为空的数值引用或作为泛型引用，这种情况时，数字会被自动装箱。</p>
+<p>数值装箱不一定保留同一性<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> a: <span class="built_in">Int</span> = <span class="number">10000</span></div><div class="line">print(a === a) <span class="comment">// Prints 'true'</span></div><div class="line"><span class="keyword">val</span> boxedA: <span class="built_in">Int</span>? = a</div><div class="line"><span class="keyword">val</span> anotherBoxedA: <span class="built_in">Int</span>? = a</div><div class="line">print(boxedA === anotherBoxedA) <span class="comment">// !!!Prints 'false'!!!</span></div></pre></td></tr></table></figure></p>
+<p>但保留相等性<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> a: <span class="built_in">Int</span> = <span class="number">10000</span></div><div class="line">print(a == a) <span class="comment">// Prints 'true'</span></div><div class="line"><span class="keyword">val</span> boxedA: <span class="built_in">Int</span>? = a</div><div class="line"><span class="keyword">val</span> anotherBoxedA: <span class="built_in">Int</span>? = a</div><div class="line">print(boxedA == anotherBoxedA) <span class="comment">// Prints 'true'</span></div></pre></td></tr></table></figure></p>
+<h2 id="显式转换"><a href="#显式转换" class="headerlink" title="显式转换"></a>显式转换</h2><p>因为不同的表示法，较小类型并非是较大类型数字的子类型。因为如果是的话，则会遇到下面的问题<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 非实际编译，假设性代码</span></div><div class="line"><span class="keyword">val</span> a: <span class="built_in">Int</span>? = <span class="number">1</span> <span class="comment">//  Int装箱</span></div><div class="line"><span class="keyword">val</span> b: <span class="built_in">Long</span>? = a <span class="comment">// 隐式装换，生成Long类型装箱</span></div><div class="line">print(a == b) <span class="comment">// 因为Long只与Long类型比较，打印`false`</span></div></pre></td></tr></table></figure></p>
+<p>不仅仅是同一性，甚至相等性也默默丢失。</p>
+<p>因此较小的类型无法隐式转换成较大类型。意思是无法将<code>Byte</code>类型数值隐式转为<code>Int</code>类型<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> b: <span class="built_in">Byte</span> = <span class="number">1</span> <span class="comment">// OK, literals are checked statically</span></div><div class="line"><span class="keyword">val</span> i: <span class="built_in">Int</span> = b <span class="comment">// ERROR</span></div></pre></td></tr></table></figure></p>
+<p>使用显式转换扩大数值<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> i: <span class="built_in">Int</span> = b.toInt() <span class="comment">// OK: explicitly widened</span></div></pre></td></tr></table></figure></p>
+<p>所有数值类型都支持以下转换：</p>
+<ul>
+<li>toByte(): Byte</li>
+<li>toShort(): Short</li>
+<li>toInt(): Int</li>
+<li>toLong(): Long</li>
+<li>toFloat(): Float</li>
+<li>toDouble(): Double</li>
+<li>toChar(): Char</li>
+</ul>
+<p>缺少隐式转换很少被注意到，因为数值类型可从上下文中推断出，合适转换算术运算符的重载。如<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> l = <span class="number">1</span>L + <span class="number">3</span> <span class="comment">// Long + Int =&gt; Long</span></div></pre></td></tr></table></figure></p>
+<h2 id="操作符"><a href="#操作符" class="headerlink" title="操作符"></a>操作符</h2><p>Kotlin支持标准的数值操作符，这些操作符声明为合适类的成员（编译会优化操作符到对应指令）。查看<a href="https://kotlinlang.org/docs/reference/operator-overloading.html" target="_blank" rel="external"><code>操作符重载</code></a></p>
+<p>因为按位操作符没有特定的符号表示，使用中缀表达式来使用对应名称的函数。如<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> x = (<span class="number">1</span> shl <span class="number">2</span>) and <span class="number">0x000FF000</span></div></pre></td></tr></table></figure></p>
+<p>下面就是按位操作符的完整列表（仅适应于<code>Int</code>和<code>Long</code>）</p>
+<ul>
+<li>shl(bits) – 有符号左移 (Java’s &lt;&lt;)</li>
+<li>shr(bits) – 有符号右移 (Java’s &gt;&gt;)</li>
+<li>ushr(bits) – 无符号右移 (Java’s &gt;&gt;&gt;)</li>
+<li>and(bits) – 按位与</li>
+<li>or(bits) – 按位或</li>
+<li>xor(bits) – 按位异或</li>
+<li>inv() – 按位反转</li>
+</ul>
+<h2 id="字符"><a href="#字符" class="headerlink" title="字符"></a>字符</h2><p><code>Char</code>表示字符，不能直接作为数值使用。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">check</span><span class="params">(c: <span class="type">Char</span>)</span></span> &#123;</div><div class="line">    <span class="keyword">if</span> (c == <span class="number">1</span>) &#123; <span class="comment">// ERROR: incompatible types</span></div><div class="line">        <span class="comment">// ...</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>字符常量使用单引号括起来，如<code>1</code>。特殊字符串使用反斜杠转义。<code>\t</code>、<code>\b</code>、<code>\n</code>、<code>\r</code>、<code>\&#39;</code>、<code>\\</code>和<code>\$</code>等转义字都符能支持。使用Unicode转义字符语法（<code>&#39;\uFF00&#39;</code>）来对其他字符进行编码。</p>
+<p>可以显式将Char转为Int类型。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">decimalDigitValue</span><span class="params">(c: <span class="type">Char</span>)</span></span>: <span class="built_in">Int</span> &#123;</div><div class="line">    <span class="keyword">if</span> (c !<span class="keyword">in</span> <span class="string">'0'</span>..<span class="string">'9'</span>)</div><div class="line">        <span class="keyword">throw</span> IllegalArgumentException(<span class="string">"Out of range"</span>)</div><div class="line">    <span class="keyword">return</span> c.toInt() - <span class="string">'0'</span>.toInt() <span class="comment">// Explicit conversions to numbers</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>当需要可为空的引用时，字符可以像数字一样装箱。装箱操作不会保留同一性。</p>
+<h2 id="Boolean"><a href="#Boolean" class="headerlink" title="Boolean"></a>Boolean</h2><p>Boolean类型表示布尔值，有两个值<em>true</em>和<em>false</em></p>
+<p>当为可空的引用时，Boolean类型进行装箱。</p>
+<p>内置的boolean操作包括：</p>
+<ul>
+<li>|| 短路或</li>
+<li>&amp;&amp; 短路与</li>
+<li>!  逻辑非</li>
+</ul>
+<h2 id="Array数组"><a href="#Array数组" class="headerlink" title="Array数组"></a>Array数组</h2><p>Kotlin使用<code>Array</code>类表示数组。Array类定义了<code>set</code>与<code>get</code>函数（按照函数重载定义会转换成<code>[]</code>）,<code>size</code>属性，和其他几个有用的函数。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Array</span>&lt;<span class="type">T</span>&gt; <span class="keyword">private</span> <span class="keyword">constructor</span></span>() &#123;</div><div class="line">    <span class="keyword">val</span> size: <span class="built_in">Int</span></div><div class="line">    <span class="keyword">operator</span> <span class="function"><span class="keyword">fun</span> <span class="title">get</span><span class="params">(index: <span class="type">Int</span>)</span></span>: T</div><div class="line">    <span class="keyword">operator</span> <span class="function"><span class="keyword">fun</span> <span class="title">set</span><span class="params">(index: <span class="type">Int</span>, value: <span class="type">T</span>)</span></span>: <span class="built_in">Unit</span></div><div class="line"></div><div class="line">    <span class="keyword">operator</span> <span class="function"><span class="keyword">fun</span> <span class="title">iterator</span><span class="params">()</span></span>: Iterator&lt;T&gt;</div><div class="line">    <span class="comment">// ...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>使用函数<code>arrayOf()</code>来创建数组，传入多个item参数（如arrayOf(1, 2, ,3) 能够创建[1 , 2, 3]的数组）。使用函数<code>arrayOfNulls()</code>来创建指定长度但是元素为空的数组。</p>
+<p>使用一个工厂函数传入数组长度，返回数组指定index的元素值。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="comment">// Creates an Array&lt;String&gt; with values ["0", "1", "4", "9", "16"]</span></div><div class="line"><span class="keyword">val</span> asc = Array(<span class="number">5</span>, &#123; i -&gt; (i * i).toString() &#125;)</div></pre></td></tr></table></figure></p>
+<p>正如上面所说，<code>[]</code>操作符可以替代成员函数<code>get</code>和<code>set</code>。</p>
+<blockquote>
+<p>与Java不同，Kotlin中的数组是不可变的，也就是说Kotlin不能将<code>Array&lt;String&gt;</code>赋值给<code>Array&lt;Any&gt;</code>，也就预防可能的运行时问题（但可以使用<code>Array&lt;outAny&gt;</code>），详见<a href="https://kotlinlang.org/docs/reference/generics.html#type-projections" target="_blank" rel="external"><code>类型保护</code></a></p>
+</blockquote>
+<p>Kotlin有特殊类来表示原始类型数组，而不用向上装箱：<code>ByteArray</code>、<code>ShortArray</code>、<code>IntArray</code>等等。这些类与<code>Array</code>类没有继承关系，但是有相同的方法和属性，每个都有响应的工厂方法。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> x: IntArray = intArrayOf(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</div><div class="line">x[<span class="number">0</span>] = x[<span class="number">1</span>] + x[<span class="number">2</span>]</div></pre></td></tr></table></figure></p>
+<h2 id="String"><a href="#String" class="headerlink" title="String"></a>String</h2><p>String表示String类型数据。String不可变，string中的字符元素可使用<code>s[i]</code>方式访问。可使用<code>for</code>循环来迭代String。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">for</span> (c <span class="keyword">in</span> str) &#123;</div><div class="line">    println(c)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>String常量<br>Kotlin支持两种string字面常量：转义string与raw string。转义string可能含有转义字符。raw string 可以有换行符和任意字符。</p>
+<p>转义string与java很像<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> s = <span class="string">"Hello World !\n"</span></div></pre></td></tr></table></figure></p>
+<p>转义与常规方式相同，使用转义字符。详情查看<a href="https://kotlinlang.org/docs/reference/basic-types.html#characters" target="_blank" rel="external"><code>字符</code></a>。</p>
+<p>raw string使用三个引号界定<code>&quot;&quot;&quot;</code>，不用转义字符，可以含有换行字符和任意其他字符。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> text = <span class="string">"""</span></div><div class="line">    for (c in "foo")</div><div class="line">        print(c)</div><div class="line">"""</div></pre></td></tr></table></figure></p>
+<p>可以使用<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.text/trim-margin.html" target="_blank" rel="external"><code>trimMargin()</code></a>函数去除前导空格。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> text = <span class="string">"""</span></div><div class="line">    |Tell me and I forget.</div><div class="line">    |Teach me and I remember.</div><div class="line">    |Involve me and I learn.</div><div class="line">    |(Benjamin Franklin)</div><div class="line">    """.trimMargin()</div></pre></td></tr></table></figure></p>
+<p>默认使用<code>|</code>表示边缘前缀，也可以传入其他字符，如<code>trimMargin(&quot;&gt;&quot;)</code>。</p>
+<h2 id="String模板"><a href="#String模板" class="headerlink" title="String模板"></a>String模板</h2><p>String可以包含模板表达式，如将代码中的返回结果串联到字符串中。模板表达式由<code>$</code>起始符与参数名构成。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> i = <span class="number">10</span></div><div class="line"><span class="keyword">val</span> s = <span class="string">"i = <span class="variable">$i</span>"</span> <span class="comment">// evaluates to "i = 10"</span></div></pre></td></tr></table></figure></p>
+<p>或者在<code>{}</code>中的任意表达式<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> s = <span class="string">"abc"</span></div><div class="line"><span class="keyword">val</span> str = <span class="string">"<span class="variable">$s</span>.length is <span class="subst">$&#123;s.length&#125;</span>"</span> <span class="comment">// evaluates to "abc.length is 3"</span></div></pre></td></tr></table></figure></p>
+<p>String模板在raw string和转义string中都可以使用。如果要在raw string中表示一个$字符常量（不支持反斜杠转义），则可使用下面语法：<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> price = <span class="string">"""</span></div><div class="line"><span class="subst">$&#123;<span class="string">'$'</span>&#125;</span>9.99</div><div class="line">"""</div></pre></td></tr></table></figure></p>
+<h1 id="Package包"><a href="#Package包" class="headerlink" title="Package包"></a>Package包</h1><p>源码文件可能需要声明包命<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">package</span> foo.bar</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">baz</span><span class="params">()</span></span> &#123;&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Goo</span> </span>&#123;&#125;</div></pre></td></tr></table></figure></p>
+<p>源码文件所有内容（如类与函数）都包含在声明的包中。上面例子中，<code>baz()</code>全称为<code>foo.bar.baz</code>，<code>Goo</code>的全称为<code>foo.bar.Goo</code>。</p>
+<p>如果未执行包，文件内容属于无名的默认包</p>
+<h2 id="默认导入"><a href="#默认导入" class="headerlink" title="默认导入"></a>默认导入</h2><p>许多包默认导入到Kotlin的每个文件中</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">kotlin.*</div><div class="line">kotlin.<span class="keyword">annotation</span>.*</div><div class="line">kotlin.collections.*</div><div class="line">kotlin.comparisons.* (since <span class="number">1.1</span>)</div><div class="line">kotlin.io.*</div><div class="line">kotlin.ranges.*</div><div class="line">kotlin.sequences.*</div><div class="line">kotlin.text.*</div></pre></td></tr></table></figure>
+<p>根据目标平台导入附加包<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">JVM:</div><div class="line">    java.lang.*</div><div class="line">    kotlin.jvm.*</div><div class="line">JS:</div><div class="line">    kotlin.js.*</div></pre></td></tr></table></figure></p>
+<h2 id="导入"><a href="#导入" class="headerlink" title="导入"></a>导入</h2><p>处理默认导入，每个文件可以含有自己导入的目录。导入的语法描述参考<a href="https://kotlinlang.org/docs/reference/grammar.html#import" target="_blank" rel="external"><code>Import</code></a></p>
+<p>可以导入单独名称<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">import</span> foo.Bar <span class="comment">// Bar is now accessible without qualification</span></div></pre></td></tr></table></figure></p>
+<p>或者访问范围内容（包，类，对象等）<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">import</span> foo.* <span class="comment">// everything in 'foo' becomes accessible</span></div></pre></td></tr></table></figure></p>
+<p>出现冲突时，使用<code>as</code>关键字给冲突包设置别名<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">import</span> foo.Bar <span class="comment">// Bar is accessible</span></div><div class="line"><span class="keyword">import</span> bar.Bar <span class="keyword">as</span> bBar <span class="comment">// bBar stands for 'bar.Bar'</span></div></pre></td></tr></table></figure></p>
+<p><code>import</code>关键字不限于导入类，也可以用来导入其他声明：</p>
+<ul>
+<li>上层函数与属性</li>
+<li>在<a href="https://kotlinlang.org/docs/reference/object-declarations.html#object-declarations" target="_blank" rel="external"><code>对象声明</code></a>中声明的函数与属性</li>
+<li><a href="https://kotlinlang.org/docs/reference/enum-classes.html" target="_blank" rel="external"><code>枚举常量</code></a></li>
+</ul>
+<p>与Java不同的是，Kotlin没有单独的<code>import static</code>语法；所有声明都使用<code>import</code>关键字导入。</p>
+<h2 id="顶层声明访问"><a href="#顶层声明访问" class="headerlink" title="顶层声明访问"></a>顶层声明访问</h2><p>如果顶层声明标记为<code>private</code>，则它私有属于在声明的文件。详情查看<a href="https://kotlinlang.org/docs/reference/visibility-modifiers.html" target="_blank" rel="external"><code>访问修饰符</code></a></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2017/07/03/Kotlin基础之类、继承、可见性修饰符/" data-toggle="tooltip" data-placement="top" title="Kotlin基础之类、继承、可见性修饰符">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2017/07/03/Kotlin基础之跳转与条件循环表达式/" data-toggle="tooltip" data-placement="top" title="Kotlin基础之跳转与条件循环表达式">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#kotlin" title="kotlin">kotlin</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "alexwan02";
+    var disqus_identifier = "http://blog.alexwan.cn/2017/07/03/Kotlin基础之基础类型与包/";
+    var disqus_url = "http://blog.alexwan.cn/2017/07/03/Kotlin基础之基础类型与包/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Alex Studio 2017 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.alexwan.cn/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

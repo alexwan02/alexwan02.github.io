@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Android：Notification基础 - Alex Studio
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.alexwan.cn/2016/07/22/Android：Service与Notification/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Alex Studio</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#android-aosp" title="android-aosp">android-aosp</a>
+                        
+                    </div>
+                    <h1>Android：Notification基础</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by AlexWan on
+                        2016-07-22
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="Notification-通知"><a href="#Notification-通知" class="headerlink" title="Notification 通知"></a>Notification 通知</h2><p>所谓通知就是在通知栏或状态显示的消息UI。在app中通知一般用在即时通讯、音乐播放、闹钟等功能上。因此了解如何创建通知并且在多种不同配置的设备上进行适配，还有很有必要的。</p>
+<h2 id="一、创建通知"><a href="#一、创建通知" class="headerlink" title="一、创建通知"></a>一、创建通知</h2><p>从Android 3.0版本开始，Android 添加了Notification.Builder相关API来帮助实现通知功能，但是对版本3.0以下的Android通知，需要通过v4包中的<a href="https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html" target="_blank" rel="external">NotificationCompat.Builder</a>类来创建通知，也是本文主要的创建通知的方式。调用<a href="https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#build(" target="_blank" rel="external">NotificationCompat.Builder.build()</a>创建<a href="https://developer.android.com/reference/android/app/Notification.html" target="_blank" rel="external">Notification</a>对象，然后通过<a href="https://developer.android.com/reference/android/app/NotificationManager.html#notify(int, android.app.Notification" target="_blank" rel="external">NotificationManager.notify()</a>来发送通知</p>
+<h3 id="1-通知的必要元素"><a href="#1-通知的必要元素" class="headerlink" title="1. 通知的必要元素"></a>1. 通知的必要元素</h3><p>通知对象必须要指定至少以下几个元素</p>
+<ul>
+<li>小图标，通过调用<a href="https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#setSmallIcon(int" target="_blank" rel="external">setSmallIcon()</a></li>
+<li>标题，通过调用<a href="https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#setContentTitle(java.lang.CharSequence" target="_blank" rel="external">setContentTitle()</a></li>
+<li>通知文本，通过调用<a href="https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#setContentText(java.lang.CharSequence" target="_blank" rel="external">setContentText()</a></li>
+</ul>
+<h3 id="2-其他可选的通知设置"><a href="#2-其他可选的通知设置" class="headerlink" title="2. 其他可选的通知设置"></a>2. 其他可选的通知设置</h3><p>通知除了三个必要的元素，其他的内容设置都是可选项，可参考<a href="https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html" target="_blank" rel="external">NotificationCompat.Builder</a>查看相关API</p>
+<ol>
+<li><p>）通知行为<br>尽管这个是可选的，但在实际开发的过程中至少要为通知添加一个指定的行为。比如：点击通知时跳转到应用中指定的Activity等。<br>通知可以提供多个Action，用来触发用户点击通知时的行为，常用方式就是跳转到应用指定页面。或者推迟闹钟、快速回复短信（需要Android 4.1及以上版本）等。在添加这些功能时，要保证应用已经实现了相应的功能。<br>在创建通知时，通过<a href="https://developer.android.com/reference/android/app/PendingIntent.html" target="_blank" rel="external">PendingIntent</a>为通知指定点击时的要启动的Activity、Service或BroadcastReceiver。如下面的示例代码中，调用<a href="https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html" target="_blank" rel="external">NotificationCompat.Builder</a>的<a href="https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#setContentIntent(android.app.PendingIntent" target="_blank" rel="external">setContentIntent()</a>)方法设置启动Activity的PendingIntent对象，来实现点击通知跳转到指定Activity的功能</p>
+ <figure class="highlight java"><table><tr><td class="code"><pre><div class="line">...</div><div class="line">NotificationCompat.Builder mBuilder = </div><div class="line">    <span class="keyword">new</span> NotificationCompat.Builder(<span class="keyword">this</span>)</div><div class="line">        .setSmallIcon(R.drawable.notification_icon)</div><div class="line">        .setContentTitle(<span class="string">"My Notification"</span>)</div><div class="line">        .setContexttext(<span class="string">"Hello World"</span>);</div><div class="line">...</div><div class="line"><span class="comment">// 创建启动的Activity的Intent</span></div><div class="line">Intent notifyIntent = <span class="keyword">new</span> Intent(<span class="keyword">this</span> , ResultActivity.class);</div><div class="line"><span class="comment">// 设置Acitivity的新的空栈</span></div><div class="line">notifyIntent.setFlag(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);</div><div class="line"><span class="comment">// 创建PendingIntent</span></div><div class="line">PendingIntent notifyPendingIntent = </div><div class="line">    PendingIntent.getActivity(<span class="keyword">this</span> , <span class="number">0</span> , notifyIntent , PendingIntent.FLAG_UPDATE_CURRENT);</div><div class="line"><span class="comment">// 设置通知的ContentIntent</span></div><div class="line">builder.setContentIntent(notifyPendingIntent);</div><div class="line"><span class="comment">// 发送通知</span></div><div class="line">...</div></pre></td></tr></table></figure>
+</li>
+<li><p>）通知优先级<br>根据定义的优先级可以决定通知在通知栏中的显示位置。设置通知优先级，调用<a href="https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#setPriority(int" target="_blank" rel="external">NotificationCompat.Builder.setPriority()</a>)方法，参数为NotificationCompat中<a href="https://developer.android.com/reference/android/support/v4/app/NotificationCompat.html#PRIORITY_MIN" target="_blank" rel="external">PRIORITY_MIN（-2）</a>到<a href="https://developer.android.com/reference/android/support/v4/app/NotificationCompat.html#PRIORITY_MAX" target="_blank" rel="external">PRIORITY_MAX（2）</a>之前的值。默认为PRIORITY_DEFAULT（0）；查看<a href="https://developer.android.com/design/patterns/notifications.html" target="_blank" rel="external">Correctly set and manage notification priority</a>，为通知设置合适的优先级。</p>
+</li>
+<li><p>）创建简单的通知<br>点击通知时打开指定Actviity。</p>
+ <figure class="highlight java"><table><tr><td class="code"><pre><div class="line">NotificationCompat.Builder mBuilder =</div><div class="line">        <span class="keyword">new</span> NotificationCompat.Builder(<span class="keyword">this</span>)</div><div class="line">        .setSmallIcon(R.drawable.notification_icon)</div><div class="line">        .setContentTitle(<span class="string">"My notification"</span>)</div><div class="line">        .setContentText(<span class="string">"Hello World!"</span>);</div><div class="line"><span class="comment">// Creates an explicit intent for an Activity in your app</span></div><div class="line">Intent resultIntent = <span class="keyword">new</span> Intent(<span class="keyword">this</span>, ResultActivity.class);</div><div class="line"></div><div class="line"><span class="comment">// The stack builder object will contain an artificial back stack for the</span></div><div class="line"><span class="comment">// started Activity.</span></div><div class="line"><span class="comment">// TaskStackBuilder 为启动的Activity创建一个伪造的返回栈</span></div><div class="line"><span class="comment">// 能够回到桌面</span></div><div class="line">TaskStackBuilder stackBuilder = TaskStackBuilder.create(<span class="keyword">this</span>);</div><div class="line"><span class="comment">// 为Intent添加伪造返回栈</span></div><div class="line">stackBuilder.addParentStack(ResultActivity.class);</div><div class="line"><span class="comment">// Adds the Intent that starts the Activity to the top of the stack</span></div><div class="line">stackBuilder.addNextIntent(resultIntent);</div><div class="line">PendingIntent resultPendingIntent =</div><div class="line">        stackBuilder.getPendingIntent(</div><div class="line">            <span class="number">0</span>,</div><div class="line">            PendingIntent.FLAG_UPDATE_CURRENT</div><div class="line">        );</div><div class="line">mBuilder.setContentIntent(resultPendingIntent);</div><div class="line">NotificationManager mNotificationManager =</div><div class="line">    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);</div><div class="line"><span class="comment">// id可以更新Notification</span></div><div class="line">mNotificationManager.notify(mId, mBuilder.build());</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="2-应用扩展布局"><a href="#2-应用扩展布局" class="headerlink" title="2. 应用扩展布局"></a>2. 应用扩展布局</h3><p>先创建带有普通视图的NotificationCompat.Builder，调用Builder.setStyle()，参数为以扩展布局为对象，需要Android版本 4.1及以上，4.1之前需要做兼容性处理，参考<a href="https://developer.android.com/guide/topics/ui/notifiers/notifications.html#Compatibility" target="_blank" rel="external">Handling compatibility</a>小节。<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line">NotificationCompat.Builder mBuilder = <span class="keyword">new</span> NotificationCompat.Builder(<span class="keyword">this</span>)</div><div class="line">    .setSmallIcon(R.drawable.notification_icon)</div><div class="line">    .setContentTitle(<span class="string">"Event tracker"</span>)</div><div class="line">    .setContentText(<span class="string">"Events received"</span>)</div><div class="line">NotificationCompat.InboxStyle inboxStyle =</div><div class="line">        <span class="keyword">new</span> NotificationCompat.InboxStyle();</div><div class="line">String[] events = <span class="keyword">new</span> String[<span class="number">6</span>];</div><div class="line"><span class="comment">// 为扩展布局设置标题</span></div><div class="line">inboxStyle.setBigContentTitle(<span class="string">"Event tracker details:"</span>);</div><div class="line">...</div><div class="line"><span class="comment">//  添加事件到扩展布局中</span></div><div class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i &lt; events.length; i++) &#123;</div><div class="line"></div><div class="line">    inboxStyle.addLine(events[i]);</div><div class="line">&#125;</div><div class="line"><span class="comment">// 添加扩展布局到通知中</span></div><div class="line">mBuilder.setStyle(inBoxStyle);</div><div class="line">...</div><div class="line"><span class="comment">// 发送通知</span></div><div class="line">...</div></pre></td></tr></table></figure></p>
+<h3 id="3-兼容性处理"><a href="#3-兼容性处理" class="headerlink" title="3. 兼容性处理"></a>3. 兼容性处理</h3><p>为了保证兼容性，使用NotificationCompat或子类来创建通知。在实现通知时，要保证以下几点</p>
+<ul>
+<li>保证任何版本Android系统的提供功能一致<br>如：若用addAction() 提供媒体播放的停止和启动播放的控件，要先在应用的Activity中实现此控件。</li>
+<li>保证通知点击启动Activity来获取Activity中的功能，需要为跳转的Activity创建PendingIntent。</li>
+<li>如果需要扩展通知功能，保证所有的功能在点击通知时启动的Activity中可用。</li>
+</ul>
+<h2 id="二、管理通知"><a href="#二、管理通知" class="headerlink" title="二、管理通知"></a>二、管理通知</h2><p>在多次发出同一类型的通知时，应该避免创建新的通知。可以更改之前的通知的值或添加值来更新通知。<br>如：Gmail通过增加未读消息计数并将没封电子邮件的摘要添加到通知，来通知用户新的电子邮件。（这个本成为”堆叠”通知。）</p>
+<h3 id="1-更新通知"><a href="#1-更新通知" class="headerlink" title="1. 更新通知"></a>1. 更新通知</h3><p>为了保证通知设置能够更新，通过调用NotificationManager.notify()发出带有ID的通知。为了能够让之前发送通知更新，需要更新或创建一个<code>NotificationCompat.Builder</code>，构建<code>Notification</code>对象，在调用notify方法时保证ID与之前一致。如果之前发送的通知仍可见，则系统根据新的Notificaiton对象来更新之前通知，否则在界面上创建一个新的通知。<br>下面展示如何更新通知<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line">mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);</div><div class="line"><span class="comment">// 设置ID</span></div><div class="line"><span class="keyword">int</span> notifyID = <span class="number">1</span>;</div><div class="line">mNotifyBuilder = <span class="keyword">new</span> NotificationCompat.Builder(<span class="keyword">this</span>)</div><div class="line">        .setSmallIcon(R.drawable.ic_notify_status)</div><div class="line">        .setContentTitle(<span class="string">"New Message"</span>)</div><div class="line">        .setContentText(<span class="string">"You've received new messages"</span>);</div><div class="line"><span class="comment">// 未读消息数量</span></div><div class="line">numMessages = <span class="number">0</span>;</div><div class="line"><span class="comment">// 开启数据处理和通知用户的循环</span></div><div class="line">...</div><div class="line"><span class="comment">// 用相同ID进行通知更新操作</span></div><div class="line">mNotifyBuilder.setContentText(currentText)</div><div class="line">        .setNumer(++numMessages);</div><div class="line"><span class="comment">// 发出通知</span></div><div class="line">mNotificationManager.notify(notifyID , mNotifyBuilder.build());</div><div class="line">...</div></pre></td></tr></table></figure></p>
+<h3 id="2-删除通知"><a href="#2-删除通知" class="headerlink" title="2. 删除通知"></a>2. 删除通知</h3><p>在一下几种情况下，通知会被删除</p>
+<ul>
+<li>用户通过<code>全部清除</code>清除通知（如果通知可以清除时）。当调用Builder的setOnGoing(true)时，可以让通知不会被<code>全部清除</code>操作清除掉。</li>
+<li>用户点击了通知并且在创建通知时调用了<a href="https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#setAutoCancel(boolean" target="_blank" rel="external">setAutoCancel()</a>;</li>
+<li>针对特定的通知ID调用了<a href="https://developer.android.com/reference/android/app/NotificationManager.html#cancel(int" target="_blank" rel="external">cancel()</a>，cancel()还会删除当前通知。</li>
+<li>调用了<a href="https://developer.android.com/reference/android/app/NotificationManager.html#cancelAll(" target="_blank" rel="external">cancelAll()</a>方法，将删除之前发出的所有通知。</li>
+</ul>
+<h2 id="三、启动Activity时保存导航顺序"><a href="#三、启动Activity时保存导航顺序" class="headerlink" title="三、启动Activity时保存导航顺序"></a>三、启动Activity时保存导航顺序</h2><p>从通知启动Activity时，要保证用户的导航顺序。从通知启动的Activity返回时，用户应该回到应用的正常工作流程界面。因此应该要在全新的任务中来启动Activity并根据启动的Activity要求来设置PendingIntent。</p>
+<ul>
+<li>常规Activity。<br>常规的Activity作为应用中正常的工作流的一部分。则需要PendingIntent应该启动新的任务创建新的任务栈。<br>如：Gmail在点击新的电子邮件的通知时，跳转到消息详情界面。点击返回时，则回到之前的界面。</li>
+<li>特定Activity<br>仅在从通知启动时，才会显示的Activity。对于这种情况，PendingIntent需要设置启动的任务为新的任务栈，因为启动的Activity不是应用Activity的流程的一部分，所以不需要创建返回栈。</li>
+</ul>
+<h3 id="1-设置常规Activity的PendingIntent"><a href="#1-设置常规Activity的PendingIntent" class="headerlink" title="1. 设置常规Activity的PendingIntent"></a>1. 设置常规Activity的PendingIntent</h3><p>1）. 在AndroidManifest 文件中定义Activity的层次结构</p>
+<ul>
+<li><p>支持Android 4.0.3及更低版本。为Activity添加<meta-data>元素为Activity指定Parent，</meta-data></p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">meta-data</span></span></div><div class="line">   <span class="attr">android:name</span>=<span class="string">"android.support.PARENT_ACTIVITY"</span></div><div class="line">   <span class="attr">android:value</span>=<span class="string">".MainActivity"</span>/&gt;</div></pre></td></tr></table></figure>
+</li>
+<li><p>支持Android4.1及更高版本。为Activity的activity标签添加android:parentActivityName属性。<br>最终的xml文件应该是这样的：</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">activity</span></span></div><div class="line">    <span class="attr">android:name</span>=<span class="string">".MainActivity"</span></div><div class="line">    <span class="attr">android:label</span>=<span class="string">"@string/app_name"</span> &gt;</div><div class="line">    <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">action</span> <span class="attr">android:name</span>=<span class="string">"android.intent.action.MAIN"</span> /&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">category</span> <span class="attr">android:name</span>=<span class="string">"android.intent.category.LAUNCHER"</span> /&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">activity</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">activity</span></span></div><div class="line">    <span class="attr">android:name</span>=<span class="string">".ResultActivity"</span></div><div class="line">    <span class="attr">android:parentActivityName</span>=<span class="string">".MainActivity"</span>&gt;</div><div class="line">    <span class="tag">&lt;<span class="name">meta-data</span></span></div><div class="line">        <span class="attr">android:name</span>=<span class="string">"android.support.PARENT_ACTIVITY"</span></div><div class="line">        <span class="attr">android:value</span>=<span class="string">".MainActivity"</span>/&gt;</div><div class="line"><span class="tag">&lt;/<span class="name">activity</span>&gt;</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>2）. 为Activity的Intent创建返回栈</p>
+<p>a. 创建启动Activity的Intent对象<br>b. 调用<a href="https://developer.android.com/reference/android/app/TaskStackBuilder.html#create(android.content.Context" target="_blank" rel="external">TaskStackBuilder.create()</a>创建栈构造器<br>c. 调用<a href="https://developer.android.com/reference/android/support/v4/app/TaskStackBuilder.html#addParentStack(android.app.Activity" target="_blank" rel="external">addParentStack()</a>将返回栈添加到栈构造中。对于在Manifest中定义的每个Activity，返回栈含有启动Activity的Intent对象。这个方法还会在新任务中启动栈的标志。</p>
+<blockquote>
+<p>注：尽管addParentStack()的参数是启动Activity的引用，但是方法不会添加启动Activity的Intent对象，而是在接下来的步骤中</p>
+</blockquote>
+<p>d. 为通知添加启动Activity的Intent，通过调用<a href="https://developer.android.com/reference/android/support/v4/app/TaskStackBuilder.html#addNextIntent(android.content.Intent" target="_blank" rel="external">addNextIntent()</a>方法。使用第一步创建的Intent对象来作为参数<br>e. 必要情况时调用<a href="https://developer.android.com/reference/android/support/v4/app/TaskStackBuilder.html#editIntentAt(int" target="_blank" rel="external">TaskStackBuilder.editIntentAt()</a>为Intent设置参数。有时对于需要保证目标Activity显示有意义的数据。<br>f. 调用getPendingIntent()获得一个PendingIntent对象，使用这个PengdingIntent对象作为方法setContentIntent()的参数。<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="comment">// a. 创建启动Activity的Intent对象</span></div><div class="line">Intent resultIntent = <span class="keyword">new</span> Intent(<span class="keyword">this</span> , ResultActivity.class);</div><div class="line"><span class="comment">// b. 创建栈构造器</span></div><div class="line">TaskStackBuilder stackBuilder = TaskStackBuilder.create(<span class="keyword">this</span>);</div><div class="line"><span class="comment">// c. 添加到栈构造器中</span></div><div class="line">stackBuilder.addParentStack(ResultActivity.class);</div><div class="line"><span class="comment">// d. 添加Intent到栈顶</span></div><div class="line">stackBuilder.addNextIntent(resultIntent);</div><div class="line"><span class="comment">// f. 获取含有整个返回栈的PendingIntent</span></div><div class="line">PendingIntent resultPendingIntent = stackBuilder.getPengdingIntent(<span class="number">0</span> , PengdingIntent.FLAG_UPDATE_CURRENT);</div><div class="line">...</div><div class="line">NotificationCompat.Builder builder = <span class="keyword">new</span> NotificationCompat.Buidler(<span class="keyword">this</span>);</div><div class="line">builder.setContentIntent(resultPendingIntent);</div><div class="line">NotificationManager mNotificationManager = </div><div class="line">    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);</div><div class="line"><span class="comment">// 发送通知</span></div><div class="line">mNotificationManager.notify(id , builder.build());</div></pre></td></tr></table></figure></p>
+<h3 id="2-设置特定的Activity-PendingIntent"><a href="#2-设置特定的Activity-PendingIntent" class="headerlink" title="2. 设置特定的Activity PendingIntent"></a>2. 设置特定的Activity PendingIntent</h3><p>特定的Activity不需要返回栈，所以不需要在Manifest文件中定义Activity的属性同时也不需要调用<code>addParentStack()</code>来创建返回栈。但是要为Activity设定Activity的任务栈信息。调用getActivity()方法创建PengdingIntent。<br>1） 在Manifest中，为Activity的activity元素添加以下属性</p>
+<ul>
+<li><code>android:name=&quot;activityclass&quot;</code><br>  activity的类名全称</li>
+<li><code>android:taskAffinity=&quot;&quot;</code> 任务相关性<br>  与FLAG_ACTIVITY_NEW_TASK标志位联合使用，保证Activity不会进入应用的默认任务栈。</li>
+<li><code>android:excludeFromRecents=&quot;true&quot;</code><br>  排除最近的新任务栈，用户无法意外返回到栈中。<figure class="highlight"><table><tr><td class="code"><pre><div class="line">&lt;activity</div><div class="line">    android:name=".ResultActivity"</div><div class="line">    ...</div><div class="line">    android:launchMode="singleTask"         // singleTask启动模式</div><div class="line">    android:taskAffinity=""                            // 任务相关性</div><div class="line">    android:excludeFromRecents="true"      </div><div class="line">&lt;/activity&gt;</div><div class="line">...</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>2）构建和发送通知</p>
+<ul>
+<li>创建启动Activity的Intent对象</li>
+<li>设置Activity的标志位：在一个新的、空的任务栈中启动。调用<a href="https://developer.android.com/reference/android/content/Intent.html#setFlags(int" target="_blank" rel="external">setFlags()</a>)方法来设置标志位：<a href="https://developer.android.com/reference/android/content/Intent.html#FLAG_ACTIVITY_NEW_TASK" target="_blank" rel="external">FLAG_ACTIVITY_NEW_TASK</a> 和 <a href="https://developer.android.com/reference/android/content/Intent.html#FLAG_ACTIVITY_CLEAR_TASK" target="_blank" rel="external">FLAG_ACTIVITY_CLEAR_TASK</a></li>
+<li>设置Intent的可选参数，如需要传递的参数等。</li>
+<li>调用<code>PendingIntent</code>的<a href="https://developer.android.com/reference/android/app/PendingIntent.html#getActivity(android.content.Context, int, android.content.Intent, int" target="_blank" rel="external">getActivity()</a>)方法创建PendingIntent，使用Builder <a href="https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#setContentIntent(android.app.PendingIntent" target="_blank" rel="external">setContentIntent</a>)调用创建的PendingIntent对象。<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 初始化Builder对象</span></div><div class="line">NotificationCompat.Builder builder = <span class="keyword">new</span> NotificationCompat.Builder(<span class="keyword">this</span>);</div><div class="line"><span class="comment">// 创建启动的Activity的Intent</span></div><div class="line">Intent notifyIntent = <span class="keyword">new</span> Intent(<span class="keyword">this</span> , ResultActivity.class);</div><div class="line"><span class="comment">// 设置Acitivity的新的空栈</span></div><div class="line">notifyIntent.setFlag(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);</div><div class="line"><span class="comment">// 创建PendingIntent</span></div><div class="line">PendingIntent notifyPendingIntent = </div><div class="line">    PendingIntent.getActivity(<span class="keyword">this</span> , <span class="number">0</span> , notifyIntent , PendingIntent.FLAG_UPDATE_CURRENT);</div><div class="line"><span class="comment">// 设置通知的ContentIntent</span></div><div class="line">builder.setContentIntent(notifyPendingIntent);</div><div class="line"><span class="comment">// 获取到NotificationManager来发送通知</span></div><div class="line">NotificationManager mNotificationManager = </div><div class="line">    (NotificationManager) getSystemService(Context.NOTIFICAITON_SERVICE);</div><div class="line"><span class="comment">// 发送通知</span></div><div class="line">mNotificationManager.notify(id , builder.build());</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="四、通知显示进度条"><a href="#四、通知显示进度条" class="headerlink" title="四、通知显示进度条"></a>四、通知显示进度条</h2><p>通知栏可以用进度条来展示进行中的操作进度。如果可以知道操作的总耗时和花费的时间，使用<code>determinate</code>的状态来作为指示器。如果不能确切知道操作总长，使用<code>indeterminate</code>的状态来作为指示。<br>Progress指示器一般通过<code>ProgressBar</code>来实现。Android 4.0以上调用<a href="https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#setProgress(int, int, boolean" target="_blank" rel="external">setProgress</a>)来显示当前的进度，之前版本则必须创建<code>自定义</code>的含有<code>ProgressBar</code>的布局</p>
+<h3 id="1-创建固定的进度指示"><a href="#1-创建固定的进度指示" class="headerlink" title="1. 创建固定的进度指示"></a>1. 创建固定的进度指示</h3><p>显示确定的进度条，可以通过<a href="https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#setProgress(int, int, boolean" target="_blank" rel="external">setProgress(max , progress , <code>false</code>)</a>)来为通知添加进度。在处理进度时，来通知进度变化，更新通知栏。操作结束时，进度应该到最大值，常用的方式是调用setProgress()，设定值为<code>100</code>。<br>在操作结束时保留进度条或移除进度条根据业务需求。或者更新进度条的文字来表示操作完成。移除进度条通过调用<a href="https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#setProgress(int, int, boolean" target="_blank" rel="external">setProgress(0, 0, <code>false</code>)</a>的方式<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line">...</div><div class="line">mNotificationManager = (NotificationManager)getSystemSerivce(Context.NOTIFICATION_SERVICE);</div><div class="line">mBuilder =  <span class="keyword">new</span> NotificationCompat.Builder(<span class="keyword">this</span>);</div><div class="line">mBuilder.setContentTitle(<span class="string">"Picture DownLoad"</span>)</div><div class="line">    .setContentText(<span class="string">"Download in progress"</span>);</div><div class="line">    .setSmallIcon(R.drawable.ic_notification);</div><div class="line"><span class="comment">// 在后台线程开启图片下载操作</span></div><div class="line"><span class="keyword">new</span> Thread( <span class="keyword">new</span> Runnable()&#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">int</span> incr;</div><div class="line">        <span class="keyword">for</span>(incr = <span class="number">0</span> ; incr &lt;= <span class="number">100</span> ; incr += <span class="number">5</span>)&#123;</div><div class="line">            <span class="comment">// 设定进度，显示当前进度。</span></div><div class="line">            mBuilder.setProgress(<span class="number">100</span> , incr , <span class="keyword">false</span>);</div><div class="line">            <span class="comment">// 第一次显示进度</span></div><div class="line">            mNotiifcationManager.notifiy(<span class="number">0</span> , mBuilder.build());</div><div class="line">            <span class="comment">// 设置线程sleep时间，模拟耗时操作</span></div><div class="line">            <span class="keyword">try</span>&#123;</div><div class="line">                Thread.sleep(<span class="number">5</span> * <span class="number">1000</span>);</div><div class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">                Log.d(TAG , <span class="string">"sleep failure"</span>);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">		<span class="comment">// 循环结束后，更新通知</span></div><div class="line">        mBuilder.setContentText(<span class="string">"Download complete"</span>);</div><div class="line">            .setProgress(<span class="number">0</span> , <span class="number">0</span>, <span class="keyword">false</span>);                    <span class="comment">// 移除进度</span></div><div class="line">        mNotificationManager.notify(ID , mBuilder.build());</div><div class="line">        &#125;</div><div class="line">&#125;).start();</div></pre></td></tr></table></figure></p>
+<h3 id="2-显示加载中的指示器"><a href="#2-显示加载中的指示器" class="headerlink" title="2. 显示加载中的指示器"></a>2. 显示加载中的指示器</h3><p>通过<a href="https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#setProgress(int, int, boolean" target="_blank" rel="external">setProgress( 0 , 0 , <code>true</code>)</a>方法来为通知栏添加进行中的操作（前两个参数忽略）。指示样式与进度条类似，但是没有进度指示。<br>在操作开始时发送通知来显示动画，直到修改通知停止动画。调用setProgress(0 , 0 , <code>false</code>)来移除状态指示，通知记住要修改通知栏的文本表示操作结束。<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 明确进度时</span></div><div class="line">mBuilder.setProgress(<span class="number">100</span> , incr , <span class="keyword">false</span>);</div><div class="line">mNotifyManager.notify(<span class="number">0</span> , mBuilder.build());</div><div class="line"><span class="comment">// OR 非明确的进度指示</span></div><div class="line">mBuilder.setProgress(<span class="number">0</span> , <span class="number">0</span> , <span class="keyword">true</span>);</div><div class="line"><span class="comment">// 发送通知</span></div><div class="line">mNotifyManager.notify(<span class="number">0</span> , mBuilder.build());</div></pre></td></tr></table></figure></p>
+<h2 id="五、通知的Metadata-属性"><a href="#五、通知的Metadata-属性" class="headerlink" title="五、通知的Metadata 属性"></a>五、通知的Metadata 属性</h2><p>通知可以通过matadata属性来进行排序。可以通过<a href="https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html" target="_blank" rel="external">NotificationCompat.Builder</a>方法来关联metadata属性</p>
+<ul>
+<li><a href="https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#setCategory(java.lang.String" target="_blank" rel="external">setCategory</a><br>  在设备设置了优先级时，如何显示处理通知（如：app会有未接来电、即时消息和闹钟三种通知）。</li>
+<li><a href="https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#setPriority(int" target="_blank" rel="external">setPriority</a><br>  设置了在<code>PRIORITY_MAX</code>和<code>PRIORITY_HIGH</code>之间值并且设置了声效或震动时的通知时则会在以浮动通知出现</li>
+<li><a href="https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#addPerson(java.lang.String" target="_blank" rel="external">addPerson</a><br>  允许添加要通知的人的列表。app可以通过这个方法来告诉系统是否把指定的人的消息通知进行聚合处理或按照重要程度来对通知进行等级排序。</li>
+</ul>
+<h2 id="六、悬浮的通知。"><a href="#六、悬浮的通知。" class="headerlink" title="六、悬浮的通知。"></a>六、悬浮的通知。</h2><p>从Android 5.0（API LEVEL 21）开始，通知可以通过一个小的浮动窗口显示（也被成为悬浮通知）在设备处于活动状态时（也就是设备为锁定并屏幕处于点亮状态）。这些通知显示效果与你的通知形式相似，但是会带有行为按钮。用户可以打开、关闭通知而无需离开当前app。<br>使用到悬浮通知的情景：</p>
+<ul>
+<li>用户处于全屏模式</li>
+<li>或通知处于高优先级且使用了铃声或震动。</li>
+</ul>
+<h2 id="七、锁屏通知"><a href="#七、锁屏通知" class="headerlink" title="七、锁屏通知"></a>七、锁屏通知</h2><p>在Android 5.0及以上版本，可以在锁屏页面来显示通知。使用这个特性来提供媒体播放控制和其他常用的操作。用户可以选择是否在锁屏页来显示通知。</p>
+<h3 id="1-设置可见"><a href="#1-设置可见" class="headerlink" title="1. 设置可见"></a>1. 设置可见</h3><p>app可以控制安全锁屏页面通知的显示的细节。调用setVisibility()指定下面的值</p>
+<ul>
+<li><a href="https://developer.android.com/reference/android/support/v4/app/NotificationCompat.html#VISIBILITY_PUBLIC" target="_blank" rel="external">VISIBILITY_PUBLIC</a> 显示通知的全部内容</li>
+<li><a href="https://developer.android.com/reference/android/support/v4/app/NotificationCompat.html#VISIBILITY_SECRET" target="_blank" rel="external">VISIBILITY_SECRET</a> 不在锁屏页显示通知任何内容</li>
+<li><a href="https://developer.android.com/reference/android/support/v4/app/NotificationCompat.html#VISIBILITY_SECRET" target="_blank" rel="external">VISIBILITY_PROVATE</a> 只显示基本信息，如通知图标、标题。隐藏通知全部内容。<br>当使用<code>VISIBILITY_PRIVATE</code>，可以提供一个通知内容可选的版本来隐藏一些细节。比如：SMS app 可能需要展示通知来显示<code>你有三个新消息</code>，但是隐藏消息的具体内容和发件人。提供这样的可选择内容的通知，首先需要用NotificationCompat.Builder创建通知，当创建私有通知对象时，调用·setPublicVersion()`方法添加通知的替代部分。</li>
+</ul>
+<h3 id="2-控制媒体的播放"><a href="#2-控制媒体的播放" class="headerlink" title="2. 控制媒体的播放"></a>2. 控制媒体的播放</h3><p>在Android 5.0 显示媒体媒体控制不再基于<a href="https://developer.android.com/reference/android/media/RemoteControlClient.html" target="_blank" rel="external">RemoteControlClient</a>。作为替代使用<a href="https://developer.android.com/reference/android/app/Notification.MediaStyle.html" target="_blank" rel="external">Notification.MediaStyle</a>的模板，调用<a href="https://developer.android.com/reference/android/app/Notification.Builder.html#addAction(android.app.Notification.Action" target="_blank" rel="external">addAction</a>)方法来转换操作为可点击的图标。</p>
+<blockquote>
+<p>注：这个模板和addAction方法不包含在support库中，所以只适应于Android 5.0及更高的版本。</p>
+</blockquote>
+<p>要在Android 5.0上在锁屏页显示媒体播放控制，设置visibility属性为如上描述的VISIBILITY_PUBLIC。然后添加actions并且设置Notification.MediaStyle模板。<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line">Notification notification = <span class="keyword">new</span> Notification.Builder(context).setVisibility(Notification.VISIBILITY_PUBLIC)</div><div class="line">    .setSmallIcon(R.drawable.ic_stat_player)</div><div class="line">    .addAction(R.drawable.ic_prev , <span class="string">"Previous"</span> , prevPendingIntent)</div><div class="line">    .addAction(R.drawable.ic_pause , <span class="string">"Pause"</span> , pausePendingIntent)</div><div class="line">    .addAction(R.drawable.ic_next , <span class="string">"Next"</span> , nextPendingIntent)</div><div class="line">    <span class="comment">// 应用媒体播放模板</span></div><div class="line">    .setStyle(<span class="keyword">new</span> Notification.MediaStyle())</div><div class="line">    .setShowActionsInCompactView(<span class="number">1</span>)   <span class="comment">// 暂停按钮</span></div><div class="line">    .setMediaSession(mMediaSession.getSessionToken())</div><div class="line">    .setContextTitle(<span class="string">"Wonderfule music"</span>)</div><div class="line">    .setContextText(<span class="string">"My Awesome Band"</span>)</div><div class="line">    .setLargeIcon(albumArtBitmap)</div><div class="line">    .build();</div></pre></td></tr></table></figure></p>
+<blockquote>
+<p>注：RemoteControlClient已经废弃。查看<a href="https://developer.android.com/about/versions/android-5.0.html#MediaPlaybackControl" target="_blank" rel="external">Media Playback Control</a>更多关于管理Media和控制播放的新的API</p>
+</blockquote>
+<h2 id="八、自定义通知布局"><a href="#八、自定义通知布局" class="headerlink" title="八、自定义通知布局"></a>八、自定义通知布局</h2><p>可以用<a href="https://developer.android.com/reference/android/widget/RemoteViews.html" target="_blank" rel="external">RemoteView</a>对象来创建自定义通知。自定义通知布局类似于正常的通知，但是基于定义在xml布局文件的RemoteView对象。</p>
+<p>自定义通知布局的高度依赖于通知View的高度。常规view布局高度限制为<code>64dp</code>，可扩展的View布局限制为<code>256dp</code>。<br>定义自定义通知布局通过inflate xml布局文件创建的RemoteView对象。然后不是通过调用类似setContentTitle()和setContent()方法而是在布局文件中设定内容详情，使用RemoteView中的方法设定View子布局的值。</p>
+<ol>
+<li>为通知创建一个独立的XML文件。可以任意命名文件，但是必须是.xml格式文件。</li>
+<li>在app中，使用RemoteView方法来定义通知的图标和文字。将RemoteView对象添加到NotificationCompat.Builder对象，通过调用setContent()的方法。避免在RemoteView对象设置背景图片，因为文本颜色可能会与背景颜色相互冲突。</li>
+</ol>
+<p><code>RemoteView</code>类同样可以很很容易在自定义的通知布局中添加<code>Chronometer</code>和ProgressBar。更多关于创建自定义通知布局的文章，查看<a href="https://developer.android.com/reference/android/widget/RemoteViews.html" target="_blank" rel="external">RemoteView</a>参考文档。</p>
+<blockquote>
+<p>注：当你使用自定义通知布局时，需要考虑到自定义布局在不同设备展示的问题，因为通知栏的空间有很多限制，尽量保证自定义布局简单化并在多种配置设备进行测试。</p>
+</blockquote>
+<h2 id="九、自定义通知文本使用样式资源。"><a href="#九、自定义通知文本使用样式资源。" class="headerlink" title="九、自定义通知文本使用样式资源。"></a>九、自定义通知文本使用样式资源。</h2><p>保证自定义通知布局使用style资源。通知栏的背景颜色可能会因为不同设备或不同版本，显示效果不一致。所以使用样式资源来帮助你统一管理。从Android 2.3开始，系统为标准通知定义布局文本样式。如果在Android 2.3及以上版本使用相同样式，能够保证在在不同的背景下文本都是可见的。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://developer.android.com/guide/topics/ui/notifiers/notifications.html" target="_blank" rel="external">Notifications</a></p>
+<p><a href="http://blog.csdn.net/xy_nyle/article/details/19853591" target="_blank" rel="external">你应该掌握的Notification</a></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/09/06/Android：SurfaceView基础与原理/" data-toggle="tooltip" data-placement="top" title="Android：SurfaceView基础与原理">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/07/17/Android：DataBinding-Guide/" data-toggle="tooltip" data-placement="top" title="Android：DataBinding Guide">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#android-aosp" title="android-aosp">android-aosp</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "alexwan02";
+    var disqus_identifier = "http://blog.alexwan.cn/2016/07/22/Android：Service与Notification/";
+    var disqus_url = "http://blog.alexwan.cn/2016/07/22/Android：Service与Notification/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Alex Studio 2017 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.alexwan.cn/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

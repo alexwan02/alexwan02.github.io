@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          深入理解OkHttp3的DiskLruCache（2） - Alex Studio
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.alexwan.cn/2017/04/24/深入理解OkHttp3的DiskLruCache/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Alex Studio</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#okhttp3" title="okhttp3">okhttp3</a>
+                        
+                    </div>
+                    <h1>深入理解OkHttp3的DiskLruCache（2）</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by AlexWan on
+                        2017-04-24
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>磁盘缓存是将网络资源先保存到系统分配出的内存空间中，当内存中的资源容量达到某个限度时，在将内存中的资源保存的磁盘中。这样做可以有效减少磁盘的读写操作。</p>
+<p>OkHttp3的网络缓存主要实现由<code>DiskLruCache</code>这个类来实现。缓存保存在应用指定的内部缓存文件夹中，在调用磁盘缓存时，<code>DisLruCache</code>读取缓存文件快照到内存。涉及到缓存的读写任务都由类<code>DiskLruCache.Edit.java</code>完成。</p>
+<h1 id="1-缓存文件格式"><a href="#1-缓存文件格式" class="headerlink" title="1. 缓存文件格式"></a>1. 缓存文件格式</h1><h2 id="1-1-缓存日志文件"><a href="#1-1-缓存日志文件" class="headerlink" title="1.1 缓存日志文件"></a>1.1 缓存日志文件</h2><p>OkHttp3的缓存数据保存在名为<code>journal</code>的文件中。<br>标准的<code>journal</code>文件格式<br><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">libcore.io.DiskLruCache</div><div class="line">1</div><div class="line">100</div><div class="line">2</div><div class="line"></div><div class="line">CLEAN 3400330d1dfc7f3f7f4b8d4d803dfcf6 832 21054</div><div class="line">DIRTY 335c4c6028171cfddfbaae1a9c313c52</div><div class="line">CLEAN 335c4c6028171cfddfbaae1a9c313c52 3934 2342</div><div class="line">REMOVE 335c4c6028171cfddfbaae1a9c313c52</div><div class="line">DIRTY 1ab96a171faeeee38496d8b330771a7a</div><div class="line">CLEAN 1ab96a171faeeee38496d8b330771a7a 1600 234</div><div class="line">READ 335c4c6028171cfddfbaae1a9c313c52</div><div class="line">READ 3400330d1dfc7f3f7f4b8d4d803dfcf6</div><div class="line">...</div></pre></td></tr></table></figure></p>
+<p>前五行是文件头部，分别是区分文件格式的++MAGIC数++（固定为<code>libcore.io.DiskLruCache</code>）、++缓存版本++、++应用版本++、++Key对应Value值个数++和一个++空白行++。<br>之后的每行都对应一个Cache实体的状态记录。由++状态++、++键值++和++可选择具体状态值++组成。</p>
+<ul>
+<li>DIRTY<br>正在++创建++或++更新++缓存数据的监视信息。每个成功的DIRTY操作之后都会紧跟一个CLEAN或REMOVE操作。如果没有对应的CLEAN或REMOVE操作说明应该删除掉临时文件。</li>
+<li>CLEAN<br>可以读取缓存的记录。之后是缓存文件的长度。</li>
+<li>READ<br>缓存访问记录</li>
+<li>REMOVE<br>缓存删除记录</li>
+</ul>
+<p><code>journal</code>文件偶尔会丢掉多余的行数来压缩，压缩时使用<code>journal.tmp</code>的临时文件，打开缓存时如果临时文件存在，则删除临时文件。</p>
+<h2 id="1-2-缓存文件"><a href="#1-2-缓存文件" class="headerlink" title="1.2 缓存文件"></a>1.2 缓存文件</h2><p><code>DiskLruCache</code>用了两种文件来保存缓存：++缓存元数据++文件和++缓存体++文件。</p>
+<ul>
+<li>缓存元数据文件保存响应的请求和响应的首部信息，如果是HTTPS请求还保存对应的加密和握手协议。</li>
+<li>缓存体文件保存具体的文件<h3 id="1-2-1-缓存元数据文件"><a href="#1-2-1-缓存元数据文件" class="headerlink" title="1.2.1 缓存元数据文件"></a>1.2.1 缓存元数据文件</h3></li>
+</ul>
+<p>标准的==HTTP== META_DATA<br><figure class="highlight"><table><tr><td class="code"><pre><div class="line">http://google.com/foo</div><div class="line">GET</div><div class="line">2</div><div class="line">Accept-Language: fr-CA</div><div class="line">Accept-Charset: UTF-8</div><div class="line">HTTP/1.1 200 OK</div><div class="line">3</div><div class="line">Content-Type: image/png</div><div class="line">Content-Length: 100</div><div class="line">Cache-Control: max-age=600</div></pre></td></tr></table></figure></p>
+<p>标准的==HTTPS== META_DATA<br><figure class="highlight"><table><tr><td class="code"><pre><div class="line">https://google.com/foo</div><div class="line">GET</div><div class="line">2</div><div class="line">Accept-Language: fr-CA</div><div class="line">Accept-Charset: UTF-8</div><div class="line">HTTP/1.1 200 OK</div><div class="line">3</div><div class="line">Content-Type: image/png</div><div class="line">Content-Length: 100</div><div class="line">Cache-Control: max-age=600</div><div class="line"></div><div class="line">AES_256_WITH_MD5</div><div class="line">2</div><div class="line">base64-encoded peerCertificate[0]</div><div class="line">base64-encoded peerCertificate[1]</div><div class="line">-1</div><div class="line">TLSv1.2</div></pre></td></tr></table></figure></p>
+<ol>
+<li>1-2行是++URL++与++请求方法++。</li>
+<li>第3行是HTTP请求Vary头部字段数量，表示++请求头部数++</li>
+<li>紧跟之后的是Vary响应字段，表示++请求的头部信息++。</li>
+<li>在请求Vary头部字段之后是响应状态。包含++HTTP版本++，++状态码++和++Message++</li>
+<li>在响应行之后是++响应头部数量++值。之后是++响应头部++信息详情。</li>
+<li>对于HTTPS请求还包含SSL的session信息。由一个++空行++、++密码组++、++证书链长度++、++证书链++、++本地证书长度++（<code>-1</code>表示无本地证书）、最后一行为++可选信息++（如果有表示<code>TLS</code>的版本号）。<h3 id="1-2-3-缓存体文件"><a href="#1-2-3-缓存体文件" class="headerlink" title="1.2.3 缓存体文件"></a>1.2.3 缓存体文件</h3>缓存内容存储的是响应的具体信息。如<code>Json</code>、<code>图片</code>等具体的文件内容。<h2 id="1-3-缓存类的结构"><a href="#1-3-缓存类的结构" class="headerlink" title="1.3 缓存类的结构"></a>1.3 缓存类的结构</h2><img src="http://res.cloudinary.com/dmfz9aun7/image/upload/v1490865300/wechat/OkHttpCache.jpg" alt="img"><h1 id="2-初始化"><a href="#2-初始化" class="headerlink" title="2. 初始化"></a>2. 初始化</h1>任何对缓存的操作都会调用缓存的初始化。读取缓存的日志文件，用<code>LinkHashMap.java</code>来存储日志的操作记录，方便删除与查找。<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="meta">@DiskLruCache</span>.<span class="function">java</span></div><div class="line"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">initialize</span><span class="params">()</span> <span class="keyword">throws</span> IOException &#123;</div><div class="line">    ...</div><div class="line">    <span class="comment">// If a bkp file exists, use it instead.</span></div><div class="line">    ...</div><div class="line">    <span class="comment">// Prefer to pick up where we left off.</span></div><div class="line">    <span class="keyword">if</span> (fileSystem.exists(journalFile)) &#123;</div><div class="line">      <span class="keyword">try</span> &#123;</div><div class="line">        <span class="comment">// [1]</span></div><div class="line">        readJournal();</div><div class="line">        <span class="comment">// [2]</span></div><div class="line">        processJournal();</div><div class="line">        initialized = <span class="keyword">true</span>;</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">      &#125; <span class="keyword">catch</span> (IOException journalIsCorrupt) &#123;</div><div class="line">        ...</div><div class="line">        <span class="comment">// [3]</span></div><div class="line">        delete();</div><div class="line">        closed = <span class="keyword">false</span>;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// [4]</span></div><div class="line">    rebuildJournal();</div><div class="line">    initialized = <span class="keyword">true</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="2-1-读取本地缓存"><a href="#2-1-读取本地缓存" class="headerlink" title="2.1 读取本地缓存"></a>2.1 读取本地缓存</h2><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="meta">@DiskLruCache</span>.java</div><div class="line"><span class="comment">// [1]</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">readJournal</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">    BufferedSource source = Okio.buffer(fileSystem.source(journalFile));</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">      <span class="comment">// check journal header</span></div><div class="line">      ...</div><div class="line">      <span class="keyword">int</span> lineCount = <span class="number">0</span>;</div><div class="line">      <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">          <span class="comment">// [1.1]</span></div><div class="line">          readJournalLine(source.readUtf8LineStrict());</div><div class="line">          lineCount++;</div><div class="line">        &#125; <span class="keyword">catch</span> (EOFException endOfJournal) &#123;</div><div class="line">          <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">      <span class="comment">// 记录有效的缓存操作记录数</span></div><div class="line">      redundantOpCount = lineCount - lruEntries.size();</div><div class="line">      <span class="comment">// If we ended on a truncated line, rebuild the journal before appending to it.</span></div><div class="line">      ...</div><div class="line">    &#125; <span class="keyword">finally</span> &#123;</div><div class="line">      Util.closeQuietly(source);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>迭代读取缓存日志文件每行操作，<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="meta">@DiskLruCache</span>.java</div><div class="line"><span class="comment">// [1.1]</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">readJournalLine</span><span class="params">(String line)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">    <span class="comment">// 检查是否是有效的操作行</span></div><div class="line">    ...</div><div class="line">    <span class="keyword">int</span> keyBegin = firstSpace + <span class="number">1</span>;</div><div class="line">    <span class="keyword">int</span> secondSpace = line.indexOf(<span class="string">' '</span>, keyBegin);</div><div class="line">    <span class="keyword">final</span> String key;</div><div class="line">    <span class="keyword">if</span> (secondSpace == -<span class="number">1</span>) &#123;</div><div class="line">      <span class="comment">// 如果是REMOVE操作，移除内存中对应的失效缓存</span></div><div class="line">      ...</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">      key = line.substring(keyBegin, secondSpace);</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 读取内存中的Entry，如果没有则创建新的Entry并添加到LinkHashMap中</span></div><div class="line">    Entry entry = lruEntries.get(key);</div><div class="line">    ...</div><div class="line">    <span class="keyword">if</span> (secondSpace != -<span class="number">1</span> &amp;&amp; firstSpace == CLEAN.length() &amp;&amp; line.startsWith(CLEAN)) &#123;</div><div class="line">      <span class="comment">// CLEAN操作</span></div><div class="line">      String[] parts = line.substring(secondSpace + <span class="number">1</span>).split(<span class="string">" "</span>);</div><div class="line">      entry.readable = <span class="keyword">true</span>;</div><div class="line">      entry.currentEditor = <span class="keyword">null</span>;</div><div class="line">      entry.setLengths(parts);</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (secondSpace == -<span class="number">1</span> &amp;&amp; firstSpace == DIRTY.length() &amp;&amp; line.startsWith(DIRTY)) &#123;</div><div class="line">      <span class="comment">// 脏数据，赋值Editor待后续清理</span></div><div class="line">      entry.currentEditor = <span class="keyword">new</span> Editor(entry);</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (secondSpace == -<span class="number">1</span> &amp;&amp; firstSpace == READ.length() &amp;&amp; line.startsWith(READ)) &#123;</div><div class="line">      <span class="comment">// READ操作</span></div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">      <span class="comment">// 非法操作行数据</span></div><div class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"unexpected journal line: "</span> + line);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="2-2-处理读取到的缓存"><a href="#2-2-处理读取到的缓存" class="headerlink" title="2.2 处理读取到的缓存"></a>2.2 处理读取到的缓存</h2><p>处理读取到Entry链表，清理垃圾缓存和操作<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="meta">@DiskLruCache</span>.java</div><div class="line"><span class="comment">// [2] 计算初始大小，回收垃圾缓存。</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">processJournal</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">    fileSystem.delete(journalFileTmp);</div><div class="line">    <span class="keyword">for</span> (Iterator&lt;Entry&gt; i = lruEntries.values().iterator(); i.hasNext(); ) &#123;</div><div class="line">      Entry entry = i.next();</div><div class="line">      <span class="comment">// entry.currentEditor 如果不是空说明是DIRTY的数据，上面分析过</span></div><div class="line">      <span class="keyword">if</span> (entry.currentEditor == <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> t = <span class="number">0</span>; t &lt; valueCount; t++) &#123;</div><div class="line">          size += entry.lengths[t];</div><div class="line">        &#125;</div><div class="line">      &#125; <span class="keyword">else</span> &#123;</div><div class="line">        entry.currentEditor = <span class="keyword">null</span>;</div><div class="line">        <span class="comment">// valueCount = 2</span></div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> t = <span class="number">0</span>; t &lt; valueCount; t++) &#123;</div><div class="line">          fileSystem.delete(entry.cleanFiles[t]);</div><div class="line">          fileSystem.delete(entry.dirtyFiles[t]);</div><div class="line">        &#125;</div><div class="line">        i.remove();</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="2-3-异常处理"><a href="#2-3-异常处理" class="headerlink" title="2.3 异常处理"></a>2.3 异常处理</h2><p>读取或处理缓存时发生异常，说明缓存文件已破坏，清空缓存目录下的所有文件<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="meta">@DiskLruCache</span>.java</div><div class="line"><span class="comment">// [3] 出现异常时，关闭缓存并删除缓存目录下所有文件</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">delete</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">    close();</div><div class="line">    fileSystem.deleteContents(directory);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="2-4-异常后的恢复"><a href="#2-4-异常后的恢复" class="headerlink" title="2.4 异常后的恢复"></a>2.4 异常后的恢复</h2><p>出现异常清空缓存目录后，需要重新创建Clean的缓存文件。<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="meta">@DiskLruCache</span>.java</div><div class="line"><span class="comment">// [4] 创建新的日志文件，会替换当前存在的日志文件</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">rebuildJournal</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">    <span class="comment">// 先关闭日志写操作</span></div><div class="line">    ...</div><div class="line">    <span class="comment">// 创建一个临时文件</span></div><div class="line">    BufferedSink writer = Okio.buffer(fileSystem.sink(journalFileTmp));</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">      <span class="comment">// 写入日志必要的头信息</span></div><div class="line">      ...</div><div class="line">      <span class="comment">// 迭代内存中日志记录</span></div><div class="line">      <span class="keyword">for</span> (Entry entry : lruEntries.values()) &#123;</div><div class="line">        <span class="keyword">if</span> (entry.currentEditor != <span class="keyword">null</span>) &#123;</div><div class="line">          <span class="comment">// 写入DIRTY记录</span></div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">          <span class="comment">// 写入CLEAN记录</span></div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">    &#125; <span class="keyword">finally</span> &#123;</div><div class="line">      writer.close();</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 备份现有日志文件，保存新日志文件，然后删除备份文件</span></div><div class="line">    hasJournalErrors = <span class="keyword">false</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h1 id="3-缓存读取"><a href="#3-缓存读取" class="headerlink" title="3. 缓存读取"></a>3. 缓存读取</h1><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="meta">@Cache</span>.<span class="function">java</span></div><div class="line">Response <span class="title">get</span><span class="params">(Request request)</span> &#123;</div><div class="line">    <span class="comment">// 缓存的KEY值实际就是Request的Url的MD5值</span></div><div class="line">    String key = urlToKey(request);</div><div class="line">    DiskLruCache.Snapshot snapshot; <span class="comment">// 缓存快照，包装了Source和Sink</span></div><div class="line">    ...</div><div class="line">    <span class="comment">// [1]</span></div><div class="line">    snapshot = cache.get(key);</div><div class="line">    ... </div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">      <span class="comment">// [2]</span></div><div class="line">      entry = <span class="keyword">new</span> Entry(snapshot.getSource(ENTRY_METADATA));</div><div class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</div><div class="line">      Util.closeQuietly(snapshot);</div><div class="line">      <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// [3]</span></div><div class="line">    Response response = entry.response(snapshot);</div><div class="line">    ...</div><div class="line">    <span class="keyword">return</span> response;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<h2 id="3-1-缓存文件快照"><a href="#3-1-缓存文件快照" class="headerlink" title="3.1 缓存文件快照"></a>3.1 缓存文件快照</h2><p>Snapshot内是缓存文件的Source、每个文件的具体大小。<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="meta">@DiskLruCache</span>.Snapshot.java</div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> String key;          <span class="comment">// Request key值</span></div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">long</span> sequenceNumber; <span class="comment">// 多线程</span></div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> Source[] sources;    <span class="comment">// 缓存元数据和缓存体文件输入流</span></div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">long</span>[] lengths;      <span class="comment">// metadata和body缓存文件长度</span></div></pre></td></tr></table></figure></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="meta">@DiskLruCache</span>.java</div><div class="line"><span class="comment">// [1]</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> Snapshot <span class="title">get</span><span class="params">(String key)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">    ...</div><div class="line">    Entry entry = lruEntries.get(key);</div><div class="line">    ...</div><div class="line">    <span class="comment">// [1.1]</span></div><div class="line">    Snapshot snapshot = entry.snapshot();</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="meta">@DiskLruCache</span>.Entry.java</div><div class="line"><span class="comment">// [1.1]</span></div><div class="line"><span class="function">Snapshot <span class="title">snapshot</span><span class="params">()</span> </span>&#123;</div><div class="line">  ...</div><div class="line">  <span class="comment">// valueCount = 2</span></div><div class="line">  Source[] sources = <span class="keyword">new</span> Source[valueCount];</div><div class="line">  <span class="keyword">long</span>[] lengths = <span class="keyword">this</span>.lengths.clone(); <span class="comment">// Defensive copy since these can be zeroed out.</span></div><div class="line">  <span class="keyword">try</span> &#123;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; valueCount; i++) &#123;</div><div class="line">      sources[i] = fileSystem.source(cleanFiles[i]);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Snapshot(key, sequenceNumber, sources, lengths);</div><div class="line">  &#125; <span class="keyword">catch</span> (FileNotFoundException e) &#123;</div><div class="line">    ...</div><div class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="3-2-构建缓存响应"><a href="#3-2-构建缓存响应" class="headerlink" title="3.2 构建缓存响应"></a>3.2 构建缓存响应</h2><p>缓存响应包括请求的详细信息，协议，响应码和响应体<code>CacheResponseBody.java</code><br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="meta">@Cache</span>.Entry.java</div><div class="line"><span class="comment">// [3]</span></div><div class="line"><span class="function"><span class="keyword">public</span> Response <span class="title">response</span><span class="params">(DiskLruCache.Snapshot snapshot)</span> </span>&#123;</div><div class="line">  String contentType = responseHeaders.get(<span class="string">"Content-Type"</span>);</div><div class="line">  String contentLength = responseHeaders.get(<span class="string">"Content-Length"</span>);</div><div class="line">  Request cacheRequest = <span class="keyword">new</span> Request.Builder()</div><div class="line">      .url(url)</div><div class="line">      .method(requestMethod, <span class="keyword">null</span>)</div><div class="line">      .headers(varyHeaders)</div><div class="line">      .build();</div><div class="line">  <span class="keyword">return</span> <span class="keyword">new</span> Response.Builder()</div><div class="line">      .request(cacheRequest)</div><div class="line">      .protocol(protocol)</div><div class="line">      .code(code)</div><div class="line">      .message(message)</div><div class="line">      .headers(responseHeaders)</div><div class="line">      <span class="comment">// [3.1]</span></div><div class="line">      .body(<span class="keyword">new</span> CacheResponseBody(snapshot, contentType, contentLength))</div><div class="line">      .handshake(handshake)</div><div class="line">      .build();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="meta">@Cache</span>.CacheResponseBody.java</div><div class="line"><span class="comment">// [3.1]</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">CacheResponseBody</span><span class="params">(<span class="keyword">final</span> DiskLruCache.Snapshot snapshot,</span></span></div><div class="line">    String contentType, String contentLength) &#123;</div><div class="line">  ...</div><div class="line">  <span class="comment">// 创建缓存体文件Source</span></div><div class="line">  <span class="comment">// [3.1.1]</span></div><div class="line">  Source source = snapshot.getSource(ENTRY_BODY);</div><div class="line">  bodySource = Okio.buffer(<span class="keyword">new</span> ForwardingSource(source) &#123;</div><div class="line">    <span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">      snapshot.close();</div><div class="line">      <span class="keyword">super</span>.close();</div><div class="line">    &#125;</div><div class="line">  &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="4-缓存写入"><a href="#4-缓存写入" class="headerlink" title="4. 缓存写入"></a>4. 缓存写入</h1><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="meta">@Cache</span>.<span class="function">java</span></div><div class="line"><span class="keyword">private</span> CacheRequest <span class="title">put</span><span class="params">(Response response)</span> <span class="keyword">throws</span> IOException &#123;</div><div class="line">    String requestMethod = response.request().method();</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> (HttpMethod.invalidatesCache(response.request().method())) &#123;</div><div class="line">      <span class="comment">// OkHttp3只支持GET请求缓存</span></div><div class="line">      <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (!requestMethod.equals(<span class="string">"GET"</span>)) &#123;</div><div class="line">      <span class="comment">// Don't cache non-GET responses. We're technically allowed to cache</span></div><div class="line">      <span class="comment">// HEAD requests and some POST requests, but the complexity of doing</span></div><div class="line">      <span class="comment">// so is high and the benefit is low.</span></div><div class="line">      <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> (OkHeaders.hasVaryAll(response)) &#123;</div><div class="line">      <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    Entry entry = <span class="keyword">new</span> Entry(response);</div><div class="line">    DiskLruCache.Editor editor = <span class="keyword">null</span>;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">      <span class="comment">// [1] 将请求的URL的MD5值作为缓存Key值</span></div><div class="line">      editor = cache.edit(urlToKey(response.request()));</div><div class="line">      <span class="keyword">if</span> (editor == <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">      &#125;</div><div class="line">      <span class="comment">// [2] 写入请求META_DATA信息</span></div><div class="line">      entry.writeTo(editor);</div><div class="line">      <span class="comment">// [3] 初始化缓存请求，用于写入缓存体</span></div><div class="line">      <span class="keyword">return</span> <span class="keyword">new</span> CacheRequestImpl(editor);</div><div class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</div><div class="line">      <span class="comment">// 出现异常，结束Editor任务</span></div><div class="line">      <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="4-1-初始Editor对象"><a href="#4-1-初始Editor对象" class="headerlink" title="4.1 初始Editor对象"></a>4.1 初始Editor对象</h2><p>Editor主要作用就是创建写入。<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="meta">@DiskLruCache</span>.java</div><div class="line"><span class="comment">// [1]</span></div><div class="line"><span class="function"><span class="keyword">public</span> Editor <span class="title">edit</span><span class="params">(String key)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">    <span class="keyword">return</span> edit(key, ANY_SEQUENCE_NUMBER);</div><div class="line">&#125;</div><div class="line"><span class="comment">// </span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">synchronized</span> Editor <span class="title">edit</span><span class="params">(String key, <span class="keyword">long</span> expectedSequenceNumber)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">    <span class="comment">// 检查是否初始化，是否关闭，Key值验证</span></div><div class="line">    ...</div><div class="line">    Entry entry = lruEntries.get(key);</div><div class="line">    <span class="comment">// Snapshot是否过期，是否已有Editor在运行</span></div><div class="line">    ...</div><div class="line">    <span class="comment">// 日志文件是否超过最大值</span></div><div class="line">    ...</div><div class="line">    <span class="comment">// DIRTY记录，防止缓存文件泄露问题，先Flush记录日志</span></div><div class="line">    <span class="comment">// Flush the journal before creating files to prevent file leaks.</span></div><div class="line">    journalWriter.writeUtf8(DIRTY).writeByte(<span class="string">' '</span>).writeUtf8(key).writeByte(<span class="string">'\n'</span>);</div><div class="line">    journalWriter.flush();</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> (hasJournalErrors) &#123;</div><div class="line">      <span class="keyword">return</span> <span class="keyword">null</span>; <span class="comment">// Don't edit; the journal can't be written.</span></div><div class="line">    &#125;</div><div class="line">    ...</div><div class="line">    <span class="comment">// 初始化新的Editor</span></div><div class="line">    Editor editor = <span class="keyword">new</span> Editor(entry);</div><div class="line">    entry.currentEditor = editor;</div><div class="line">    <span class="keyword">return</span> editor;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="4-2-写入元数据"><a href="#4-2-写入元数据" class="headerlink" title="4.2 写入元数据"></a>4.2 写入元数据</h2><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="meta">@Cache</span>.Entry.java</div><div class="line"><span class="comment">// [2]</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">writeTo</span><span class="params">(DiskLruCache.Editor editor)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">  BufferedSink sink = Okio.buffer(editor.newSink(ENTRY_METADATA));</div><div class="line">  <span class="comment">// 写入缓存元数据，参考缓存元数据节</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="4-3-CacheRequest"><a href="#4-3-CacheRequest" class="headerlink" title="4.3 CacheRequest"></a>4.3 CacheRequest</h2><p>创建<code>CacheRequestImpl</code>目的是处理缓存输出流的处理。创建一个临时缓存文件来写入缓存。写入成功后，由Editor完成最后的缓存体的处理。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="meta">@CacheRequestImpl</span>.java</div><div class="line"><span class="comment">// [3]</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">CacheRequestImpl</span><span class="params">(<span class="keyword">final</span> DiskLruCache.Editor editor)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">  <span class="keyword">this</span>.editor = editor;</div><div class="line">  <span class="comment">// [3.1] 初始化缓存体</span></div><div class="line">  </div><div class="line">  <span class="keyword">this</span>.cacheOut = editor.newSink(ENTRY_BODY);</div><div class="line">  <span class="keyword">this</span>.body = <span class="keyword">new</span> ForwardingSink(cacheOut) &#123;</div><div class="line">    <span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">      <span class="keyword">synchronized</span> (Cache.<span class="keyword">this</span>) &#123;</div><div class="line">        <span class="keyword">if</span> (done) &#123;</div><div class="line">          <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line">        done = <span class="keyword">true</span>;</div><div class="line">        writeSuccessCount++;</div><div class="line">      &#125;</div><div class="line">      <span class="keyword">super</span>.close();</div><div class="line">      <span class="comment">// [3.2] 完成缓存体文件写入</span></div><div class="line">      editor.commit();</div><div class="line">    &#125;</div><div class="line">  &#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="4-3-1-未缓冲的输出流"><a href="#4-3-1-未缓冲的输出流" class="headerlink" title="4.3.1 未缓冲的输出流"></a>4.3.1 未缓冲的输出流</h3><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="meta">@DiskLruCache</span>.Editor.java</div><div class="line"><span class="comment">// [3.1]</span></div><div class="line"><span class="function"><span class="keyword">public</span> Sink <span class="title">newSink</span><span class="params">(<span class="keyword">int</span> index)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">  <span class="keyword">synchronized</span> (DiskLruCache.<span class="keyword">this</span>) &#123;</div><div class="line">    <span class="comment">// 保证编辑的是对应缓存文件</span></div><div class="line">    ... </div><div class="line">    <span class="keyword">if</span> (!entry.readable) &#123;</div><div class="line">      <span class="comment">// 缓存文件是否正在编辑</span></div><div class="line">      written[index] = <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 初始化临时缓存文件</span></div><div class="line">    File dirtyFile = entry.dirtyFiles[index];</div><div class="line">    Sink sink;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">      <span class="comment">// 初始化缓存文件的Sink</span></div><div class="line">      sink = fileSystem.sink(dirtyFile);</div><div class="line">    &#125; <span class="keyword">catch</span> (FileNotFoundException e) &#123;</div><div class="line">      <span class="keyword">return</span> NULL_SINK;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 初始化错误流处理的Sink</span></div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> FaultHidingSink(sink) &#123;</div><div class="line">      <span class="meta">@Override</span> <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onException</span><span class="params">(IOException e)</span> </span>&#123;</div><div class="line">        <span class="keyword">synchronized</span> (DiskLruCache.<span class="keyword">this</span>) &#123;</div><div class="line">          hasErrors = <span class="keyword">true</span>;</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">    &#125;;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="4-3-1-提交写入操作"><a href="#4-3-1-提交写入操作" class="headerlink" title="4.3.1 提交写入操作"></a>4.3.1 提交写入操作</h3><p>如果输出流写入缓存文件出现错误，需要删除缓存文件<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="meta">@DiskLruCache</span>.Edtor.java</div><div class="line"><span class="comment">// [3.2]</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">commit</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">  <span class="keyword">synchronized</span> (DiskLruCache.<span class="keyword">this</span>) &#123;</div><div class="line">    <span class="keyword">if</span> (hasErrors) &#123;</div><div class="line">      <span class="comment">// [3.2.1] 缓存出错，记录REMOVE日志</span></div><div class="line">      completeEdit(<span class="keyword">this</span>, <span class="keyword">false</span>);</div><div class="line">      <span class="comment">// [3.2.2] 记录REMOVE日志，移除Entry</span></div><div class="line">      removeEntry(entry);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">      <span class="comment">// [3.2.1] 完成缓存体写入</span></div><div class="line">      completeEdit(<span class="keyword">this</span>, <span class="keyword">true</span>);</div><div class="line">    &#125;</div><div class="line">    committed = <span class="keyword">true</span>;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="4-3-1-完成提交"><a href="#4-3-1-完成提交" class="headerlink" title="4.3.1 完成提交"></a>4.3.1 完成提交</h3><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="meta">@DiskLruCache</span>.java</div><div class="line"><span class="comment">// [3.2.1]</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">completeEdit</span><span class="params">(Editor editor, <span class="keyword">boolean</span> success)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">    <span class="comment">// success : true表示成功写入缓存文件</span></div><div class="line">    Entry entry = editor.entry;</div><div class="line">    ...</div><div class="line">    </div><div class="line">    <span class="comment">// If this edit is creating the entry for the first time, every index must have a value.</span></div><div class="line">    ...</div><div class="line">    <span class="comment">// 保存临时缓存文件（成功时且临时文件存在）或删除临时缓存文件（失败时）</span></div><div class="line">    <span class="comment">// 成功写入缓存文件时，需要更新Map中对应的Entry信息</span></div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; valueCount; i++) &#123;</div><div class="line">      File dirty = entry.dirtyFiles[i];</div><div class="line">      <span class="keyword">if</span> (success) &#123;</div><div class="line">        <span class="keyword">if</span> (fileSystem.exists(dirty)) &#123;</div><div class="line">          <span class="comment">// 存储临时文件到缓存体文件</span></div><div class="line">          File clean = entry.cleanFiles[i];</div><div class="line">          fileSystem.rename(dirty, clean);</div><div class="line">          <span class="keyword">long</span> oldLength = entry.lengths[i];</div><div class="line">          <span class="keyword">long</span> newLength = fileSystem.size(clean);</div><div class="line">          entry.lengths[i] = newLength;</div><div class="line">          size = size - oldLength + newLength;</div><div class="line">        &#125;</div><div class="line">      &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="comment">// 删除临时缓存文件</span></div><div class="line">        fileSystem.delete(dirty);</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">    ...</div><div class="line">    <span class="comment">// 日志记录数</span></div><div class="line">    redundantOpCount++;</div><div class="line">    entry.currentEditor = <span class="keyword">null</span>;</div><div class="line">    <span class="keyword">if</span> (entry.readable | success) &#123;</div><div class="line">      <span class="comment">// 记录CLEAN日志</span></div><div class="line">      entry.readable = <span class="keyword">true</span>;</div><div class="line">      ...</div><div class="line">      <span class="keyword">if</span> (success) &#123;</div><div class="line">        entry.sequenceNumber = nextSequenceNumber++;</div><div class="line">      &#125;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">      <span class="comment">// 记录REMOVE日志</span></div><div class="line">    &#125;</div><div class="line">    journalWriter.flush();</div><div class="line">    <span class="comment">// 整理日志大小</span></div><div class="line">    <span class="keyword">if</span> (size &gt; maxSize || journalRebuildRequired()) &#123;</div><div class="line">      executor.execute(cleanupRunnable);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="meta">@DiskLruCache</span>.java</div><div class="line"><span class="comment">// [3.2.2]</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">removeEntry</span><span class="params">(Entry entry)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">    <span class="keyword">if</span> (entry.currentEditor != <span class="keyword">null</span>) &#123;</div><div class="line">      entry.currentEditor.hasErrors = <span class="keyword">true</span>; <span class="comment">// Prevent the edit from completing normally.</span></div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 删除失效的缓存文件</span></div><div class="line">    ...</div><div class="line">    <span class="comment">// 记录日志操作数</span></div><div class="line">    redundantOpCount++;</div><div class="line">    <span class="comment">// 记录REMOVE操作</span></div><div class="line">    journalWriter.writeUtf8(REMOVE).writeByte(<span class="string">' '</span>).writeUtf8(entry.key).writeByte(<span class="string">'\n'</span>);</div><div class="line">    lruEntries.remove(entry.key);</div><div class="line">    <span class="comment">// 超过一定操作次数后，对文件进行清理操作</span></div><div class="line">    <span class="keyword">if</span> (journalRebuildRequired()) &#123;</div><div class="line">      executor.execute(cleanupRunnable);</div><div class="line">    &#125;</div><div class="line">     </div><div class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="5-缓存更新"><a href="#5-缓存更新" class="headerlink" title="5. 缓存更新"></a>5. 缓存更新</h1><p>更新的操作是在读取缓存操作，使用缓存策略与服务器返回的状态或头部信息来决定是否更新缓存。<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="meta">@Cache</span>.<span class="function">java</span></div><div class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(Response cached, Response network)</span> &#123;</div><div class="line">    Entry entry = <span class="keyword">new</span> Entry(network);</div><div class="line">    <span class="comment">// [1] 读取缓存文件快照，cached 是读取缓存得到的Response，由读取缓存小节中知道cached.body()实际上就是CacheResponseBody</span></div><div class="line">    DiskLruCache.Snapshot snapshot = ((CacheResponseBody) cached.body()).snapshot;</div><div class="line">    DiskLruCache.Editor editor = <span class="keyword">null</span>;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">      <span class="comment">// [2] snapshot.edit调用就是DiskLruCache的edit(String key, long expectedSequenceNumber)方法。</span></div><div class="line">      editor = snapshot.edit(); <span class="comment">// Returns null if snapshot is not current.</span></div><div class="line">      <span class="keyword">if</span> (editor != <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="comment">// [3] 更新缓存元数据，参考缓存小节</span></div><div class="line">        entry.writeTo(editor);</div><div class="line">        <span class="comment">// [4] 更新缓存体，记录操作日志，参考缓存写入小节</span></div><div class="line">        editor.commit();</div><div class="line">      &#125;</div><div class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</div><div class="line">      <span class="comment">// 更新出现异常，清理本地缓存文件</span></div><div class="line">      abortQuietly(editor);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h1 id="6-缓存清理"><a href="#6-缓存清理" class="headerlink" title="6. 缓存清理"></a>6. 缓存清理</h1><p>OkHttp3缓存清理支持++手动++和++自动++两种。</p>
+<ul>
+<li>手动清理缓存文件，直接调用<code>Cache.remove(Request request)</code>方法，可以清理指定请求的缓存文件，也支持批量缓存清理<code>Cache.evictAll()</code>将缓存文件全部清空</li>
+<li>自动清理缓存则在运行时自动判断。如果服务器响应的不需要缓存，判断本地是否进行过缓存决定是否清理已有的缓存文件。<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="meta">@Cache</span>.<span class="function">java</span></div><div class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">remove</span><span class="params">(Request request)</span> <span class="keyword">throws</span> IOException &#123;</div><div class="line">    <span class="comment">// [1] 调用DiskLruCache删除缓存</span></div><div class="line">    cache.remove(urlToKey(request));</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="meta">@DiskLruCache</span>.<span class="function">java</span></div><div class="line"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">boolean</span> <span class="title">remove</span><span class="params">(String key)</span> <span class="keyword">throws</span> IOException &#123;</div><div class="line">    <span class="comment">// 一些判断</span></div><div class="line">    ...</div><div class="line">    <span class="comment">// [1] 清理缓存文件，记录缓存操作，参考写入。</span></div><div class="line">    <span class="keyword">boolean</span> removed = removeEntry(entry);</div><div class="line">    <span class="keyword">if</span> (removed &amp;&amp; size &lt;= maxSize) mostRecentTrimFailed = <span class="keyword">false</span>;</div><div class="line">    <span class="keyword">return</span> removed;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="7-关闭缓存"><a href="#7-关闭缓存" class="headerlink" title="7. 关闭缓存"></a>7. 关闭缓存</h1><p>清空全部缓存或调用<code>Cache.close</code>关闭缓存。关闭缓存时会清除所有正在读写操作的缓存任务。<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="meta">@DiskLruCache</span>.<span class="function">java</span></div><div class="line"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> <span class="keyword">throws</span> IOException &#123;</div><div class="line">    <span class="keyword">if</span> (!initialized || closed) &#123;</div><div class="line">      closed = <span class="keyword">true</span>;</div><div class="line">      <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// Copying for safe iteration.</span></div><div class="line">    <span class="keyword">for</span> (Entry entry : lruEntries.values().toArray(<span class="keyword">new</span> Entry[lruEntries.size()])) &#123;</div><div class="line">      <span class="keyword">if</span> (entry.currentEditor != <span class="keyword">null</span>) &#123;</div><div class="line">        entry.currentEditor.abort();</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">    trimToSize();</div><div class="line">    journalWriter.close();</div><div class="line">    journalWriter = <span class="keyword">null</span>;</div><div class="line">    closed = <span class="keyword">true</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2017/04/24/深入理解OkHttp3的Connections/" data-toggle="tooltip" data-placement="top" title="深入理解OkHttp3的Connections（3）">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2017/04/23/深入理解OkHttp3的Interceptors/" data-toggle="tooltip" data-placement="top" title="深入理解OkHttp3的Interceptors（1）">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#okhttp3" title="okhttp3">okhttp3</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "alexwan02";
+    var disqus_identifier = "http://blog.alexwan.cn/2017/04/24/深入理解OkHttp3的DiskLruCache/";
+    var disqus_url = "http://blog.alexwan.cn/2017/04/24/深入理解OkHttp3的DiskLruCache/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Alex Studio 2017 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.alexwan.cn/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

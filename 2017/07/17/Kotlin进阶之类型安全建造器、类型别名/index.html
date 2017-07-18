@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Kotlin进阶之类型安全建造器、类型别名 - Alex Studio
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.alexwan.cn/2017/07/17/Kotlin进阶之类型安全建造器、类型别名/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Alex Studio</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#kotlin" title="kotlin">kotlin</a>
+                        
+                    </div>
+                    <h1>Kotlin进阶之类型安全建造器、类型别名</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by AlexWan on
+                        2017-07-17
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="类型安全建造器"><a href="#类型安全建造器" class="headerlink" title="类型安全建造器"></a>类型安全建造器</h1><p><a href="概念">建造器</a>在<em>Groovy社区</em>非常流行，使用半声明方式来定义数据，有利于<a href="http://www.groovy-lang.org/processing-xml.html#_creating_xml" target="_blank" rel="external">生成XML</a>，<a href="http://www.groovy-lang.org/swing.html" target="_blank" rel="external">UI组件布局</a>，<a href="http://www.artima.com/weblogs/viewpost.jsp?thread=296081" target="_blank" rel="external">描述3D场景</a>等等。</p>
+<p>多数情况，Kotlin允许类型检查建造器，比<code>Groovy</code>的动态类型实现更具有吸引力。</p>
+<h2 id="类型安全构建器范例"><a href="#类型安全构建器范例" class="headerlink" title="类型安全构建器范例"></a>类型安全构建器范例</h2><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">import</span> com.example.html.*</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">result</span><span class="params">(args: <span class="type">Array</span>&lt;<span class="type">String</span>&gt;)</span></span> = </div><div class="line">    html &#123;</div><div class="line">        head &#123;</div><div class="line">            title &#123;+<span class="string">"XML encoding with Kotlin"</span>&#125;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        body &#123;</div><div class="line">            h1 &#123;+<span class="string">"XML encoding with Kotlin"</span>&#125;</div><div class="line">            p  &#123;+<span class="string">"this format can be used as an alternative markup to XML"</span>&#125;</div><div class="line">            </div><div class="line">            <span class="comment">// 带有属性和文本内容元素</span></div><div class="line">            a(href = <span class="string">"http://kotlinlang.org"</span>) &#123;+<span class="string">"Kotlin"</span>&#125;</div><div class="line">            </div><div class="line">            <span class="comment">// 混合内容</span></div><div class="line">            p &#123;</div><div class="line">                +<span class="string">"This is some"</span></div><div class="line">                b &#123;+<span class="string">"mixed"</span>&#125;</div><div class="line">                +<span class="string">"text. For more see the"</span></div><div class="line">                a(href = <span class="string">"http://kotlinlang.org"</span>) &#123;+<span class="string">"Kotlin"</span>&#125;</div><div class="line">                +<span class="string">"project"</span></div><div class="line">            &#125;</div><div class="line">            p &#123;+<span class="string">"some text"</span>&#125;</div><div class="line">            </div><div class="line">            <span class="comment">// 生成内容</span></div><div class="line">            p &#123;</div><div class="line">                <span class="keyword">for</span> (arg <span class="keyword">in</span> args)</div><div class="line">                    +arg</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>可以<a href="https://try.kotlinlang.org/#/Examples/Longer%20examples/HTML%20Builder/HTML%20Builder.kt" target="_blank" rel="external">在线演示</a>这段代码</p>
+<h2 id="如何运转"><a href="#如何运转" class="headerlink" title="如何运转"></a>如何运转</h2><p>这面介绍Kotlin类型安全建造器的实现机制。首先定义构建的Model，这里模拟HTML标签。<code>HTML</code>是描述<code>&lt;html&gt;</code>标签的类，定义了如像<code>&lt;head&gt;</code>和<code>&lt;body&gt;</code>的子标签。</p>
+<p>回想如何定义Html<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">html&#123;</div><div class="line">  <span class="comment">// ...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><code>html</code>实际上使用<a href="https://kotlinlang.org/docs/reference/lambdas.html" target="_blank" rel="external">lambda表达式</a>作为参数的函数。</p>
+<p>函数的定义：<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">html</span><span class="params">(init: <span class="type">Html</span>.()</span></span> -&gt; <span class="built_in">Unit</span>): Html&#123;</div><div class="line">    <span class="keyword">val</span> html = Html()</div><div class="line">    html.init()</div><div class="line">    <span class="keyword">return</span> html</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><code>html</code>的参数名为<code>init</code>的函数。<code>init</code>函数类型为<code>HTML.() -&gt; Unit</code>：带有接收者的函数类型。也就意味着传入<code>HTML</code>类型实例的接收者给函数，并且可以在函数内部调用实例的成员。可以使用<code>this</code>关键字访问接收者</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">html&#123;</div><div class="line">    <span class="keyword">this</span>.head&#123; <span class="comment">/* ... */</span> &#125;</div><div class="line">    <span class="keyword">this</span>.body&#123; <span class="comment">/* ... */</span> &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>（<code>head</code>和<code>body</code>都是<code>html</code>的成员函数）</p>
+<p><code>this</code>关键字可以省略。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">html &#123;</div><div class="line">    head &#123; <span class="comment">/* ... */</span>&#125;</div><div class="line">    body &#123; <span class="comment">/* ... */</span>&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>浏览上面定义的<code>html</code>函数体：创建新的<code>HTML</code>实例，调用参数传入的函数，进行初始化（在例子中调用<code>HTML</code>实例的<code>head</code>与<code>body</code>函数），之后返回<code>HTML</code>实例。这就是建造器真正执行的内容。</p>
+<p><code>HTML</code>类中定义的<code>head</code>和<code>body</code>函数与<code>html</code>相似。唯一不同的是它们都将建造器实例添加到<code>HTML</code>实例的子集。</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">head</span><span class="params">(init: <span class="type">Head</span>.()</span></span> -&gt; <span class="built_in">Unit</span>): Head&#123;</div><div class="line">    <span class="keyword">val</span> head = Head()</div><div class="line">    head.init()</div><div class="line">    children.add(head)</div><div class="line">    <span class="keyword">return</span> head</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">body</span><span class="params">(init: <span class="type">Body</span>.()</span></span> -&gt; <span class="built_in">Unit</span>): Body&#123;</div><div class="line">    <span class="keyword">val</span> body = Body()</div><div class="line">    body.init()</div><div class="line">    children.add(body)</div><div class="line">    <span class="keyword">return</span> head</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>实际上两个函数做相同事情，所以使用泛型函数<code>initTag</code>进行合并：<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;T: Element&gt;</span> <span class="title">initTag</span><span class="params">(tag: <span class="type">T</span> , init: <span class="type">T</span>.()</span></span> -&gt; <span class="built_in">Unit</span>): T&#123;</div><div class="line">    tag.init()</div><div class="line">    children.add(tag)</div><div class="line">    <span class="keyword">return</span> tag</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>函数简化后：<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">head</span><span class="params">(init: <span class="type">Head</span>.()</span></span> -&gt; <span class="built_in">Unit</span> ) = initTag(Head() , init)</div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">body</span><span class="params">(init: <span class="type">Body</span>.()</span></span> -&gt; <span class="built_in">Unit</span> ) = initTag(Body() , init)</div></pre></td></tr></table></figure></p>
+<p>之后可以使用它们来创建<code>&lt;head&gt;</code>和<code>&lt;body&gt;</code>标签了</p>
+<p>那么如何添加文本内容到标签体中，就像开头介绍的那样。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">html&#123;</div><div class="line">    head &#123;</div><div class="line">        title &#123;+<span class="string">"XML encoding with Kotlin"</span>&#125;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// ...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>因此只要在标签体重添加字符串，字符串前的<code>+</code>符号表示<code>unaryPlus()</code>操作符对应的函数。<code>unaryPlus()</code>是<code>TagWithText</code>抽象类（<code>Title</code>的父类）定义扩展成员函数。</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> String.<span class="title">unaryPlus</span><span class="params">()</span></span>&#123;</div><div class="line">    children.add(TextElement(<span class="keyword">this</span>))</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>所以前缀<code>+</code>实际上将<code>String</code>包裹到<code>TextElement</code>中，并添加<code>children</code>集合中，称为标签树合适的部分。</p>
+<p>定义在包<code>com.example.html</code>中的这些函数在上面建造器例子定义导入。在小节最后给出了包定义的全部内容。</p>
+<h2 id="作用域控制：-DslMarker（Kotlin-1-1）"><a href="#作用域控制：-DslMarker（Kotlin-1-1）" class="headerlink" title="作用域控制：@DslMarker（Kotlin 1.1）"></a>作用域控制：@DslMarker（Kotlin 1.1）</h2><p>当使用DSL（Domain Specific Language特定领域语言）时，可能会遇到一个问题就是调用太多函数。调用所有Lambda表达式中隐式的接收者可能会有获取结果不一致问题，比如在另外一个<code>head</code>中的<code>head</code>标签<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">html&#123;</div><div class="line">    head &#123;</div><div class="line">        head &#123;&#125; <span class="comment">// 禁止这样使用</span></div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// ...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在这个例子中，只有最近隐式接收者成员<code>this@head</code>必须为可用。<code>head()</code>是外部接收者<code>this@html</code>的成员，必须要合法调用。</p>
+<p>为了解决这个问题，Kotlin 1.1引入了控制接收者作用域的特殊机制。</p>
+<p>为了是编译开启作用域控制，需要使用相同注解标记去注解DSL使用的接收者类型。如，对于HTML建造器，声明<code>@HTMLTagMarker</code>注解<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="meta">@DslMarker</span></div><div class="line"><span class="keyword">annotation</span> <span class="class"><span class="keyword">class</span> <span class="title">HTMLTagMarker</span></span></div></pre></td></tr></table></figure></p>
+<p>使用<code>@DslMarker</code>注解的注解类被称为<code>DSL标记</code></p>
+<p>在DSL中，所有标签类都继承<code>Tag</code>类，只使用<code>@HtmlTagMarker</code>注解超类，编译器就会把所有继承的类当做一注解<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="meta">@HtmlTagMarker</span></div><div class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Tag</span></span>(<span class="keyword">val</span> name: String) &#123; ... &#125;</div></pre></td></tr></table></figure></p>
+<p>因此无须使用<code>@HtmlTagMarker</code>注解<code>Head</code>和<code>HTML</code>类</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">HTML</span></span>() : Tag(<span class="string">"html"</span>)&#123; ... &#125;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Head</span></span>() : Tag(<span class="string">"head"</span>) &#123; ... &#125;</div></pre></td></tr></table></figure>
+<p>添加注解后，Kotlin编译就会知道哪个隐式接收者是相同DSL的一部分，只允许调用最近接收者的成员：</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">html&#123;</div><div class="line">    head &#123;</div><div class="line">        head &#123;&#125; <span class="comment">// 错误：外部接收者成员</span></div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// ...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>仍可以调用外部接收者的成员，但需要显式指定接收者</p>
+</blockquote>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">html&#123;</div><div class="line">    head &#123;</div><div class="line">        <span class="keyword">this</span><span class="symbol">@html</span>.head&#123; &#125; <span class="comment">// 可以</span></div><div class="line">    &#125;</div><div class="line">    <span class="comment">// ...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="包com-example-html函数完整定义"><a href="#包com-example-html函数完整定义" class="headerlink" title="包com.example.html函数完整定义"></a>包com.example.html函数完整定义</h2><p>下面是包<code>com.example.html</code>完整定义，构建一个HTML树，大量使用了<a href="https://kotlinlang.org/docs/reference/extensions.html" target="_blank" rel="external">扩展函数</a>和<a href="https://kotlinlang.org/docs/reference/lambdas.html#function-literals-with-receiver" target="_blank" rel="external">带有接收者的Lambda</a>。</p>
+<blockquote>
+<p>@DslMarker注解只在Kotlin 1.1之后可用</p>
+</blockquote>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">package</span> com.example.html</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">interface</span> <span class="title">Element</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">render</span><span class="params">(builder: <span class="type">StringBuilder</span>, indent: <span class="type">String</span>)</span></span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">TextElement</span></span>(<span class="keyword">val</span> text: String) : Element &#123;</div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">render</span><span class="params">(builder: <span class="type">StringBuilder</span>, indent: <span class="type">String</span>)</span></span> &#123;</div><div class="line">        builder.append(<span class="string">"<span class="variable">$indent</span><span class="variable">$text</span>\n"</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@DslMarker</span></div><div class="line"><span class="keyword">annotation</span> <span class="class"><span class="keyword">class</span> <span class="title">HtmlTagMarker</span></span></div><div class="line"></div><div class="line"><span class="meta">@HtmlTagMarker</span></div><div class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Tag</span></span>(<span class="keyword">val</span> name: String) : Element &#123;</div><div class="line">    <span class="keyword">val</span> children = arrayListOf&lt;Element&gt;()</div><div class="line">    <span class="keyword">val</span> attributes = hashMapOf&lt;String, String&gt;()</div><div class="line"></div><div class="line">    <span class="keyword">protected</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;T : Element&gt;</span> <span class="title">initTag</span><span class="params">(tag: <span class="type">T</span>, init: <span class="type">T</span>.()</span></span> -&gt; <span class="built_in">Unit</span>): T &#123;</div><div class="line">        tag.init()</div><div class="line">        children.add(tag)</div><div class="line">        <span class="keyword">return</span> tag</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">render</span><span class="params">(builder: <span class="type">StringBuilder</span>, indent: <span class="type">String</span>)</span></span> &#123;</div><div class="line">        builder.append(<span class="string">"<span class="variable">$indent</span>&lt;<span class="variable">$name</span><span class="subst">$&#123;renderAttributes()&#125;</span>&gt;\n"</span>)</div><div class="line">        <span class="keyword">for</span> (c <span class="keyword">in</span> children) &#123;</div><div class="line">            c.render(builder, indent + <span class="string">"  "</span>)</div><div class="line">        &#125;</div><div class="line">        builder.append(<span class="string">"<span class="variable">$indent</span>&lt;/<span class="variable">$name</span>&gt;\n"</span>)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">renderAttributes</span><span class="params">()</span></span>: String &#123;</div><div class="line">        <span class="keyword">val</span> builder = StringBuilder()</div><div class="line">        <span class="keyword">for</span> ((attr, value) <span class="keyword">in</span> attributes) &#123;</div><div class="line">            builder.append(<span class="string">" <span class="variable">$attr</span>=\"<span class="variable">$value</span>\""</span>)</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> builder.toString()</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">toString</span><span class="params">()</span></span>: String &#123;</div><div class="line">        <span class="keyword">val</span> builder = StringBuilder()</div><div class="line">        render(builder, <span class="string">""</span>)</div><div class="line">        <span class="keyword">return</span> builder.toString()</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">TagWithText</span></span>(name: String) : Tag(name) &#123;</div><div class="line">    <span class="keyword">operator</span> <span class="function"><span class="keyword">fun</span> String.<span class="title">unaryPlus</span><span class="params">()</span></span> &#123;</div><div class="line">        children.add(TextElement(<span class="keyword">this</span>))</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">HTML</span> : <span class="type">TagWithText</span></span>(<span class="string">"html"</span>) &#123;</div><div class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">head</span><span class="params">(init: <span class="type">Head</span>.()</span></span> -&gt; <span class="built_in">Unit</span>) = initTag(Head(), init)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">body</span><span class="params">(init: <span class="type">Body</span>.()</span></span> -&gt; <span class="built_in">Unit</span>) = initTag(Body(), init)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Head</span> : <span class="type">TagWithText</span></span>(<span class="string">"head"</span>) &#123;</div><div class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">title</span><span class="params">(init: <span class="type">Title</span>.()</span></span> -&gt; <span class="built_in">Unit</span>) = initTag(Title(), init)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Title</span> : <span class="type">TagWithText</span></span>(<span class="string">"title"</span>)</div><div class="line"></div><div class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">BodyTag</span></span>(name: String) : TagWithText(name) &#123;</div><div class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">b</span><span class="params">(init: <span class="type">B</span>.()</span></span> -&gt; <span class="built_in">Unit</span>) = initTag(B(), init)</div><div class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">p</span><span class="params">(init: <span class="type">P</span>.()</span></span> -&gt; <span class="built_in">Unit</span>) = initTag(P(), init)</div><div class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">h1</span><span class="params">(init: <span class="type">H1</span>.()</span></span> -&gt; <span class="built_in">Unit</span>) = initTag(H1(), init)</div><div class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">a</span><span class="params">(href: <span class="type">String</span>, init: <span class="type">A</span>.()</span></span> -&gt; <span class="built_in">Unit</span>) &#123;</div><div class="line">        <span class="keyword">val</span> a = initTag(A(), init)</div><div class="line">        a.href = href</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Body</span> : <span class="type">BodyTag</span></span>(<span class="string">"body"</span>)</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span> : <span class="type">BodyTag</span></span>(<span class="string">"b"</span>)</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">P</span> : <span class="type">BodyTag</span></span>(<span class="string">"p"</span>)</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">H1</span> : <span class="type">BodyTag</span></span>(<span class="string">"h1"</span>)</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> : <span class="type">BodyTag</span></span>(<span class="string">"a"</span>) &#123;</div><div class="line">    <span class="keyword">var</span> href: String</div><div class="line">        <span class="keyword">get</span>() = attributes[<span class="string">"href"</span>]!!</div><div class="line">        <span class="keyword">set</span>(value) &#123;</div><div class="line">            attributes[<span class="string">"href"</span>] = value</div><div class="line">        &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">html</span><span class="params">(init: <span class="type">HTML</span>.()</span></span> -&gt; <span class="built_in">Unit</span>): HTML &#123;</div><div class="line">    <span class="keyword">val</span> html = HTML()</div><div class="line">    html.init()</div><div class="line">    <span class="keyword">return</span> html</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="类型别名"><a href="#类型别名" class="headerlink" title="类型别名"></a>类型别名</h1><p>类型别名可以为已有类型提供别名。在类型名过长时，可以引入一个不同的短名使用。</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">typealias NodeSet = Set&lt;Network.Node&gt;</div><div class="line"></div><div class="line">typealias FileTable&lt;K&gt; = MutableMap&lt;K, MutableList&lt;File&gt;&gt;</div></pre></td></tr></table></figure>
+<p>函数类型的别名<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">typealias MyHandler = (<span class="built_in">Int</span>, String, Any) -&gt; <span class="built_in">Unit</span></div><div class="line"></div><div class="line">typealias Predicate&lt;T&gt; = (T) -&gt; <span class="built_in">Boolean</span></div></pre></td></tr></table></figure></p>
+<p>内部类和嵌套类别名<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> </span>&#123;</div><div class="line">    inner <span class="class"><span class="keyword">class</span> <span class="title">Inner</span></span></div><div class="line">&#125;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span> </span>&#123;</div><div class="line">    inner <span class="class"><span class="keyword">class</span> <span class="title">Inner</span></span></div><div class="line">&#125;</div><div class="line"></div><div class="line">typealias AInner = A.Inner</div><div class="line">typealias BInner = B.Inner</div></pre></td></tr></table></figure></p>
+<p>类型别名不会引入新类型。等价于对应的基本类型。当添加<code>typealias Predicate&lt;T&gt;</code>并使用<code>Predicate&lt;Int&gt;</code>时，Kotlin编译器会将它扩展为<code>(Int) -&gt; Boolean</code>，所以需要泛型函数类型时，可以传入自己定义类型变量。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">typealias Predicate&lt;T&gt; = (T) -&gt; <span class="built_in">Boolean</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">foo</span><span class="params">(p: <span class="type">Predicate</span>&lt;<span class="type">Int</span>&gt;)</span></span> = p(<span class="number">42</span>)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">(args: <span class="type">Array</span>&lt;<span class="type">String</span>&gt;)</span></span> &#123;</div><div class="line">    <span class="keyword">val</span> f: (<span class="built_in">Int</span>) -&gt; <span class="built_in">Boolean</span> = &#123; it &gt; <span class="number">0</span> &#125;</div><div class="line">    println(foo(f)) <span class="comment">// 输出 "true"</span></div><div class="line"></div><div class="line">    <span class="keyword">val</span> p: Predicate&lt;<span class="built_in">Int</span>&gt; = &#123; it &gt; <span class="number">0</span> &#125;</div><div class="line">    println(listOf(<span class="number">1</span>, <span class="number">-2</span>).filter(p)) <span class="comment">// 输出 "[1]"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2017/07/18/Kotlin进阶之与Java交互/" data-toggle="tooltip" data-placement="top" title="Kotlin进阶之与Java交互">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2017/07/17/Kotlin进阶之空安全、异常/" data-toggle="tooltip" data-placement="top" title="Kotlin进阶之空安全、异常">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#kotlin" title="kotlin">kotlin</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "alexwan02";
+    var disqus_identifier = "http://blog.alexwan.cn/2017/07/17/Kotlin进阶之类型安全建造器、类型别名/";
+    var disqus_url = "http://blog.alexwan.cn/2017/07/17/Kotlin进阶之类型安全建造器、类型别名/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Alex Studio 2017 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.alexwan.cn/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

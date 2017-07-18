@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Kotlin基础之字段、接口 - Alex Studio
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.alexwan.cn/2017/07/03/Kotlin基础之属性与字段、接口/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Alex Studio</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#kotlin" title="kotlin">kotlin</a>
+                        
+                    </div>
+                    <h1>Kotlin基础之字段、接口</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by AlexWan on
+                        2017-07-03
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="属性与字段"><a href="#属性与字段" class="headerlink" title="属性与字段"></a>属性与字段</h1><h2 id="属性声明"><a href="#属性声明" class="headerlink" title="属性声明"></a>属性声明</h2><p>Kotlin中类拥有属性。用<code>var</code>关键字声明为可变属性，或用<code>val</code>关键字声明为只读属性。</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Address</span> </span>&#123;</div><div class="line">    <span class="keyword">var</span> name: String = ...</div><div class="line">    <span class="keyword">var</span> street: String = ...</div><div class="line">    <span class="keyword">var</span> city: String = ...</div><div class="line">    <span class="keyword">var</span> state: String? = ...</div><div class="line">    <span class="keyword">var</span> zip: String = ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>使用属相，只要像Java的字段一样，通过名称来进行引用。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">copyAddress</span><span class="params">(address: <span class="type">Address</span>)</span></span>: Address &#123;</div><div class="line">    <span class="keyword">val</span> result = Address() <span class="comment">// 初始化对象，无`new`关键字</span></div><div class="line">    result.name = address.name <span class="comment">// accessors are called</span></div><div class="line">    result.street = address.street</div><div class="line">    <span class="comment">// ...</span></div><div class="line">    <span class="keyword">return</span> result</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="Getter、Setter方法"><a href="#Getter、Setter方法" class="headerlink" title="Getter、Setter方法"></a>Getter、Setter方法</h2><p>声明属性的完整语法<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">var</span> &lt;propertyName&gt;[: &lt;PropertyType&gt;] [= &lt;property_initializer&gt;]</div><div class="line">    [&lt;getter&gt;]</div><div class="line">    [&lt;setter&gt;]</div></pre></td></tr></table></figure></p>
+<p>初始化，getter和setter都为可选项。如果属性类型可以从初始化（或从getter的返回值）中推断出，则可省略属性的<code>PropertyType</code></p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">var</span> allByDefault: <span class="built_in">Int</span>? <span class="comment">// 错误：需要显式初始化。getter和setter默认</span></div><div class="line"><span class="keyword">var</span> initialized = <span class="number">1</span>  <span class="comment">// Int类型，默认getter和setter</span></div></pre></td></tr></table></figure>
+<p>只读属性声明的语法与可变属性有两处不同：</p>
+<ol>
+<li>val</li>
+<li>没有setter函数<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> simple: <span class="built_in">Int</span>? <span class="comment">// 类型为Int，默认getter方法， 必须在构造器中初始化</span></div><div class="line"><span class="keyword">val</span> inferredType = <span class="number">1</span> <span class="comment">// Int类型，默认getter</span></div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>与普通函数相似，在属性声明中，也可以自定义访问方法。如自定义<code>getter</code><br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> isEmpty: <span class="built_in">Boolean</span></div><div class="line">    <span class="keyword">get</span>() = <span class="keyword">this</span>.size == <span class="number">0</span></div></pre></td></tr></table></figure></p>
+<p>自定义的<code>setter</code><br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">var</span> stringRepresentation: String</div><div class="line">    <span class="keyword">get</span>() = <span class="keyword">this</span>.toString()</div><div class="line">    <span class="keyword">set</span>(value) &#123;</div><div class="line">        setDataFromString(value) <span class="comment">// parses the string and assigns values to other properties</span></div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>依照惯例，setter参数名为<code>value</code>，也可以选择期望的属性名。</p>
+<p>从Kotlin 1.1起，如果可以从getter推断类型，则属性类型可以省略<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> isEmpty <span class="keyword">get</span>() = <span class="keyword">this</span>.size == <span class="number">0</span>  <span class="comment">// has type Boolean</span></div></pre></td></tr></table></figure></p>
+<p>如果需要改变访问器的可见性或注解属性，但不需要改变默认实现，可以不定义访问器的代码块<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">var</span> setterVisibility: String = <span class="string">"abc"</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">set</span> <span class="comment">// setter 为 private且为默认实现</span></div><div class="line"></div><div class="line"><span class="keyword">var</span> setterWithAnnotation: Any? = <span class="literal">null</span></div><div class="line">    <span class="meta">@Inject</span> <span class="keyword">set</span> <span class="comment">// 使用Inject注解setter</span></div></pre></td></tr></table></figure></p>
+<h2 id="Backing字段"><a href="#Backing字段" class="headerlink" title="Backing字段"></a>Backing字段</h2><p>Koltin的类没有字段，有时在使用自定义访问器时有个Backing字段很有必要。为此，Kotlin提供了一个自动的backing字段，可以使用<code>field</code>修饰来访问<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">var</span> counter = <span class="number">0</span> <span class="comment">// 初始化值直接写给backing字段</span></div><div class="line">  <span class="keyword">set</span>(value)&#123;</div><div class="line">    <span class="keyword">if</span>( value &gt; <span class="number">0</span> ) field = value</div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
+<p><code>field</code>修饰符只能用在属性访问器中</p>
+<p>如果使用至少一个访问器的默认实现，会为属性生成一个Backing字段，或自定义访问器通过<code>field</code>修饰符来引用。</p>
+<p>下面情况下，就不会有Backing字段<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> isEmpty: <span class="built_in">Boolean</span></div><div class="line">    <span class="keyword">get</span>() = <span class="keyword">this</span>.size == <span class="number">0</span></div></pre></td></tr></table></figure></p>
+<h2 id="Backing属性"><a href="#Backing属性" class="headerlink" title="Backing属性"></a>Backing属性</h2><p>如果不满足<code>隐式Backing字段</code>条件，可以退而求其次，持有Backing属性<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">var</span> _table: Map&lt;String, <span class="built_in">Int</span>&gt;? = <span class="literal">null</span></div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="keyword">val</span> table: Map&lt;String , <span class="built_in">Int</span>&gt;</div><div class="line">    <span class="keyword">get</span>()&#123;</div><div class="line">        <span class="keyword">if</span>(_table == <span class="literal">null</span>)&#123;</div><div class="line">            _table = HashMap() <span class="comment">// Type parameters are inferred</span></div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> _table ?: <span class="keyword">throw</span> AssertionError(<span class="string">"Set to null by another thread"</span>)</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>从各个方面来看，这一点与Java相同，因为用默认getter和setter来访问属性已经过优化，不会引入函数调用开销。</p>
+<h2 id="编译时常量"><a href="#编译时常量" class="headerlink" title="编译时常量"></a>编译时常量</h2><p>编译时常量是编译时已知的属性值，使用<code>const</code>修饰符来标记为<em>编译时常量</em>。此时的属性需要完全满足以下条件</p>
+<ul>
+<li>对象的顶层或成员</li>
+<li>通过String类型值或基本类型进行初始化</li>
+<li>无自定义getter</li>
+</ul>
+<p>这样的属性可用于注解。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">const <span class="keyword">val</span> SUBSYSTEM_DEPRECATED: String = <span class="string">"This subsystem is deprecated"</span></div><div class="line"><span class="meta">@Deprecated(SUBSYSTEM_DEPRECATED)</span> <span class="function"><span class="keyword">fun</span> <span class="title">foo</span><span class="params">()</span></span> &#123; ... &#125;</div></pre></td></tr></table></figure></p>
+<h2 id="懒初始化属性"><a href="#懒初始化属性" class="headerlink" title="懒初始化属性"></a>懒初始化属性</h2><p>正常情况，非空类型的属性声明必须在构造器中声明。但是在少数情况时，这样做并不方便。如：属性可以通过依赖注入或在单元测试的<code>setup</code>方法中进行初始化，在这种情况，没办法在构造器中进行非空初始化，但仍希望在类中引用属性时，避免进行非空检查。</p>
+<p>此时，可以使用<code>lateinit</code>修饰符标记属性<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyTest</span> </span>&#123;</div><div class="line">    <span class="keyword">lateinit</span> <span class="keyword">var</span> subject: TestSubject</div><div class="line"></div><div class="line">    <span class="meta">@SetUp</span> <span class="function"><span class="keyword">fun</span> <span class="title">setup</span><span class="params">()</span></span> &#123;</div><div class="line">        subject = TestSubject()</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Test</span> <span class="function"><span class="keyword">fun</span> <span class="title">test</span><span class="params">()</span></span> &#123;</div><div class="line">        subject.method()  <span class="comment">// dereference directly</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这个修饰符只能用在类体（非首要构造器）中声明为<code>var</code>类型的属性，并且属性不能有自定义的<code>getter</code>和<code>setter</code>方法。属性类型必须为非空并且不能为基本类型。</p>
+<p>访问未初始化的<code>lateinit</code>属性会抛出<code>访问未初始化属性</code>的异常。</p>
+<h2 id="Overriding属性"><a href="#Overriding属性" class="headerlink" title="Overriding属性"></a>Overriding属性</h2><p>查看<a href="https://kotlinlang.org/docs/reference/classes.html#overriding-properties" target="_blank" rel="external"><code>Overriding属性</code></a></p>
+<h2 id="委托属性"><a href="#委托属性" class="headerlink" title="委托属性"></a>委托属性</h2><p>最常见属性的种类是从Backing字段读取（或写入）的属性。另一种是有自定义getter和setter，可实现属性任意行为的属性。介于两者之间的有些操作属性的常见模式，如：<code>lazy values</code> , <code>给定指定key返回map对应的值</code>，<code>访问数据库</code>，<code>通知访问的监听</code>等等。<br>这些常见行为模式可以使用<a href="https://kotlinlang.org/docs/reference/delegated-properties.html" target="_blank" rel="external"><code>委托属性</code></a>库来实现。</p>
+<h1 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h1><p> Kotlin的接口与Java 8非常相似，包含一些抽象方法的声明和实现。与抽象类不同的是，接口无法存储状态。接口可以有属性，但是只能是抽象的或提供具体实现的访问器。</p>
+<p>接口使用<code>interface</code>关键字来标识<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="class"><span class="keyword">interface</span> <span class="title">MyInterface</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">bar</span><span class="params">()</span></span></div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">foo</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="comment">// optional body</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="接口实现"><a href="#接口实现" class="headerlink" title="接口实现"></a>接口实现</h2><p>类与对象可以实现一个或多个接口<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Child</span> : <span class="type">MyInterface &#123;</span></span></div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">bar</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="comment">// body</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="接口属性"><a href="#接口属性" class="headerlink" title="接口属性"></a>接口属性</h2><p>可以在接口中声明属性。接口中声明的属性可以为抽象类型或提供具体访问器的实现。接口中声明的属性不能有Backing字段，所以接口中声明的访问器无法引用Backing字段。</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="class"><span class="keyword">interface</span> <span class="title">MyInterface</span> </span>&#123;</div><div class="line">    <span class="keyword">val</span> prop: <span class="built_in">Int</span> <span class="comment">// abstract</span></div><div class="line"></div><div class="line">    <span class="keyword">val</span> propertyWithImplementation: String</div><div class="line">        <span class="keyword">get</span>() = <span class="string">"foo"</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">foo</span><span class="params">()</span></span> &#123;</div><div class="line">        print(prop)</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Child</span> : <span class="type">MyInterface &#123;</span></span></div><div class="line">    <span class="keyword">override</span> <span class="keyword">val</span> prop: <span class="built_in">Int</span> = <span class="number">29</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="解决接口复写冲突"><a href="#解决接口复写冲突" class="headerlink" title="解决接口复写冲突"></a>解决接口复写冲突</h2><p>当在超类中声明多种类型时，继承这些接口时可能会出现复写相同方法情况：<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="class"><span class="keyword">interface</span> <span class="title">A</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">foo</span><span class="params">()</span></span> &#123; print(<span class="string">"A"</span>) &#125;</div><div class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">bar</span><span class="params">()</span></span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">interface</span> <span class="title">B</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">foo</span><span class="params">()</span></span> &#123; print(<span class="string">"B"</span>) &#125;</div><div class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">bar</span><span class="params">()</span></span> &#123; print(<span class="string">"bar"</span>) &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span> : <span class="type">A &#123;</span></span></div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">bar</span><span class="params">()</span></span> &#123; print(<span class="string">"bar"</span>) &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">D</span> : <span class="type">A</span>, <span class="type">B &#123;</span></span></div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">foo</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="keyword">super</span>&lt;A&gt;.foo()</div><div class="line">        <span class="keyword">super</span>&lt;B&gt;.foo()</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">bar</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="keyword">super</span>&lt;B&gt;.bar()</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>接口A和接口B都声明了函数<code>foo</code>和<code>bar</code>，全部实现了<code>foo</code>，但只有B实现了<code>bar</code>。C类继承了A，所以需要复写方法<code>bar</code>并提供实现。</p>
+<p>类D实现了A和B，需要实现A和B中的所有方法并指定<code>D</code>如何实现。这个规则适应于单一实现的继承（<code>bar</code>），也适应多实现（<code>foo</code>）。</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2017/07/03/Kotlin基础之数据类、密封类、嵌套类和枚举类/" data-toggle="tooltip" data-placement="top" title="Kotlin基础之数据类、密封类、嵌套类和枚举类">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2017/07/03/Kotlin基础之类、继承、可见性修饰符/" data-toggle="tooltip" data-placement="top" title="Kotlin基础之类、继承、可见性修饰符">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#kotlin" title="kotlin">kotlin</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "alexwan02";
+    var disqus_identifier = "http://blog.alexwan.cn/2017/07/03/Kotlin基础之属性与字段、接口/";
+    var disqus_url = "http://blog.alexwan.cn/2017/07/03/Kotlin基础之属性与字段、接口/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Alex Studio 2017 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.alexwan.cn/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

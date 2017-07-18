@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Kotlin基础之高阶函数与Lambdas - Alex Studio
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.alexwan.cn/2017/06/21/Kotlin基础之高阶函数与Lambdas/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Alex Studio</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#kotlin" title="kotlin">kotlin</a>
+                        
+                    </div>
+                    <h1>Kotlin基础之高阶函数与Lambdas</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by AlexWan on
+                        2017-06-21
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="高阶函数"><a href="#高阶函数" class="headerlink" title="高阶函数"></a>高阶函数</h2><p>在数学和计算机科学中，高阶函数是至少满足下列一个条件的函数：</p>
+<ul>
+<li>接受一个或多个函数作为输入</li>
+<li>输出一个函数<br>定义一个高阶函数，参数为Lock类型对象和一个函数。函数执行时获取锁，运行函数参数，执行结束释放锁。</li>
+</ul>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="type">&lt;T&gt;</span> <span class="title">lock</span><span class="params">(lock: <span class="type">Lock</span> , body: ()</span></span> -&gt; T)&#123;</div><div class="line">  lock.lock()</div><div class="line">  <span class="keyword">try</span>&#123;</div><div class="line">    <span class="keyword">return</span> body()</div><div class="line">  &#125; </div><div class="line">  finaly&#123;</div><div class="line">    lock.unlock()</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>body</code>为函数类型对象：<code>() -&gt; T</code>。表示无参函数，并且返回值类型为T。</p>
+<p>调用<code>lock</code>函数，可以传入另外一个函数作为参数（参考<a href="https://kotlinlang.org/docs/reference/reflection.html#function-references" target="_blank" rel="external"><code>函数引用</code></a>）</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">toBeSynchronized</span><span class="params">()</span></span> = sharedResource.operation()</div><div class="line"><span class="keyword">val</span> result = lock(lock, ::toBeSynchronized)</div></pre></td></tr></table></figure>
+<p>更加方便的方式是传入<a href="https://kotlinlang.org/docs/reference/lambdas.html#lambda-expressions-and-anonymous-functions" target="_blank" rel="external"><code>lambda表达式</code></a><br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> result = lock(lock, &#123; sharedResource.operation() &#125;)</div></pre></td></tr></table></figure></p>
+<p>Lambda表达式</p>
+<ul>
+<li>Lambda表达式要用花括号包裹</li>
+<li>参数在<code>-&gt;</code> 之前声明（参数可能省略）</li>
+<li>执行内容跟在 <code>-&gt;</code> 之后（如果提供的话）</li>
+</ul>
+<p>在Kotlin中，如果函数最后参数为函数类型，可以在括号外部传入Lambda表达式作为指定的参数</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">lock (lock) &#123; sharedResource.operation() &#125;</div></pre></td></tr></table></figure>
+<p>高阶函数的另外一个例子：<code>map()</code></p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="type">&lt;T, R&gt;</span> List<span class="type">&lt;T&gt;</span>.<span class="title">map</span><span class="params">(transform: (<span class="type">T</span>)</span></span> -&gt; R): List&lt;R&gt; &#123;</div><div class="line">    <span class="keyword">val</span> result = arrayListOf&lt;R&gt;()</div><div class="line">    <span class="keyword">for</span> (item <span class="keyword">in</span> <span class="keyword">this</span>)</div><div class="line">        result.add(transform(item))</div><div class="line">    <span class="keyword">return</span> result</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>map 调用<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> doubled = inits.map&#123; value &gt; value * <span class="number">2</span>&#125;</div></pre></td></tr></table></figure></p>
+<blockquote>
+<p>如果lambda是函数调用的唯一参数，花括号可以完全省略。</p>
+</blockquote>
+<h3 id="it-单个参数的隐式名称"><a href="#it-单个参数的隐式名称" class="headerlink" title="it : 单个参数的隐式名称"></a>it : 单个参数的隐式名称</h3><p>如果函数只有一个参数，则可以忽略声明函数参数（与<code>-&gt;</code>一起），用<code>it</code>来替代：<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">ints.map&#123; it * <span class="number">2</span>&#125;</div></pre></td></tr></table></figure></p>
+<p>因此可以写成查询表达式形式的代码<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">strings.filter &#123; it.length == <span class="number">5</span> &#125;</div><div class="line">       .sortBy &#123; it &#125;</div><div class="line">       .map &#123; it.toUpperCase() &#125;</div></pre></td></tr></table></figure></p>
+<h3 id="下划线替代未使用的参数"><a href="#下划线替代未使用的参数" class="headerlink" title="下划线替代未使用的参数"></a>下划线替代未使用的参数</h3><p>如果lambda参数未使用，可以使用下划线来替代<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">map.forEach &#123; _, value -&gt; println(<span class="string">"<span class="variable">$value</span>!"</span>) &#125;</div></pre></td></tr></table></figure></p>
+<h3 id="Lambdas中的解构（since-1-1）"><a href="#Lambdas中的解构（since-1-1）" class="headerlink" title="Lambdas中的解构（since 1.1）"></a>Lambdas中的解构（since 1.1）</h3><p>Lambdas解构参考<a href="https://kotlinlang.org/docs/reference/multi-declarations.html#destructuring-in-lambdas-since-11" target="_blank" rel="external"><code>解构声明</code></a></p>
+<h2 id="内联函数"><a href="#内联函数" class="headerlink" title="内联函数"></a>内联函数</h2><p>有时可使用内联函数来提升高阶函数性能，<a href="https://kotlinlang.org/docs/reference/inline-functions.html" target="_blank" rel="external"><code>内联函数</code></a></p>
+<h2 id="Lambda表达式和匿名函数"><a href="#Lambda表达式和匿名函数" class="headerlink" title="Lambda表达式和匿名函数"></a>Lambda表达式和匿名函数</h2><p>Lambda表达式和匿名函数都是<code>函数常量</code>。用表达式作为参数，无须额外声明函数。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">max(strings, &#123; a, b -&gt; a.length &lt; b.length &#125;)</div></pre></td></tr></table></figure></p>
+<p>函数<code>max</code>是一个高阶函数，第二个参数是函数类型的值。等同于<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">compare</span><span class="params">(a: <span class="type">String</span>, b: <span class="type">String</span>)</span></span>: <span class="built_in">Boolean</span> = a.length &lt; b.length</div></pre></td></tr></table></figure></p>
+<h3 id="函数类型"><a href="#函数类型" class="headerlink" title="函数类型"></a>函数类型</h3><p>对于接受函数作为参数的高阶函数，要给参数执行函数类型。例如上面的<code>max</code>函数的定义<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="type">&lt;T&gt;</span> <span class="title">max</span><span class="params">(collection: <span class="type">Collection</span>&lt;<span class="type">T</span>&gt;, less: (<span class="type">T</span>, T)</span></span> -&gt; <span class="built_in">Boolean</span>): T? &#123;</div><div class="line">    <span class="keyword">var</span> max: T? = <span class="literal">null</span></div><div class="line">    <span class="keyword">for</span> (it <span class="keyword">in</span> collection)</div><div class="line">        <span class="keyword">if</span> (max == <span class="literal">null</span> || less(max, it))</div><div class="line">            max = it</div><div class="line">    <span class="keyword">return</span> max</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>参数<code>less</code>的类型就是<code>(T, T) -&gt; Boolean</code>。即：比较两个T类型的变量的大小的函数，如果第一个比第二个小则返回<code>true</code></p>
+<p>在代码中，<code>less</code>用作函数，调用时传入两个T类型的参数。</p>
+<p>这个函数类型也可以有具名参数<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> compare: (x: T, y: T) -&gt; <span class="built_in">Int</span> = ...</div></pre></td></tr></table></figure></p>
+<h3 id="Lambda表达式的语法"><a href="#Lambda表达式的语法" class="headerlink" title="Lambda表达式的语法"></a>Lambda表达式的语法</h3><p>Lambda表达式的完整语法形式,比如函数类型常量<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> sum = &#123; x: <span class="built_in">Int</span>, y: <span class="built_in">Int</span> -&gt; x + y &#125;</div></pre></td></tr></table></figure></p>
+<p>Lambda表达式总以花括号包裹。完整语法形式中：</p>
+<ul>
+<li>参数在圆括号中声明，参数类型可选</li>
+<li>表达式体在<code>-&gt;</code> 符号之后。</li>
+<li>如果返回类型不是<code>Unit</code>，表达式体中最后（可能为单个）的表达式被视为返回值。</li>
+</ul>
+<p>如果忽略所有可选注解，则Lambda表达式为<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> sum: (<span class="built_in">Int</span>, <span class="built_in">Int</span>) -&gt; <span class="built_in">Int</span> = &#123; x, y -&gt; x + y &#125;</div></pre></td></tr></table></figure></p>
+<p>有单独一个参数的Lambda表达式很常见。如果Kotlin能够识别函数签名，则允许不声明这个唯一的参数，使用参数隐式声明<code>it</code><br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">ints.filter &#123; it &gt; <span class="number">0</span> &#125; <span class="comment">//  常量类型为'(it: Int) -&gt; Boolean'</span></div></pre></td></tr></table></figure></p>
+<p>Kotlin使用<a href="https://kotlinlang.org/docs/reference/returns.html#return-at-labels" target="_blank" rel="external"><code>qualified return</code></a>语法，显式指定返回值类型。否则，隐式使用返回最后一个表达式的值。因此下面两段代码效果相同。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">ints.filter &#123;</div><div class="line">    <span class="keyword">val</span> shouldFilter = it &gt; <span class="number">0</span> </div><div class="line">    shouldFilter</div><div class="line">&#125;</div><div class="line"></div><div class="line">ints.filter &#123;</div><div class="line">    <span class="keyword">val</span> shouldFilter = it &gt; <span class="number">0</span> </div><div class="line">    <span class="keyword">return</span><span class="symbol">@filter</span> shouldFilter</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<blockquote>
+<p>如果函数以另外一个函数作为最后一个参数，lambda表达式则可以在参数列表外使用。参考<a href="https://kotlinlang.org/docs/reference/grammar.html#callSuffix" target="_blank" rel="external"><code>callSuffix</code></a>语法</p>
+</blockquote>
+<h3 id="匿名函数"><a href="#匿名函数" class="headerlink" title="匿名函数"></a>匿名函数</h3><p>上面Lambda表达式语法中，没有讲到关于Kotlin指定函数的返回类型能力。在多数情况中，没有必要执行函数返回类型，因为Kotlin可以自动推断。但是如果需要显式指定类型，可以通过<code>匿名函数</code>来实现。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="title">fun</span><span class="params">(x: <span class="type">Int</span>, y: <span class="type">Int</span>)</span></span>: <span class="built_in">Int</span> = x + y</div></pre></td></tr></table></figure></p>
+<p>匿名函数与常规函数声明看起来非常相似，除了忽略了函数名。函数体可以是表达式，也可以是代码块<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="title">fun</span><span class="params">(x: <span class="type">Int</span>, y: <span class="type">Int</span>)</span></span>: <span class="built_in">Int</span> &#123;</div><div class="line">    <span class="keyword">return</span> x + y</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>指定参数和返回值类型方式与常规函数相同，如果根据上下文可以推断出类型，可以省略参数类型。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">ints.filter(<span class="function"><span class="title">fun</span><span class="params">(item)</span></span> = item &gt; <span class="number">0</span>)</div></pre></td></tr></table></figure></p>
+<p>返回值类型推断与正常函数相同：带有表达式体的匿名函数返回类型自动推断；带有代码块的匿名函数返回类型要显式指定（或默认为<code>Unit</code>）。</p>
+<blockquote>
+<p>匿名函数总要用括号传参。在括号外传参的方式只适应于Lambda表达式</p>
+</blockquote>
+<p>Lambda表达式和匿名表达式一个不同点是：非局部返回行为，即没有标签的返回声明语句从声明有<code>fun</code>关键字的函数中返回。<br>所以Lambda表达式中的返回语句会从封闭函数中返回，而匿名函数的返回语句返回匿名函数本身。</p>
+<h3 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h3><p>闭包（Closure），又称词法闭包（Lexical Closure）或函数闭包（function closures），是引用了自由变量的函数。这个被引用的自由变量将和这个函数一同存在，即使已经离开了创造它的环境也不例外。</p>
+<p>Kotlin中Lambda表达式与匿名函数（<a href="https://kotlinlang.org/docs/reference/functions.html#local-functions" target="_blank" rel="external"><code>本地函数</code></a>、<a href="https://kotlinlang.org/docs/reference/object-declarations.html#object-expressions" target="_blank" rel="external"><code>对象表达式</code></a>亦同）可以访问它的闭包，如外部作用域中声明的变量。与Java不同，可以修改闭包中的变量。</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">var</span> sum = <span class="number">0</span></div><div class="line">ints.filter &#123; it &gt; <span class="number">0</span> &#125;.forEach &#123;</div><div class="line">    sum += it</div><div class="line">&#125;</div><div class="line">print(sum)</div></pre></td></tr></table></figure>
+<h3 id="带有接收者的函数常量"><a href="#带有接收者的函数常量" class="headerlink" title="带有接收者的函数常量"></a>带有接收者的函数常量</h3><p>Kotlin可以调用带有接收者的函数常量。在函数常量的函数体中，可以不使用任何额外限定符，调用接收者的方法，这与扩展函数相似：允许访问函数体内部接收者的成员。其中一个例子<a href="https://kotlinlang.org/docs/reference/type-safe-builders.html" target="_blank" rel="external"><code>Type-safe Groovy-style builders.</code></a></p>
+<p>这种函数常量类型实际是带有接收者的函数类型<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">sum : <span class="built_in">Int</span>.(other: <span class="built_in">Int</span>) -&gt; <span class="built_in">Int</span></div></pre></td></tr></table></figure></p>
+<p>如果函数常量是接收者的一个方法，则可以直接调用。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="number">1.</span>sum(<span class="number">2</span>)</div></pre></td></tr></table></figure></p>
+<p>匿名函数语法可以直接指定函数常量接收者类型。可以声明带有接收者的函数类型变量，并在之后调用。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> sum = <span class="function"><span class="keyword">fun</span> <span class="built_in">Int</span>.<span class="params">(other: <span class="type">Int</span>)</span></span>: <span class="built_in">Int</span> = <span class="keyword">this</span> + other</div></pre></td></tr></table></figure></p>
+<p>当可以从上下文中推断接收者类型时，Lambda表达式可以用作带有接收者的函数常量。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">HTML</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">body</span><span class="params">()</span></span>&#123;...&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">html</span><span class="params">(init: <span class="type">HTML</span>.()</span></span> -&gt; <span class="built_in">Unit</span>): <span class="built_in">Unit</span>&#123;</div><div class="line">    <span class="keyword">val</span> html = HTML() <span class="comment">// create the receiver object</span></div><div class="line">    html.init()</div><div class="line">    <span class="keyword">return</span> html</div><div class="line">&#125;</div><div class="line"></div><div class="line">html &#123;    <span class="comment">// lambda with receiver begins here</span></div><div class="line">   body() <span class="comment">// calling a method on the receiver object </span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2017/06/21/Kotlin基础之内联函数/" data-toggle="tooltip" data-placement="top" title="Kotlin基础之内联函数">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2017/06/21/Kotlin基础之函数/" data-toggle="tooltip" data-placement="top" title="Kotlin基础之函数">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#kotlin" title="kotlin">kotlin</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "alexwan02";
+    var disqus_identifier = "http://blog.alexwan.cn/2017/06/21/Kotlin基础之高阶函数与Lambdas/";
+    var disqus_url = "http://blog.alexwan.cn/2017/06/21/Kotlin基础之高阶函数与Lambdas/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Alex Studio 2017 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.alexwan.cn/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

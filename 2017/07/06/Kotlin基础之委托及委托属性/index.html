@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Kotlin基础之委托及委托属性 - Alex Studio
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.alexwan.cn/2017/07/06/Kotlin基础之委托及委托属性/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Alex Studio</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#kotlin" title="kotlin">kotlin</a>
+                        
+                    </div>
+                    <h1>Kotlin基础之委托及委托属性</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by AlexWan on
+                        2017-07-06
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="委托"><a href="#委托" class="headerlink" title="委托"></a>委托</h1><h2 id="类委托"><a href="#类委托" class="headerlink" title="类委托"></a>类委托</h2><p><a href="https://en.wikipedia.org/wiki/Delegation_pattern" target="_blank" rel="external">委托模式</a>是替换继承的较好的设计模式，Kotlin天生支持委托模式，无须任何模板代码。类<code>Derived</code>可以继承<code>Base</code>接口，委托所有public方法给指定对象<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="class"><span class="keyword">interface</span> <span class="title">Base</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">print</span><span class="params">()</span></span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">BaseImpl</span></span>(<span class="keyword">val</span> x: <span class="built_in">Int</span>) : Base &#123;</div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">print</span><span class="params">()</span></span> &#123; print(x)&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Derived</span></span>(b: Base) : Base <span class="keyword">by</span> b</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">(args: <span class="type">Array</span>&lt;<span class="type">String</span>&gt;)</span></span>&#123;</div><div class="line">    <span class="keyword">val</span> b = BaseImpl(<span class="number">10</span>)</div><div class="line">    </div><div class="line">    Derived(b).print() <span class="comment">// 输出10</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><code>Derived</code>的超类列表中的<code>by</code>语句表示<code>b</code>会内部存储在<code>Derived</code>中，编译器会为<code>b</code>生成接口<code>Base</code>所有方法。</p>
+<blockquote>
+<p>复写可以与期望一样生效：编译器使用复写方法替换委托对象中的方法。如果在<code>Derived</code>中添加<code>override fun print() { print(&quot;abc&quot;) }</code>，程序则会输出<code>abc</code>，而不是<code>10</code></p>
+</blockquote>
+<h2 id="委托属性"><a href="#委托属性" class="headerlink" title="委托属性"></a>委托属性</h2><p>有一些普通类型属性，尽管可以在需要时每次手动实现，如果可以一次实现所有将会更好并放入到库中。包括：</p>
+<ol>
+<li>懒属性：只在第一次访问计算的值</li>
+<li>观察属性：监听属性变化的通知</li>
+<li>在map中存储属性，不是每个属性单个一个字段。</li>
+</ol>
+<p>为了覆盖这些案例，Kotlin支持委托属性<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Example</span> </span>&#123;</div><div class="line">    <span class="keyword">var</span> p: String <span class="keyword">by</span> Delegate()</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>语法为：<code>val/var &lt;property name&gt;: &lt;Type&gt; by &lt;expression&gt;</code>。跟在<code>by</code>之后的表达式为<code>Delegate</code>，因为属性对应的<code>get()</code>和<code>set()</code>则被委托给它的<code>getValue</code>和<code>setValue</code>方法。属性委托不用实现任何接口，但是要提供<code>getValue</code>和<code>setValue</code>方法（var类型属性）。比如<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Delegate</span> </span>&#123;</div><div class="line">    <span class="keyword">operator</span> <span class="function"><span class="keyword">fun</span> <span class="title">getValue</span><span class="params">(thisRef: <span class="type">Any</span>? , property: <span class="type">KProperty</span>&lt;*&gt;)</span></span>: String&#123;</div><div class="line">        <span class="keyword">return</span> <span class="string">"<span class="variable">$thisRef</span>, thank you for delegating '<span class="subst">$&#123;property.name&#125;</span>' to me!"</span></div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">operator</span> <span class="function"><span class="keyword">fun</span> <span class="title">setValue</span><span class="params">(thisRef: <span class="type">Any</span>? , property: <span class="type">KProperty</span>&lt;*&gt;, value: <span class="type">String</span>)</span></span>&#123;</div><div class="line">        println(<span class="string">"<span class="variable">$value</span> has been assigned to '<span class="subst">$&#123;property.name&#125;</span> in <span class="variable">$thisRef</span>.'"</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>当读取委托给实例<code>Delegate</code>的<code>p</code>，则会调用<code>Delegate</code>的<code>getValue()</code>方法，它的第一个参数为<code>p</code>的对象，第二个参数持有<code>p</code>自己的描述（可以使用它的属性名）。如<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> e = Example()</div><div class="line">println(e.p)</div></pre></td></tr></table></figure></p>
+<p>输出结果<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="symbol">Example@</span><span class="number">33</span>a17727, thank you <span class="keyword">for</span> delegating ‘p’ to me!</div></pre></td></tr></table></figure></p>
+<p>类似地，如果给<code>p</code>赋值，则调用<code>setValue()</code>函数，前两个参数一样，第三个为赋予的值<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">e.p = <span class="string">"NEW"</span></div></pre></td></tr></table></figure></p>
+<p>输出结果<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">NEW has been assigned to ‘p’ <span class="keyword">in</span> <span class="symbol">Example@</span><span class="number">33</span>a17727.</div></pre></td></tr></table></figure></p>
+<blockquote>
+<p>从Koltin 1.1开始，可以在函数中或代码块中声明委托属性。</p>
+</blockquote>
+<h2 id="标准委托"><a href="#标准委托" class="headerlink" title="标准委托"></a>标准委托</h2><p>Kotlin标准库提供几种有用类型的工厂方法，</p>
+<h3 id="懒委托"><a href="#懒委托" class="headerlink" title="懒委托"></a>懒委托</h3><p><code>lazy()</code>函数输入lambda，返回<code>Lazy&lt;T&gt;</code>实例，可以作为实现懒属性的委托：第一次调用执行传入<code>lazy()</code>的lambda，并记住结果，之后调用get()，只返回记住的结果<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> lazyValue: String <span class="keyword">by</span> lazy &#123;</div><div class="line">    println(<span class="string">"computed!"</span>)</div><div class="line">    <span class="string">"Hello"</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">(args: <span class="type">Array</span>&lt;<span class="type">String</span>&gt;)</span></span> &#123;</div><div class="line">    println(lazyValue)</div><div class="line">    println(lazyValue)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>输出结果<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">computed!</div><div class="line">Hello</div><div class="line">Hello</div></pre></td></tr></table></figure></p>
+<p>懒属性默认为同步赋值：只在一个线程中求值，所有线程都会看到相同的值。如果不需要同步初始化委托，那么多个线程可以同时执行，将<code>LazyThreadSafetyMode.PUBLICATION</code>作为参数传递给<code>lazy</code>函数。如果能够保证初始化在单线程中执行，那么可以使用<code>LazyThreadSafetyMode.NONE</code>模式，但不能保证线程安全和相关开销。</p>
+<h2 id="观察者"><a href="#观察者" class="headerlink" title="观察者"></a>观察者</h2><p><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.properties/-delegates/observable.html" target="_blank" rel="external">Delegates.observable()</a>有两个参数：初始值和修改处理Handler。每次给属性赋值时，都会调用handler（在赋值执行之后）。Handler有三个参数：被赋值的属性，旧值和新值<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">import</span> kotlin.properties.Delegate</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</div><div class="line">    <span class="keyword">var</span> name: String <span class="keyword">by</span> Delegate.observable(<span class="string">"&lt;no name&gt;"</span>)&#123;</div><div class="line">        prop , old , new -&gt; </div><div class="line">        println(<span class="string">"<span class="variable">$old</span> -&gt; <span class="variable">$new</span>"</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">(args: <span class="type">Array</span>&lt;<span class="type">String</span>&gt;)</span></span>&#123;</div><div class="line">    <span class="keyword">val</span> user = User()</div><div class="line">    user.name = <span class="string">"first"</span></div><div class="line">    user.name = <span class="string">"second"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>输出结果</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">&lt;no name&gt; -&gt; first</div><div class="line">first -&gt; second</div></pre></td></tr></table></figure>
+<p>如果希望拦截赋值并禁止它，使用<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.properties/-delegates/vetoable.html" target="_blank" rel="external">vetoable()</a>替换<code>observable</code>。传给<code>vetoable</code>的handler在给属性赋新值前执行。</p>
+<h2 id="在Map中存储新值"><a href="#在Map中存储新值" class="headerlink" title="在Map中存储新值"></a>在Map中存储新值</h2><p>我们通常使用Map来存储属性值，在应用中很常见，如解析JSON或其他动态的事。可以使用map实例本身作为委托属性的委托者。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">User</span></span>(<span class="keyword">val</span> map: Map&lt;String, Any?&gt;) &#123;</div><div class="line">    <span class="keyword">val</span> name: String <span class="keyword">by</span> map</div><div class="line">    <span class="keyword">val</span> age: <span class="built_in">Int</span>     <span class="keyword">by</span> map</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>构造器使用Map作为它的参数<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="keyword">val</span> user = User(mapOf(</div><div class="line">    <span class="string">"name"</span> to <span class="string">"John Doe"</span> , </div><div class="line">    <span class="string">"age"</span>  to <span class="number">25</span></div><div class="line">))</div></pre></td></tr></table></figure></p>
+<p>委托属性按照属性名从Map中取值<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line">println(user.name) <span class="comment">// Prints "John Doe"</span></div><div class="line">println(user.age)  <span class="comment">// Prints 25</span></div></pre></td></tr></table></figure></p>
+<p>对于<code>var</code>属性，使用<code>MutableMap</code>来替换只读的<code>Map</code><br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">MutableUser</span></span>(<span class="keyword">val</span> map: MutableMap&lt;String, Any?&gt;) &#123;</div><div class="line">    <span class="keyword">var</span> name: String <span class="keyword">by</span> map</div><div class="line">    <span class="keyword">var</span> age: <span class="built_in">Int</span>     <span class="keyword">by</span> map</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="局部委托属性（从1-1开始）"><a href="#局部委托属性（从1-1开始）" class="headerlink" title="局部委托属性（从1.1开始）"></a>局部委托属性（从1.1开始）</h2><p>从1.1开始可以声明局部变量为委托属性，如：创建局部懒属性<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">example</span><span class="params">(compute: ()</span></span> -&gt; Foo)&#123;</div><div class="line">    <span class="keyword">val</span> memoizedFoo <span class="keyword">by</span> lazy(computeFoo)</div><div class="line">    <span class="keyword">if</span> (someCondition &amp;&amp; memoizedFoo.isValid()) &#123;</div><div class="line">        memoizedFoo.doSomething()</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><code>memoizedFoo</code>属性只在第一次访问时进行计算，如果<code>someCondition</code>失败，则不会计算变量。</p>
+<h2 id="属性委托要求"><a href="#属性委托要求" class="headerlink" title="属性委托要求"></a>属性委托要求</h2><p>下面总结委托对象的要求</p>
+<ol>
+<li><p>对于只读属性（val），委托对象提供名为<code>getValue</code>的函数，并带有下面几个参数</p>
+<ul>
+<li><code>thisRef</code> - 类型必须与属性对象的超类一致（对于扩展属性：扩展的类型）</li>
+<li><code>property</code> - 必须为<code>KProperty&lt;*&gt;</code>或其子类</li>
+<li>函数返回值必须与属性或其子类属性一致</li>
+</ul>
+</li>
+<li><p>对于可变属性（var）, 委托对象需要额外提供名为<code>setValue</code>的函数，并带有下面几个参数</p>
+<ul>
+<li><code>thisRef</code> - 必须与<code>getValue()</code>一样</li>
+<li><code>property</code> - 与<code>getValue()</code>一样</li>
+<li>新值 - 类型必须与属性对象的超类一致</li>
+</ul>
+</li>
+</ol>
+<p><code>getValue()</code>和（或）<code>setValue()</code>可能会作为委托对象的成员函数或扩展函数，当需要委托属性给对象时（没有这些函数）时，扩展函数会比较方便。这两种函数都需要使用<code>operator</code>关键字来标记。</p>
+<p>委托类可以实现<code>ReadOnlyProperty</code>或<code>ReadWriteProperty</code>其中一个接口，包含需要的<code>operator</code>方法。Kotlin标准库声明了这些接口。<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="class"><span class="keyword">interface</span> <span class="title">ReadOnlyProperty</span>&lt;<span class="type">in R, out T</span>&gt; </span>&#123;</div><div class="line">    <span class="keyword">operator</span> <span class="function"><span class="keyword">fun</span> <span class="title">getValue</span><span class="params">(thisRef: <span class="type">R</span>, property: <span class="type">KProperty</span>&lt;*&gt;)</span></span>: T</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">interface</span> <span class="title">ReadWriteProperty</span>&lt;<span class="type">in R, T</span>&gt; </span>&#123;</div><div class="line">    <span class="keyword">operator</span> <span class="function"><span class="keyword">fun</span> <span class="title">getValue</span><span class="params">(thisRef: <span class="type">R</span>, property: <span class="type">KProperty</span>&lt;*&gt;)</span></span>: T</div><div class="line">    <span class="keyword">operator</span> <span class="function"><span class="keyword">fun</span> <span class="title">setValue</span><span class="params">(thisRef: <span class="type">R</span>, property: <span class="type">KProperty</span>&lt;*&gt;, value: <span class="type">T</span>)</span></span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="转换规则"><a href="#转换规则" class="headerlink" title="转换规则"></a>转换规则</h2><p>每个委托属性的内在机制：Kotlin编译器会生成一个辅助属性，并委托给为委托属性。例如：<code>prop</code>会生成<code>prop$delegate</code>隐藏属性，访问者的代码只委托给了附加的属性：<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span></span>&#123;</div><div class="line">    <span class="keyword">var</span> prop: Type <span class="keyword">by</span> MyDelegate()</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 编译器会生成下面的代码</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">val</span> prop$delegate = MyDelegate()</div><div class="line">    <span class="keyword">var</span> prop: Type</div><div class="line">        <span class="keyword">get</span>() = prop$delegate.getValue(<span class="keyword">this</span>, <span class="keyword">this</span>::prop)</div><div class="line">        <span class="keyword">set</span>(value: Type) = prop$delegate.setValue(<span class="keyword">this</span>, <span class="keyword">this</span>::prop, value)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>Koltin编译器提供有关prop的所有的必要信息：第一个参数<code>this</code>是外部类C的引用，<code>this::prop</code>是<code>KProperty</code>类型的反射对象，描述<code>prop</code>。</p>
+<blockquote>
+<p><code>this::prop</code>语法表示直接<a href="https://kotlinlang.org/docs/reference/reflection.html#bound-function-and-property-references-since-11" target="_blank" rel="external">绑定调用</a>代码中的应用，在Kotlin1.1后可用</p>
+</blockquote>
+<h2 id="提供委托（从1-1开始）"><a href="#提供委托（从1-1开始）" class="headerlink" title="提供委托（从1.1开始）"></a>提供委托（从1.1开始）</h2><p>定义<code>provideDelegate</code>操作函数，可以继承创建对象给委托属性的逻辑。如果给在<code>by</code>右边使用的对象，定了成员函数或扩展函数<code>provideDelegate</code>，则创建委托属性时调用这个函数。</p>
+<p>使用<code>provideDelegate</code>的一种情况就是：在创建属性时，检查属性一致性，不仅仅是在<code>getter</code>和<code>setter</code>中。</p>
+<p>如：希望在绑定前，检查属性名，可以这样做<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ResourceLoader</span>&lt;<span class="type">T</span>&gt;</span>(id: ResourceID&lt;T&gt;) &#123;</div><div class="line">    <span class="keyword">operator</span> <span class="function"><span class="keyword">fun</span> <span class="title">provideDelegate</span><span class="params">(</span></span></div><div class="line">            thisRef: <span class="type">MyUI</span>,</div><div class="line">            prop: <span class="type">KProperty</span>&lt;*&gt;</div><div class="line">    ): ReadOnlyProperty&lt;MyUI, T&gt; &#123;</div><div class="line">        checkProperty(thisRef, prop.name)</div><div class="line">        <span class="comment">// create delegate</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">checkProperty</span><span class="params">(thisRef: <span class="type">MyUI</span>, name: <span class="type">String</span>)</span></span> &#123; ... &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="type">&lt;T&gt;</span> <span class="title">bindResource</span><span class="params">(id: <span class="type">ResourceID</span>&lt;<span class="type">T</span>&gt;)</span></span>: ResourceLoader&lt;T&gt; &#123; ... &#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyUI</span> </span>&#123;</div><div class="line">    <span class="keyword">val</span> image <span class="keyword">by</span> bindResource(ResourceID.image_id)</div><div class="line">    <span class="keyword">val</span> text <span class="keyword">by</span> bindResource(ResourceID.text_id)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><code>provideDelegate</code>参数与<code>getValue</code>一样</p>
+<ul>
+<li><code>thisRef</code> - 类型必须与属性对象的超类一致（对于扩展属性：扩展的类型）</li>
+<li><code>property</code> - 必须为<code>KProperty&lt;*&gt;</code>或其子类</li>
+</ul>
+<p>在创建<code>MyUI</code>实例时，调用每个属性的<code>provideDelegate</code>方法，立即执行必要的验证</p>
+<p>不能够拦截<code>property</code>和委托类的绑定操作，可以显性传入属性名来达到这个效果。</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyUI</span> </span>&#123;</div><div class="line">    <span class="keyword">val</span> image <span class="keyword">by</span> bindResource(ResourceID.image_id, <span class="string">"image"</span>)</div><div class="line">    <span class="keyword">val</span> text <span class="keyword">by</span> bindResource(ResourceID.text_id, <span class="string">"text"</span>)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="type">&lt;T&gt;</span> MyUI.<span class="title">bindResource</span><span class="params">(</span></span></div><div class="line">        id: <span class="type">ResourceID</span>&lt;<span class="type">T</span>&gt;,</div><div class="line">        propertyName: <span class="type">String</span></div><div class="line">): ReadOnlyProperty&lt;MyUI, T&gt; &#123;</div><div class="line">   checkProperty(<span class="keyword">this</span>, propertyName)</div><div class="line">   <span class="comment">// create delegate</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在生成的代码中，<code>provideDelegate</code>方法用来初始化<code>prop$delegate</code>属性。对比上面<code>val prop: Type by MyDelegate()</code>未声明<code>provideDelegate</code>方式生成的代码：<br><figure class="highlight kotlin"><table><tr><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span> </span>&#123;</div><div class="line">    <span class="keyword">var</span> prop: Type <span class="keyword">by</span> MyDelegate()</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 编译器生成下面的代码</span></div><div class="line"><span class="comment">// 提供provideDelegate函数时</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span> </span>&#123;</div><div class="line">    <span class="comment">// 调用 "provideDelegate" 创建 "delegate" 属性</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">val</span> prop$delegate = MyDelegate().provideDelegate(<span class="keyword">this</span>, <span class="keyword">this</span>::prop)</div><div class="line">    <span class="keyword">val</span> prop: Type</div><div class="line">        <span class="keyword">get</span>() = prop$delegate.getValue(<span class="keyword">this</span>, <span class="keyword">this</span>::prop)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<blockquote>
+<p><code>provideDelegate</code>方法只影响辅助属性的创建，不影响生成的getter和setter代码。</p>
+</blockquote>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2017/07/16/Kotlin进阶之解构声明/" data-toggle="tooltip" data-placement="top" title="Kotlin进阶之解构声明">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2017/07/06/Kotlin基础之对象表达式与声明/" data-toggle="tooltip" data-placement="top" title="Kotlin基础之对象表达式与声明">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#kotlin" title="kotlin">kotlin</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "alexwan02";
+    var disqus_identifier = "http://blog.alexwan.cn/2017/07/06/Kotlin基础之委托及委托属性/";
+    var disqus_url = "http://blog.alexwan.cn/2017/07/06/Kotlin基础之委托及委托属性/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Alex Studio 2017 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.alexwan.cn/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

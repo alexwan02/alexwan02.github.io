@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Android：DFM弹幕开发之基本配置 - Alex Studio
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.alexwan.cn/2016/09/19/Android：DFM弹幕开发之基本配置/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Alex Studio</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#danmaku" title="danmaku">danmaku</a>
+                        
+                    </div>
+                    <h1>Android：DFM弹幕开发之基本配置</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by AlexWan on
+                        2016-09-19
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p><a href="https://github.com/Bilibili/DanmakuFlameMaster" target="_blank" rel="external">DanmakuFlameMaster</a>(以下简称DFM)是哔哩哔哩开源的Android弹幕解析绘制引擎项目。<code>DFM</code>使用多种方式(View/SurfaceView/TextureView)实现高效绘制，支持自定义字体，支持多种弹幕参数设置等</p>
+<h1 id="一、配置"><a href="#一、配置" class="headerlink" title="一、配置"></a>一、配置</h1><p>Gradle</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line">repositories &#123;</div><div class="line">    jcenter()</div><div class="line">&#125;</div><div class="line"></div><div class="line">dependencies &#123;</div><div class="line">    compile <span class="string">'com.github.ctiao:DanmakuFlameMaster:0.4.9'</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在布局中应用</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">master.flame.danmaku.ui.widget.DanmakuView</span></span></div><div class="line">    <span class="attr">android:id</span>=<span class="string">"@+id/sv_danmaku"</span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span> /&gt;</div></pre></td></tr></table></figure>
+<h1 id="二、基础用法"><a href="#二、基础用法" class="headerlink" title="二、基础用法"></a>二、基础用法</h1><h2 id="1、弹幕播放"><a href="#1、弹幕播放" class="headerlink" title="1、弹幕播放"></a>1、弹幕播放</h2><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">// Activity onCreate 中初始化弹幕的配置</span></div><div class="line"><span class="keyword">final</span> DanmakuView svDanmaku = (DanmakuView) findViewById(R.id.sv_danmaku);</div><div class="line"></div><div class="line">HashMap&lt;Integer, Integer&gt; maxLinesPair = <span class="keyword">new</span> HashMap&lt;&gt;(); <span class="comment">// 最大行数</span></div><div class="line">maxLinesPair.put(BaseDanmaku.TYPE_SCROLL_RL, <span class="number">5</span>);</div><div class="line"></div><div class="line">HashMap&lt;Integer, Boolean&gt; overlappingEnablePair = <span class="keyword">new</span> HashMap&lt;&gt;(); <span class="comment">// 防止弹幕重叠</span></div><div class="line">overlappingEnablePair.put(BaseDanmaku.TYPE_SCROLL_RL, <span class="keyword">true</span>);</div><div class="line">overlappingEnablePair.put(BaseDanmaku.TYPE_FIX_TOP, <span class="keyword">true</span>);</div><div class="line"></div><div class="line">DanmakuContext mDanmakuContext = DanmakuContext.create();   <span class="comment">// 创建弹幕所需的上下文信息</span></div><div class="line">mDanmakuContext.setDanmakuStyle(IDisplayer.DANMAKU_STYLE_STROKEN, <span class="number">3</span>) <span class="comment">// 弹幕样式</span></div><div class="line">        .setDuplicateMergingEnabled(<span class="keyword">true</span>)    <span class="comment">// 合并重复弹幕</span></div><div class="line">        .setScrollSpeedFactor(<span class="number">1.5f</span>)          <span class="comment">// 滚动弹幕速度系数</span></div><div class="line">        .setScaleTextSize(<span class="number">0.8f</span>)              <span class="comment">// 弹幕文字大小</span></div><div class="line">        .setCacheStuffer(<span class="keyword">new</span> SpannedCacheStuffer(), mCacheStufferAdapter) <span class="comment">// 缓存绘制</span></div><div class="line">        .setMaximumLines(maxLinesPair)       <span class="comment">// 弹幕最大行数</span></div><div class="line">        .preventOverlapping(overlappingEnablePair); <span class="comment">// 防止弹幕重叠</span></div><div class="line"></div><div class="line">BaseDanmakuParser mParser = createParser(<span class="keyword">this</span>.getResources().openRawResource(R.raw.comments)); <span class="comment">// 创建弹幕解析器</span></div><div class="line"><span class="comment">// 设置弹幕播放的状态回调</span></div><div class="line">svDanmaku.setCallback(<span class="keyword">new</span> DrawHandler.Callback() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">prepared</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">// 弹幕准备完成</span></div><div class="line">        Log.d(<span class="string">"DFM"</span> , <span class="string">"prepared"</span>);</div><div class="line">        svDanmaku.start();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">updateTimer</span><span class="params">(DanmakuTimer timer)</span> </span>&#123;</div><div class="line">        <span class="comment">// 弹幕播放时间</span></div><div class="line">        Log.d(<span class="string">"DFM"</span> , <span class="string">"updateTimer : timer = "</span> + timer.currMillisecond);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">danmakuShown</span><span class="params">(BaseDanmaku danmaku)</span> </span>&#123;</div><div class="line">        <span class="comment">// 播放新的一条弹幕</span></div><div class="line">        Log.d(<span class="string">"DFM"</span> , <span class="string">"danmakuShown : danmaku = "</span> + danmaku.text);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">drawingFinished</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">// 弹幕播放结束</span></div><div class="line">        Log.d(<span class="string">"DFM"</span> , <span class="string">"drawingFinished"</span>);</div><div class="line">    &#125;&#125;);</div><div class="line">    </div><div class="line">    <span class="comment">// 设置弹幕点击监听</span></div><div class="line">    mMainBinding.svDanmaku.setOnDanmakuClickListener(<span class="keyword">new</span> IDanmakuView.OnDanmakuClickListener() &#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onViewClick</span><span class="params">(IDanmakuView view)</span> </span>&#123;</div><div class="line">            <span class="comment">// 点击的弹幕</span></div><div class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onDanmakuClick</span><span class="params">(IDanmakus danmakus)</span> </span>&#123;</div><div class="line">            <span class="comment">// 弹幕</span></div><div class="line">            Log.d(<span class="string">"DFM"</span>, <span class="string">"onDanmakuClick danmakus size:"</span> + danmakus.size());</div><div class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    <span class="comment">// 播放准备</span></div><div class="line">    svDanmaku.prepare(mParser, mDanmakuContext);</div><div class="line">    <span class="comment">// 显示播放FPS,一般用作调试时使用</span></div><div class="line">    svDanmaku.showFPS(<span class="keyword">false</span>);</div><div class="line">    <span class="comment">// 开启绘制缓存</span></div><div class="line">    svDanmaku.enableDanmakuDrawingCache(<span class="keyword">true</span>);</div></pre></td></tr></table></figure>
+<p>创建弹幕解析器<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 创建弹幕解析器</div><div class="line"> * <span class="doctag">@param</span> stream stream</div><div class="line"> * <span class="doctag">@return</span> BaseDanmakuParser</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">private</span> BaseDanmakuParser <span class="title">createParser</span><span class="params">(InputStream stream)</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (stream == <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> BaseDanmakuParser() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">protected</span> Danmakus <span class="title">parse</span><span class="params">()</span> </span>&#123;</div><div class="line">                <span class="keyword">return</span> <span class="keyword">new</span> Danmakus();</div><div class="line">            &#125;</div><div class="line">        &#125;;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// TAG_BILI XML数据格式的弹幕。TAG_ACFUN JSON数据格式的弹幕</span></div><div class="line">    ILoader loader = DanmakuLoaderFactory.create(DanmakuLoaderFactory.TAG_BILI);</div><div class="line"></div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        loader.load(stream);</div><div class="line">    &#125; <span class="keyword">catch</span> (IllegalDataException e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125;</div><div class="line">    BaseDanmakuParser parser = <span class="keyword">new</span> BiliDanmukuParser();</div><div class="line">    IDataSource&lt;?&gt; dataSource = loader.getDataSource();</div><div class="line">    parser.load(dataSource);</div><div class="line">    <span class="keyword">return</span> parser;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><img src="http://res.cloudinary.com/dmfz9aun7/image/upload/v1474278152/android/dfm_play.gif" alt="img"></p>
+<h2 id="2、发送弹幕"><a href="#2、发送弹幕" class="headerlink" title="2、发送弹幕"></a>2、发送弹幕</h2><p>常见的弹幕内容一般由以下部分组成<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="number">1</span> : 时间(弹幕出现时间) <span class="keyword">long</span>类型的时间戳</div><div class="line"><span class="number">2</span> : 类型(<span class="number">1</span>从左至右滚动弹幕 ； <span class="number">6</span>从右至左滚动弹幕； <span class="number">5</span>顶端固定弹幕；<span class="number">4</span>底端固定弹幕；<span class="number">7</span>高级弹幕；<span class="number">8</span>脚本弹幕)</div><div class="line"><span class="number">3</span> : 字号</div><div class="line"><span class="number">4</span> : 颜色</div><div class="line"><span class="number">5</span> : 弹幕池id</div><div class="line"><span class="number">6</span> : 用户hash</div><div class="line"><span class="number">7</span> : 弹幕id</div></pre></td></tr></table></figure></p>
+<p>发送弹幕处理<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line">BaseDanmaku baseDanmaku = mDanmakuContext.mDanmakuFactory.createDanmaku(BaseDanmaku.TYPE_FIX_BOTTOM); <span class="comment">// 通过DanmakuFactory来创建弹幕</span></div><div class="line"></div><div class="line"><span class="comment">// 弹幕内容信息</span></div><div class="line">baseDanmaku.text = <span class="string">"简单的一条弹幕"</span> + System.nanoTime(); <span class="comment">// 文本内容</span></div><div class="line">baseDanmaku.textSize = <span class="number">25f</span> * (mParser.getDisplayer().getDensity() - <span class="number">0.6f</span>); <span class="comment">// 字体大小</span></div><div class="line">baseDanmaku.textColor = Color.RED;         <span class="comment">// 字体颜色</span></div><div class="line">baseDanmaku.textShadowColor = Color.WHITE; <span class="comment">// 描边颜色</span></div><div class="line">baseDanmaku.borderColor = Color.RED;       <span class="comment">// 弹幕边框颜色</span></div><div class="line">baseDanmaku.padding = <span class="number">5</span>;                   <span class="comment">// 内边距</span></div><div class="line">baseDanmaku.priority = <span class="number">0</span>;                  <span class="comment">// 弹幕优先级,0为低优先级</span></div><div class="line">baseDanmaku.isLive = <span class="keyword">false</span>;                <span class="comment">// 是否是直播弹幕</span></div><div class="line">baseDanmaku.underlineColor = <span class="number">0</span>;            <span class="comment">// 0表示无下划线</span></div><div class="line"><span class="comment">// baseDanmaku.lines = new String[]&#123;"两行弹幕第1行弹幕" , "两行弹幕第2行弹幕"&#125;;</span></div><div class="line"></div><div class="line"><span class="comment">// 发送时的时间由弹幕播放时间来确定</span></div><div class="line">baseDanmaku.setTime(mMainBinding.svDanmaku.getCurrentTime());<span class="comment">// 弹幕出现的时间</span></div><div class="line"></div><div class="line"><span class="comment">// 发送弹幕，根据业务内容是否执行弹幕上传操作 TODO</span></div><div class="line">mMainBinding.svDanmaku.addDanmaku(baseDanmaku);</div></pre></td></tr></table></figure></p>
+<p><img src="http://res.cloudinary.com/dmfz9aun7/image/upload/v1474278810/android/dfm_add.gif" alt="img"></p>
+<h2 id="3-弹幕状态操作"><a href="#3-弹幕状态操作" class="headerlink" title="3. 弹幕状态操作"></a>3. 弹幕状态操作</h2><p>（1）. 隐藏<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line">mMainBinding.svDanmaku.hide();</div></pre></td></tr></table></figure></p>
+<p>（2）. 显示<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line">mMainBinding.svDanmaku.show();</div></pre></td></tr></table></figure></p>
+<p>（3）. 暂停<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line">mMainBinding.svDanmaku.pause();</div></pre></td></tr></table></figure></p>
+<p>（4）. 恢复继续<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line">mMainBinding.svDanmaku.onResume();</div></pre></td></tr></table></figure></p>
+<p>（2）. 跳转<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line">mMainBinding.svDanmaku.seekTo(<span class="number">0</span>);   <span class="comment">// 跳转到起始位置</span></div></pre></td></tr></table></figure></p>
+<h2 id="4-弹幕周期管理及资源释放"><a href="#4-弹幕周期管理及资源释放" class="headerlink" title="4. 弹幕周期管理及资源释放"></a>4. 弹幕周期管理及资源释放</h2><p>弹幕需要与Activity的生命周期配合来处理。防止未及时释放资源，造成Activity的内存问题。<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onPause</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>.onPause();</div><div class="line">    <span class="keyword">if</span> (mDanmakuView != <span class="keyword">null</span> &amp;&amp; mDanmakuView.isPrepared()) &#123;</div><div class="line">        mDanmakuView.pause();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onResume</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>.onResume();</div><div class="line">    <span class="keyword">if</span> (mDanmakuView != <span class="keyword">null</span> &amp;&amp; mDanmakuView.isPrepared() &amp;&amp; mDanmakuView.isPaused()) &#123;</div><div class="line">        mDanmakuView.resume();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDestroy</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>.onDestroy();</div><div class="line">    <span class="keyword">if</span> (mDanmakuView != <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="comment">// 及时释放弹幕资源</span></div><div class="line">        mDanmakuView.release();</div><div class="line">        mDanmakuView = <span class="keyword">null</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBackPressed</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>.onBackPressed();</div><div class="line">    <span class="keyword">if</span> (mDanmakuView != <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="comment">// 及时释放弹幕资源</span></div><div class="line">        mDanmakuView.release();</div><div class="line">        mDanmakuView = <span class="keyword">null</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h1 id="二、高级弹幕"><a href="#二、高级弹幕" class="headerlink" title="二、高级弹幕"></a>二、高级弹幕</h1><h2 id="1-背景绘制"><a href="#1-背景绘制" class="headerlink" title="1. 背景绘制"></a>1. 背景绘制</h2><p><a href="https://github.com/Bilibili/DanmakuFlameMaster" target="_blank" rel="external">DFM</a>自定义SpannedCacheStuffer，drawBackground方法中实现背景绘制操作</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 绘制有背景的弹幕</span></div><div class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">BackgroundCacheStuffer</span> <span class="keyword">extends</span> <span class="title">SpannedCacheStuffer</span></span>&#123;</div><div class="line">    <span class="keyword">final</span> Paint mPaint = <span class="keyword">new</span> Paint(Paint.ANTI_ALIAS_FLAG);</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">measure</span><span class="params">(BaseDanmaku danmaku, TextPaint paint, <span class="keyword">boolean</span> fromWorkerThread)</span> </span>&#123;</div><div class="line">        danmaku.padding = <span class="number">10</span>;</div><div class="line">        <span class="keyword">super</span>.measure(danmaku, paint, fromWorkerThread);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">drawBackground</span><span class="params">(BaseDanmaku danmaku, Canvas canvas, <span class="keyword">float</span> left, <span class="keyword">float</span> top)</span> </span>&#123;</div><div class="line">        mPaint.setColor(<span class="number">0xEE90A4AE</span>);   <span class="comment">// 背景颜色</span></div><div class="line">        RectF rectF = <span class="keyword">new</span> RectF(left + <span class="number">5</span>, top + <span class="number">5</span>, left + danmaku.paintWidth - <span class="number">5</span>, top + danmaku.paintHeight - <span class="number">5</span>); <span class="comment">// 圆角矩形</span></div><div class="line">        canvas.drawRoundRect(rectF, <span class="number">50</span> , <span class="number">50</span> , mPaint);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">drawStroke</span><span class="params">(BaseDanmaku danmaku, String lineText, Canvas canvas, <span class="keyword">float</span> left, <span class="keyword">float</span> top, Paint paint)</span> </span>&#123;</div><div class="line">        <span class="comment">// 绘制背景时建议禁止绘制描边</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>配置DanmakuContext<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">private</span> DanmakuContext mDanmakuContext;</div><div class="line">...</div><div class="line">mDanmakuContext.setDanmakuStyle(IDisplayer.DANMAKU_STYLE_STROKEN, <span class="number">3</span>) <span class="comment">// 弹幕样式</span></div><div class="line">        .setDuplicateMergingEnabled(<span class="keyword">true</span>)    <span class="comment">// 合并重复弹幕</span></div><div class="line">        .setScrollSpeedFactor(<span class="number">1.5f</span>)          <span class="comment">// 滚动弹幕速度系数</span></div><div class="line">        .setScaleTextSize(<span class="number">0.8f</span>)              <span class="comment">// 弹幕文字大小</span></div><div class="line">        .setCacheStuffer(<span class="keyword">new</span> BackgroundCacheStuffer(), mCacheStufferAdapter) <span class="comment">// 缓存绘制</span></div><div class="line">        ...</div></pre></td></tr></table></figure></p>
+<p><img src="http://res.cloudinary.com/dmfz9aun7/image/upload/c_scale,w_521/v1474442790/android/danmaku_bg.png" alt="img"></p>
+<h2 id="2-自定义解析器"><a href="#2-自定义解析器" class="headerlink" title="2. 自定义解析器"></a>2. 自定义解析器</h2><p><a href="https://github.com/Bilibili/DanmakuFlameMaster" target="_blank" rel="external">DFM</a>内置两种解析器<a href="https://github.com/Bilibili/DanmakuFlameMaster/blob/d4abc40bcaa8cc6786c1dff4ca1694dd626955b5/Sample/src/main/java/com/sample/BiliDanmukuParser.java" target="_blank" rel="external">BiliDanmukuParser</a>。<code>BiliDanmukuParser</code>使用XML数据格式的弹幕，是BiliBili标准的弹幕格式。<code>AcFunDanmakuParser</code>使用JSON数据格式的弹幕，适用于解析Acfun标准的弹幕。除了使用这两种弹幕格式以外，还可以根据具体弹幕内容来自定义弹幕解析器。如有以下内容Json格式的弹幕，那么如何来处理这种数据呢，此时就需要自定义实现弹幕数据的解析。<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line">[&#123;</div><div class="line">    <span class="string">"content"</span>:   <span class="string">"弹幕内容"</span> ,      <span class="comment">// 弹幕显示的内容</span></div><div class="line">    <span class="string">"time"</span> :     <span class="number">23.826000213623</span>, <span class="comment">// 弹幕出现的时间</span></div><div class="line">    <span class="string">"type"</span>:       <span class="number">6</span>      ,        <span class="comment">// 弹幕类型（参考danmaku中弹幕类型）</span></div><div class="line">    <span class="string">"fontsize"</span>:   <span class="number">12</span>     ,        <span class="comment">// 弹幕显示的字体大小</span></div><div class="line">    <span class="string">"fontcolor"</span>:  <span class="number">16777215</span>,       <span class="comment">// 弹幕字体颜色</span></div><div class="line">    <span class="string">"userid"</span>:     <span class="number">6</span>,              <span class="comment">// 用户hash</span></div><div class="line">    <span class="string">"username"</span>:   <span class="string">"alexwan"</span>,      <span class="comment">// 用户名称</span></div><div class="line">    <span class="string">"avatar"</span>:     <span class="string">"http://res.cloudinary.com/dmfz9aun7/image/upload/v1467081842/android/3397490934332211.jpg"</span>,</div><div class="line">    <span class="string">"danmakuid"</span>:  <span class="number">90</span>              <span class="comment">// 弹幕id</span></div><div class="line">&#125;, </div><div class="line">...</div><div class="line">]</div></pre></td></tr></table></figure></p>
+<p>（1）定义弹幕JavaBean<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DanmakuData</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> String content;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">double</span> time;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> type;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">float</span> fontSize;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> fontColor;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> userId;</div><div class="line">    <span class="keyword">private</span> String userName;</div><div class="line">    <span class="keyword">private</span> String avatar;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> danmakuId;</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>（2）实现<a href="https://github.com/Bilibili/DanmakuFlameMaster/blob/master/DanmakuFlameMaster/src/main/java/master/flame/danmaku/danmaku/parser/IDataSource.java" target="_blank" rel="external">IDataSource</a>，定义弹幕数据源（参考<a href="https://github.com/Bilibili/DanmakuFlameMaster/blob/master/DanmakuFlameMaster/src/main/java/master/flame/danmaku/danmaku/parser/android/JSONSource.java" target="_blank" rel="external">JSONSource</a>），加载指定数据源的弹幕数据。在<a href="https://github.com/Bilibili/DanmakuFlameMaster/blob/master/DanmakuFlameMaster/src/main/java/master/flame/danmaku/danmaku/loader/ILoader.java" target="_blank" rel="external">ILoader</a>子类中初始化。<br><figure class="highlight java"><figcaption><span>DanmakuSource.java</span></figcaption><table><tr><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DanmakuSource</span> <span class="keyword">implements</span> <span class="title">IDataSource</span>&lt;<span class="title">String</span>&gt; </span></div><div class="line">...</div><div class="line"><span class="title">private</span> <span class="title">String</span> <span class="title">mJson</span>;</div><div class="line"><span class="keyword">private</span> InputStream mInput;</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">DanmakuSource</span><span class="params">(String json)</span> <span class="keyword">throws</span> JSONException</span>&#123;...&#125;                      <span class="comment">// 指定json字符串</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">DanmakuSource</span><span class="params">(InputStream in)</span> <span class="keyword">throws</span> JSONException</span>&#123;...&#125;                   <span class="comment">// 指定json数据流</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">DanmakuSource</span><span class="params">(URL url)</span> <span class="keyword">throws</span> JSONException, IOException</span>&#123;...&#125;             <span class="comment">// 指定URL源json</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">DanmakuSource</span><span class="params">(File file)</span> <span class="keyword">throws</span> FileNotFoundException, JSONException</span>&#123;...&#125; <span class="comment">// 指定file源json</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">DanmakuSource</span><span class="params">(Uri uri)</span> <span class="keyword">throws</span> IOException, JSONException</span>&#123;...&#125;             <span class="comment">// 指定Uri源json</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(InputStream in)</span> <span class="keyword">throws</span> JSONException </span></div><div class="line">...</div><div class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(String json)</span> <span class="keyword">throws</span> JSONException &#123;</div><div class="line">    <span class="keyword">if</span> (!TextUtils.isEmpty(json)) &#123;</div><div class="line">        <span class="comment">// 初始化json</span></div><div class="line">        mJson = json;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">...</div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> String <span class="title">data</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> mJson;</div><div class="line">&#125;</div><div class="line">...</div></pre></td></tr></table></figure></p>
+<p>（3）实现<a href="https://github.com/Bilibili/DanmakuFlameMaster/blob/master/DanmakuFlameMaster/src/main/java/master/flame/danmaku/danmaku/loader/ILoader.java" target="_blank" rel="external">ILoader</a>，执行<code>IDataSource</code>的初始化管理操作。XML格式弹幕直接使用<a href="https://github.com/Bilibili/DanmakuFlameMaster/blob/master/DanmakuFlameMaster/src/main/java/master/flame/danmaku/danmaku/loader/android/BiliDanmakuLoader.java" target="_blank" rel="external">BiliDanmakuLoader</a>加载，JSON格式弹幕可以使用<a href="https://github.com/Bilibili/DanmakuFlameMaster/blob/master/DanmakuFlameMaster/src/main/java/master/flame/danmaku/danmaku/loader/android/AcFunDanmakuLoader.java" target="_blank" rel="external">AcFunDanmakuLoader</a>用<code>JSONSource</code>来加载弹幕数据。也可以自定义实现弹幕加载方式。<br><figure class="highlight java"><figcaption><span>SimpleDanmakuLoader.java</span></figcaption><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SimpleDanmakuLoader</span> <span class="keyword">implements</span> <span class="title">ILoader</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="title">SimpleDanmakuLoader</span><span class="params">()</span> </span>&#123;</div><div class="line">    &#125;</div><div class="line">	</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> SimpleDanmakuLoader instance;</div><div class="line">    <span class="keyword">private</span> IDataSource&lt;String&gt; mDataSource;</div><div class="line">	</div><div class="line">    <span class="comment">//  这里使用单例保证加载器只会被实例化一次</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ILoader <span class="title">instance</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">synchronized</span> (SimpleDanmakuLoader.class) &#123;</div><div class="line">                <span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</div><div class="line">                    instance = <span class="keyword">new</span> SimpleDanmakuLoader();</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> instance;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> IDataSource&lt;String&gt; <span class="title">getDataSource</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> mDataSource;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/*</span></div><div class="line">    * 加载Uri类型弹幕数据</div><div class="line">    */</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">load</span><span class="params">(String uri)</span> <span class="keyword">throws</span> IllegalDataException </span>&#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">             mDataSource = <span class="keyword">new</span> DanmakuSource(UriUtil.parseUriOrNull(uri));</div><div class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalDataException(e);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">    * 加载流数据弹幕</div><div class="line">    */</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">load</span><span class="params">(InputStream in)</span> <span class="keyword">throws</span> IllegalDataException </span>&#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            mDataSource = <span class="keyword">new</span> DanmakuSource(in);</div><div class="line">        &#125; <span class="keyword">catch</span> (JSONException e) &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalDataException(e);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure><br><code>SimpleDanmakuLoader</code>创建<code>DanmakuSource</code>来获取弹幕内容。在初始化弹幕数据解析器时，调用<code>load</code>方法获取弹幕数据。</p>
+<p>（4）定义弹幕解析类，继承<a href="https://github.com/Bilibili/DanmakuFlameMaster/blob/master/DanmakuFlameMaster/src/main/java/master/flame/danmaku/danmaku/parser/BaseDanmakuParser.java" target="_blank" rel="external">BaseDanmakuParser</a>创建自定义的弹幕解析类。<br><figure class="highlight java"><figcaption><span>SimpleDanmakuParser.java</span></figcaption><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SimpleDanmakuParser</span> <span class="keyword">extends</span> <span class="title">BaseDanmakuParser</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = SimpleDanmakuParser.class.getSimpleName();</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> IDanmakus <span class="title">parse</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span>(mDataSource != <span class="keyword">null</span> &amp;&amp; mDataSource <span class="keyword">instanceof</span> DanmakuSource)&#123;</div><div class="line">            DanmakuSource source = (DanmakuSource) mDataSource;</div><div class="line">            <span class="keyword">return</span> doParse(source.data());</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Danmakus();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> Danmakus <span class="title">doParse</span><span class="params">(String json)</span></span>&#123;</div><div class="line">        Danmakus danmakus = <span class="keyword">new</span> Danmakus();</div><div class="line">        <span class="keyword">if</span>(TextUtils.isEmpty(json))&#123;</div><div class="line">            <span class="keyword">return</span> danmakus;</div><div class="line">        &#125;</div><div class="line">        <span class="comment">// 使用Gson解析弹幕json数据</span></div><div class="line">        Type type = <span class="keyword">new</span> TypeToken&lt;List&lt;DanmakuData&gt;&gt;()&#123;&#125;.getType();</div><div class="line">        List&lt;DanmakuData&gt; list = <span class="keyword">new</span> Gson().fromJson(json , type);</div><div class="line">        <span class="keyword">int</span> size = list.size();</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span> ; i &lt; size; i ++)&#123;</div><div class="line">            danmakus = parse(list.get(i) , danmakus , i);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> danmakus;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 解析弹幕数据,组装BaseDanmaku</div><div class="line">     * <span class="doctag">@param</span> data DanmakuData</div><div class="line">     * <span class="doctag">@param</span> danmakus Danmakus</div><div class="line">     * <span class="doctag">@param</span> index index</div><div class="line">     * <span class="doctag">@return</span> Danmakus</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">private</span> Danmakus <span class="title">parse</span><span class="params">(DanmakuData data, Danmakus danmakus , <span class="keyword">int</span> index)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span>(danmakus == <span class="keyword">null</span>)&#123;</div><div class="line">            danmakus =  <span class="keyword">new</span> Danmakus();</div><div class="line">        &#125;</div><div class="line">        BaseDanmaku item = mContext.mDanmakuFactory.createDanmaku(data.getType() , mContext);</div><div class="line">        <span class="keyword">if</span>(item != <span class="keyword">null</span>)&#123;</div><div class="line">            item.setTime((<span class="keyword">long</span>) (data.getTime() * <span class="number">1000</span>));</div><div class="line">            item.textSize = data.getFontSize();</div><div class="line">            item.textColor = data.getFontColor() | <span class="number">0xFF000000</span> ;</div><div class="line">            DanmakuUtils.fillText(item , data.getContent());</div><div class="line">            item.index = index;</div><div class="line">            item.setTimer(mTimer);</div><div class="line">            danmakus.addItem(item);</div><div class="line">            Log.i(TAG , <span class="string">"parse : time = "</span> + data.getTime() * <span class="number">1000</span> + <span class="string">" ; textSize = "</span> + data.getFontSize()</div><div class="line">                    + <span class="string">" ; textColor = "</span> + item.textColor + <span class="string">" ; content = "</span> + item.text);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> danmakus;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>（5）配置弹幕解析器</p>
+<figure class="highlight java"><figcaption><span>MainActivity.java</span></figcaption><table><tr><td class="code"><pre><div class="line">...</div><div class="line">mParser = customParser();</div><div class="line">mDanmakuView.prepare(mParser, mDanmakuContext);</div><div class="line">...</div><div class="line"><span class="function"><span class="keyword">private</span> BaseDanmakuParser <span class="title">customParser</span><span class="params">()</span></span>&#123;</div><div class="line">    ILoader loader = SimpleDanmakuLoader.instance();</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        loader.load(<span class="string">"http://..."</span>);</div><div class="line">        Log.i(TAG , <span class="string">"customParser : json = "</span> + <span class="keyword">new</span> Gson().toJson(list) );</div><div class="line">    &#125; <span class="keyword">catch</span> (IllegalDataException e) &#123;</div><div class="line">        Log.e(TAG , <span class="string">"customParser : json = "</span> + <span class="keyword">new</span> Gson().toJson(list) + <span class="string">" ; error = "</span> , e);</div><div class="line">    &#125;</div><div class="line">    BaseDanmakuParser parser = <span class="keyword">new</span> SimpleDanmakuParser();</div><div class="line">    IDataSource&lt;?&gt; dataSource = loader.getDataSource();</div><div class="line">    parser.load(dataSource);</div><div class="line">    <span class="keyword">return</span> parser;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><img src="http://res.cloudinary.com/dmfz9aun7/image/upload/c_scale,w_556/v1474625129/android/danmaku_parser.png" alt="img"></p>
+<h2 id="3-图文混排弹幕"><a href="#3-图文混排弹幕" class="headerlink" title="3. 图文混排弹幕"></a>3. 图文混排弹幕</h2><p>（1）单排图文<br><figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="comment">// TODO</span></div></pre></td></tr></table></figure></p>
+<p>（2）双排图文</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="comment">// TODO</span></div></pre></td></tr></table></figure>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p>1、<a href="https://github.com/Bilibili/DanmakuFlameMaster/blob/master/Sample/src/main/java/com/sample/MainActivity.java" target="_blank" rel="external">Android开源弹幕引擎·烈焰弹幕使 ～ </a><br>2、<a href="http://wangpeiyuan.cn/2016/02/24/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%BC%B9%E5%B9%95%E7%9A%84%E5%BC%80%E5%8F%91/" target="_blank" rel="external">记一次弹幕的开发</a><br>3、<a href="http://blog.csdn.net/zxq614/article/details/52622792" target="_blank" rel="external">图文弹幕的实现</a><br>4、<a href="https://github.com/Bilibili/drawee-text-view" target="_blank" rel="external">Simple drawee spannable text view based on Fresco</a></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2017/04/23/深入理解OkHttp3的Interceptors/" data-toggle="tooltip" data-placement="top" title="深入理解OkHttp3的Interceptors（1）">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/09/06/Android：SurfaceView基础与原理/" data-toggle="tooltip" data-placement="top" title="Android：SurfaceView基础与原理">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#danmaku" title="danmaku">danmaku</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "alexwan02";
+    var disqus_identifier = "http://blog.alexwan.cn/2016/09/19/Android：DFM弹幕开发之基本配置/";
+    var disqus_url = "http://blog.alexwan.cn/2016/09/19/Android：DFM弹幕开发之基本配置/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/alexwan02">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Alex Studio 2017 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.alexwan.cn/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://blog.alexwan.cn/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
