@@ -149,6 +149,7 @@ Map<K, V> | Map<K, V>	| MutableMap<K, V>	| (Mutable)Map<K, V>!
 Map.Entry<K, V>	| Map.Entry<K, V>	| MutableMap.MutableEntry<K,V> | 	(Mutable)Map.(Mutable)Entry<K, V>!
 
 Java数组按照下面规则映射
+
 Java type | Kotlin type
 ---|---
 int[]	| kotlin.IntArray!
